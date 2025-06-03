@@ -1,0 +1,338 @@
+﻿<style>
+    .dataTable th,
+    .dataTable td {
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card" style="background-color:#f7f6fa">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="me-2 mt-1">Start Date:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="datetime-local" id="startDate" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="me-2 mt-1">End Date:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="datetime-local" id="endDate" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="me-2 mt-1">Customers:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select id="ddlCustomers" class="form-control selectpicker" multiple data-live-search="true"></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mt-2">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="me-2 mt-1">Payment Status:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select id="paymentStatus" class="form-control form-select">
+                                        <option value="" selected>Select Status</option>
+                                        <option value="UnPaid">UnPaid</option>
+                                        <option value="Partial">Partialy Paid</option>
+                                        <option value="Paid">Paid</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 mt-2">
+                            <button id="btnSearch" class="customBtn w-100">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table id="billTable" class="dataTables_wrapper table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Bill Date</th>
+                <th>Total Amount</th>
+                <th>Payment Status</th>
+                <th>Payment Mode</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<div class="modal fade" id="editBillItemsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit BillItems</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Customer Name</label>
+                        <select id="ddlCustomer" class="form-control form-select"></select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label>Payment Status</label>
+                        <select id="ddlPaymentStatus" class="form-control form-select select-search" onchange="ValidatePaymentMode(this.value)">
+                            <option value="UnPaid" selected>UnPaid</option>
+                            <option value="Partial">Partialy Paid</option>
+                            <option value="Paid">Paid</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-6 mt-3">
+                        <label>Payment Mode</label>
+                        <select id="ddlPaymentMode" class="form-control form-select select-search" disabled>
+                            <option value="NA">NA</option>
+                            <option value="Cash">Cash</option>
+                            <option value="PhonePay">Phone Pay</option>
+                            <option value="GooglePay">Google Pay</option>
+                            <option value="NetBanking">Net Banking</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <label>Advance Amount :</label>
+                        <input id="advanceAmt" class="form-control"/>
+                    </div>
+                   
+                </div>
+                 <div class="col-md-6 mt-4 row">
+                        <div class="col-auto mt-3">
+                            <h5>Total Amount :</h5>
+                        </div>
+                        <div class="col-auto mt-3">
+                            <span id="totalAmount" style="font-weight:700">0</span> ₹
+                        </div>
+                    </div>
+                <div class="row">
+                    <div class="col-auto mt-4">
+                        <label>Select Item :</label>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <select id="ddlItems" class="form-control form-select"></select>
+                    </div>
+                    <div class="col-md-2 mt-3">
+                        <button id="btnAddBillItem" class="customBtn" onclick="AddBillItem()">Add Item</button>
+                    </div>
+                </div>
+                <div class="">
+                    <table class="table-bordered table-responsive mt-4 ml-2 me-2">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Unit</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="billItems"></tbody>
+                    </table>    
+                </div>
+                <input type="hidden" id="txtbillIdHidden">
+            </div>
+            <div class="modal-footer">
+                <button type="submit" onclick="UpdateBillData()" class="btn btn-success">Save</button>
+                <button type="submit" onclick="generatePDF();" class="btn btn-success">Print</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/BillOperation.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const currentDate = new Date();
+        const pastDate = new Date(currentDate);
+        pastDate.setDate(currentDate.getDate() - 3);
+
+        $('#startDate').val(GetFormattedStartDate(pastDate));
+        $('#endDate').val(GetFormatedDateValue(currentDate));
+
+        $('#startDate, #endDate').on('change', function () {
+            checkrange('startDate', 'endDate');
+        });
+
+        BindCustomers();
+        BindTableData();
+        BindFoodItems();
+        $('#btnSearch').on('click', function () {
+            BindTableData();
+        });
+        $('#billTable').on('click', '.btn-edit', function() {
+            var billData = JSON.parse($(this).attr('data-full-data'));
+            BindBillItems(billData);
+        });
+    });
+
+
+    function BindCustomers() {
+        $.get('/Configuration/GetCustomer', function (response) {
+            response.forEach(function (item) {
+                $('#ddlCustomers').append('<option value="' + item.customerId + '">' + item.customerName + '</option>');
+                $('#ddlCustomer').append('<option value="' + item.customerId + '">' + item.customerName + '</option>');
+            });
+            $('#ddlCustomers').selectpicker('refresh');
+        });
+    }
+    function BindFoodItems() {
+        $.get('/Billing/GetFinishedGoodsItems', function (response) {
+            response.forEach(function (item) {
+                $('#ddlItems').append('<option value="' + item.itemId + '">' + item.itemName + '</option>');
+            });
+        });
+    }
+
+    function BindTableData() {
+        let table = $('#billTable').DataTable();
+            table.clear().draw();
+        let selectedCustomers = $('#ddlCustomers').val() || [];
+        let startDate = $('#startDate').val();
+        let endDate = $('#endDate').val();
+        let paymentStatus = $('#paymentStatus').val();
+
+        $.ajax({
+            url: '/Billing/GetBillRecords',
+            type: 'POST',
+            data: { startDate: startDate, endDate: endDate, paymentStatus: paymentStatus, customerIds: selectedCustomers },
+            success: function (response) {
+                response.forEach(function (item) {
+                    let statusBadge = item.paymentStatus === 'Paid'
+                        ? `<span class="badge bg-success">${item.paymentStatus}</span>`
+                        : `<span class="badge bg-danger">${item.paymentStatus}</span>`;
+
+                    table.row.add([
+                        item.customerName,
+                        FormatDateInReadableFormat(item.billDate),
+                        item.finalAmount,
+                        statusBadge,
+                        item.paymentMode,
+                        '<div class="contentCenter">' +
+                        '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item) + '\'></i>' +
+                        '</div>'
+                    ]).draw();
+                });
+            }
+        });
+    }
+    function BindBillItems(billData){
+        $("#billItems").empty();
+        $('#ddlCustomer').val(billData.fkCustomerId);
+        $('#txtbillIdHidden').val(billData.billId);
+        $('#totalAmount').text(billData.finalAmount);
+        $('#advanceAmt').text(billData.advanceAmount);
+        $('#ddlPaymentStatus').val(billData.paymentStatus);
+        if($('#ddlPaymentStatus').val() == "UnPaid"){
+             
+             $('#ddlPaymentMode').prop('disabled',true);
+        }else{
+            $('#ddlPaymentMode').prop('disabled',false);
+        }
+        $('#ddlPaymentMode').val(billData.paymentMode);
+        $.ajax({
+            url: '/Billing/GetBillItmeDetails',
+            type: 'POST',
+            data: {
+                billId: billData.billId
+            },
+            success: function (response) {
+                response.forEach(function(item) {
+                    $("#billItems").append(`
+                            <tr data-id="${item.itemId}" data-unit-value="${item.priceQuantity}">
+                                <td>${item.itemName}</td>
+                                <td><input type="number" class="qty-input form-control" min="0" max="${item.maxQuantity}"  value="${item.quantity}" min="0" style="width:75px;"></td>
+                                <td class="unit">${item.unit}</td>
+                                <td class="price">${item.pricePerUnit}</td>
+                                <td class="total">${item.price}</td>
+                                <td><button class="btn btn-danger btn-sm remove-item">X</button></td>
+                            </tr>
+                        `);
+                });
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+        $('#editBillItemsModal').modal('toggle');
+    }
+
+    function AddBillItem(){
+        let itemId = $('#ddlItems').val();
+        GetItemsDetailsById(itemId);
+    }
+
+     function UpdateBillData() {
+        let itemsList = [];
+        $("#billItems tr").each(function () {
+            let row = $(this);
+            let itemId = row.data('id');
+            let qty = parseFloat(row.find(".qty-input").val()) || 0;
+            let unit = row.find(".unit").text().trim();
+            let price = parseFloat(row.find(".total").text()) || 0;
+
+            // Add item details to the list
+            itemsList.push({
+                fkItemId: itemId,
+                quantity: qty,
+                unit: unit,
+                price: price
+            });
+        });
+        let billData = {};
+        billData.fkCustomerId  = $('#ddlCustomer').val();
+        billData.billId  =  $('#txtbillIdHidden').val();
+        billData.paymentMode   = $('#ddlPaymentMode').val();
+        billData.paymentStatus = $('#ddlPaymentStatus').val();
+        billData.finalAmount = $('#totalAmount').text();
+
+        $.ajax({
+            url: '/Billing/UpdateBill',
+            type: 'POST',
+            data: {
+                billData: billData,
+                billItems: JSON.stringify(itemsList)
+                },
+            success: function (response) {
+                if(response){
+                msgPopup('success','BillData Saved successfully!');
+                BindTableData();
+                 $('#editBillItemsModal').modal('toggle');
+                }else{
+                    msgPopup('error','Bill Data Not Saved');
+                }
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+</script>

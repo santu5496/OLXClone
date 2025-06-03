@@ -1,0 +1,860 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return Management System</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+    <!-- Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+
+    <style>
+        .container-fluid {
+            padding: 20px;
+        }
+
+        .customBtn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .customBtn:hover {
+                background-color: #0056b3;
+            }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .contentCenter {
+            text-align: center;
+        }
+
+        .btn-edit, .btn-delete {
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 5px;
+        }
+
+            .btn-edit:hover {
+                color: #28a745 !important;
+            }
+
+            .btn-delete:hover {
+                color: #dc3545 !important;
+            }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .modal-xl {
+            max-width: 95%;
+        }
+
+        .return-summary {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="text-primary">
+                    <i class="fas fa-undo-alt me-2"></i>
+                    Return Management System
+                </h2>
+                <hr>
+            </div>
+        </div>
+
+        <!-- Search and Add Button Section -->
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search returns...">
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <button class="customBtn" onclick="LoadReturnForm()">
+                    <i class="fas fa-plus me-2"></i>Add Return
+                </button>
+            </div>
+        </div>
+
+        <!-- Returns Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Returns List
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <table id="tblReturns" class="table table-striped table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Return ID</th>
+                                    <th>Customer Name</th>
+                                    <th>Return Date</th>
+                                    <th>Total Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Return Modal -->
+        <div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="returnModalLabel">
+                            <i class="fas fa-plus-circle me-2"></i>Add Return
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Return Information Section -->
+                        <div class="return-summary">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-info-circle me-2"></i>Return Information
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label required-field">Customer</label>
+                                    <select class="form-select ClearReturnModalData requiredfield" id="ddlCustomer">
+                                        <option value="">Select Customer</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label required-field">Return Date</label>
+                                    <input type="date" class="form-control ClearReturnModalData requiredfield" id="txtReturnDate" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label class="form-label required-field">Return Reason</label>
+                                    <input type="text" class="form-control ClearReturnModalData requiredfield"
+                                           id="txtReasonForReturn" placeholder="Enter reason for return" />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Final Price</label>
+                                    <input type="number" class="form-control ClearReturnModalData"
+                                           id="txtFinalPrice" readonly step="0.01" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Return Items Section -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h6 class="text-primary mb-3">
+                                    <i class="fas fa-box-open me-2"></i>Return Items
+                                </h6>
+                                <div class="table-responsive">
+                                    <table id="tblReturnItems" class="table table-bordered">
+                                        <thead class="table-secondary">
+                                            <tr>
+                                                <th style="width: 15%;">Item</th>
+                                                <th style="width: 15%;">Return Reason</th>
+                                                <th style="width: 8%;">Quantity</th>
+                                                <th style="width: 8%;">Unit</th>
+                                                <th style="width: 10%;">Price/Unit</th>
+                                                <th style="width: 8%;">Discount %</th>
+                                                <th style="width: 10%;">Total Price</th>
+                                                <th style="width: 8%;">Action</th>
+                                                <th style="width: 12%;">Reuse Type</th>
+                                                <th style="width: 12%;">Destination</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <button class="btn btn-success btn-sm mt-2" onclick="AddReturnItemRow()">
+                                    <i class="fas fa-plus me-1"></i>Add Item
+                                </button>
+                            </div>
+                        </div>
+
+                        <input type="hidden" class="ClearReturnModalData" id="txtReturnIdHidden">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="SaveReturn()" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Return
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        // Global Variables
+        var InventoryItems = [];
+        var Customers = [];
+        var returnsTable;
+
+        // Document Ready Function
+        $(document).ready(function () {
+            // Configure Toastr
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            // Initialize DataTable
+            returnsTable = $('#tblReturns').DataTable({
+                responsive: true,
+                pageLength: 10,
+                order: [[0, 'desc']],
+                columnDefs: [
+                    { targets: [4], orderable: false }
+                ],
+                language: {
+                    search: "",
+                    searchPlaceholder: "Search returns..."
+                }
+            });
+
+            // Initial Data Load
+            GetReturnsData();
+            GetCustomers();
+            GetInventoryItems();
+
+            // Set default return date to today
+            $('#txtReturnDate').val(new Date().toISOString().split('T')[0]);
+
+            // Event Handlers
+            $('#tblReturns').on('click', '.btn-edit', function () {
+                var fullData = JSON.parse($(this).attr('data-full-data'));
+                EditReturn(fullData);
+            });
+
+            $('#tblReturns').on('click', '.btn-delete', function () {
+                var id = $(this).data('id');
+                if (confirm('Are you sure you want to delete this return?')) {
+                    DeleteReturn(id);
+                }
+            });
+
+            // Search functionality
+            $('#searchInput').on('keyup', function () {
+                returnsTable.search(this.value).draw();
+            });
+        });
+
+        // Validation Function
+        function ValidateReturnForm() {
+            let isValid = true;
+
+            $('.requiredfield').each(function() {
+                if (!$(this).val()) {
+                    $(this).addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            // Validate return items
+            if ($('#tblReturnItems tbody tr').length === 0) {
+                toastr.error('Please add at least one return item');
+                isValid = false;
+            }
+
+            // Validate each return item
+            $('#tblReturnItems tbody tr').each(function(index) {
+                let itemSelect = $(this).find('.item-dropdown');
+                let quantityInput = $(this).find('.quantity-input');
+
+                if (!itemSelect.val()) {
+                    itemSelect.addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    itemSelect.removeClass('is-invalid');
+                }
+
+                if (!quantityInput.val() || parseFloat(quantityInput.val()) <= 0) {
+                    quantityInput.addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    quantityInput.removeClass('is-invalid');
+                }
+            });
+
+            return isValid;
+        }
+
+        // Get Returns Data
+        function GetReturnsData() {
+            $.ajax({
+                url: '/ReturnManagement/GetReturns',
+                type: 'GET',
+                success: function (response) {
+                    returnsTable.clear();
+
+                    if (response && response.length > 0) {
+                        response.forEach(function (returnData) {
+                            returnsTable.row.add([
+                                returnData.returnId,
+                                returnData.customerName || 'N/A',
+                                new Date(returnData.returnDate).toLocaleDateString(),
+                                '₹' + (returnData.returnPrice || 0).toFixed(2),
+                                `<div class="contentCenter">
+                                    <i class="fa fa-edit btn-edit me-3" style="color:#28a745; cursor:pointer;"
+                                       data-full-data='${JSON.stringify(returnData)}' title="Edit"></i>
+                                    <i class="fa fa-trash btn-delete" style="color:#dc3545; cursor:pointer;"
+                                       data-id='${returnData.returnId}' title="Delete"></i>
+                                 </div>`
+                            ]);
+                        });
+                    }
+
+                    returnsTable.draw();
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Error loading returns data: ' + error);
+                }
+            });
+        }
+
+        // Load Return Form
+        function LoadReturnForm() {
+            $('.ClearReturnModalData').val('');
+            $('.ClearReturnModalData').removeClass('is-invalid');
+            $('#tblReturnItems tbody').empty();
+            $('#returnModalLabel').html('<i class="fas fa-plus-circle me-2"></i>Add Return');
+            $('#txtReturnDate').val(new Date().toISOString().split('T')[0]);
+            $('#returnModal').modal('show');
+        }
+
+        // Get Customers
+        function GetCustomers() {
+            $.ajax({
+                url: '/Configuration/GetCustomer',
+                type: 'POST',
+                success: function (response) {
+                    Customers = response || [];
+                    const selectElement = $('#ddlCustomer');
+                    selectElement.empty().append('<option value="">Select Customer</option>');
+
+                    if (response && response.length > 0) {
+                        response.forEach(item => {
+                            selectElement.append(`<option value="${item.customerId}">${item.customerName}</option>`);
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Error fetching customers: ' + error);
+                }
+            });
+        }
+
+        // Get Inventory Items
+        function GetInventoryItems() {
+            $.ajax({
+                url: '/ReturnManagement/GetInventoryItems',
+                type: 'GET',
+                success: function (response) {
+                    InventoryItems = response || [];
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Error fetching inventory items: ' + error);
+                }
+            });
+        }
+
+        // Add Return Item Row
+        function AddReturnItemRow() {
+            let tableBody = $('#tblReturnItems tbody');
+            let rowIndex = tableBody.children().length;
+
+            let newRow = `
+            <tr data-row-index="${rowIndex}">
+                <td>
+                    <select class="form-select item-dropdown" id="item_${rowIndex}" onchange="UpdatePriceAndUnit(${rowIndex})">
+                        <option value="">Select Item</option>
+                        ${InventoryItems.map(item =>
+                            `<option value="${item.itemId}"
+                                data-unit="${item.unit}"
+                                data-price="${item.pricePerUnit}">${item.itemName}</option>`
+                        ).join('')}
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control" id="itemReturnReason_${rowIndex}"
+                           placeholder="Enter reason" />
+                </td>
+                <td>
+                    <input type="number" class="form-control quantity-input" id="quantity_${rowIndex}"
+                           min="0" step="0.01" oninput="CalculatePrice(${rowIndex})" placeholder="0" />
+                </td>
+                <td>
+                    <input type="text" class="form-control unit-field" id="unit_${rowIndex}" readonly />
+                </td>
+                <td>
+                    <input type="number" class="form-control item-price" id="price_${rowIndex}"
+                           readonly step="0.01" />
+                </td>
+                <td>
+                    <input type="number" class="form-control item-discount" id="discount_${rowIndex}"
+                           value="0" min="0" max="100" step="0.01" oninput="CalculatePrice(${rowIndex})" />
+                </td>
+                <td>
+                    <input type="number" class="form-control item-total-price" id="totalPrice_${rowIndex}"
+                           readonly step="0.01" />
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-danger" onclick="RemoveReturnItemRow(this)" title="Remove">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+                <td>
+                    <select class="form-select" id="reuseDestination_${rowIndex}" onchange="UpdateReuseDestination(${rowIndex})">
+                        <option value="Waste">Discarded</option>
+                        <option value="Recycled">Recycled</option>
+                       
+                    </select>
+                </td>
+                <td>
+                    <select class="form-select" id="reuseDestinationType_${rowIndex}" style="display:none;">
+                        <option value="">Select Item</option>
+                    </select>
+                </td>
+            </tr>`;
+
+            tableBody.append(newRow);
+
+            // Initialize Select2 for the new item dropdown
+            $(`#item_${rowIndex}`).select2({
+                dropdownParent: $('#returnModal'),
+                placeholder: 'Select Item',
+                allowClear: true
+            });
+        }
+
+        // Remove Return Item Row
+        function RemoveReturnItemRow(button) {
+            $(button).closest('tr').remove();
+            UpdateFinalPrice();
+        }
+
+        // Update Price and Unit
+        function UpdatePriceAndUnit(index) {
+            let selectedOption = $(`#item_${index} option:selected`);
+            let unit = selectedOption.data('unit') || '';
+            let pricePerUnit = selectedOption.data('price') || 0;
+
+            $(`#unit_${index}`).val(unit);
+            $(`#price_${index}`).val(pricePerUnit);
+
+            // Clear invalid state if item is selected
+            if (selectedOption.val()) {
+                $(`#item_${index}`).removeClass('is-invalid');
+            }
+
+            CalculatePrice(index);
+        }
+
+        // Calculate Price
+        function CalculatePrice(index) {
+            let quantity = parseFloat($(`#quantity_${index}`).val()) || 0;
+            let pricePerUnit = parseFloat($(`#price_${index}`).val()) || 0;
+            let discount = parseFloat($(`#discount_${index}`).val()) || 0;
+
+            let totalPrice = (quantity * pricePerUnit) * (1 - discount / 100);
+            $(`#totalPrice_${index}`).val(totalPrice.toFixed(2));
+
+            // Clear invalid state if quantity is valid
+            if (quantity > 0) {
+                $(`#quantity_${index}`).removeClass('is-invalid');
+            }
+
+            UpdateFinalPrice();
+        }
+
+        // Update Final Price
+        function UpdateFinalPrice() {
+            let finalPrice = 0;
+            $('#tblReturnItems tbody tr').each(function () {
+                let totalPrice = parseFloat($(this).find('.item-total-price').val()) || 0;
+                finalPrice += totalPrice;
+            });
+            $('#txtFinalPrice').val(finalPrice.toFixed(2));
+        }
+
+        // Update Reuse Destination
+        function UpdateReuseDestination(index) {
+            let reuseDestination = $(`#reuseDestination_${index}`).val();
+            let reuseDestinationType = $(`#reuseDestinationType_${index}`);
+
+            reuseDestinationType.empty().append('<option value="">Select Item</option>');
+
+            if (reuseDestination === "Recycled" || reuseDestination === "Restocked") {
+                InventoryItems.forEach(item => {
+                    reuseDestinationType.append(`<option value="${item.itemId}">${item.itemName}</option>`);
+                });
+                reuseDestinationType.show();
+                reuseDestinationType.select2({
+                    dropdownParent: $('#returnModal'),
+                    placeholder: 'Select Destination Item'
+                });
+            } else {
+                reuseDestinationType.hide();
+                if (reuseDestinationType.hasClass('select2-hidden-accessible')) {
+                    reuseDestinationType.select2('destroy');
+                }
+            }
+        }
+
+        // Edit Return
+        function EditReturn(returnData) {
+            $('#returnModalLabel').html('<i class="fas fa-edit me-2"></i>Edit Return');
+
+            // Populate main return details
+            $('#txtReturnIdHidden').val(returnData.returnId);
+            $('#ddlCustomer').val(returnData.customerId);
+
+            // Format date properly
+            let returnDate = new Date(returnData.returnDate);
+            let formattedDate = returnDate.toISOString().split('T')[0];
+            $('#txtReturnDate').val(formattedDate);
+
+            $('#txtReasonForReturn').val(returnData.returnDescription || '');
+            $('#txtFinalPrice').val(returnData.returnPrice || 0);
+
+            // Clear existing return items
+            $('#tblReturnItems tbody').empty();
+
+            // Fetch and populate return items
+            $.ajax({
+                url: `/ReturnManagement/GetReturnItemsById?returnId=${returnData.returnId}`,
+                type: 'GET',
+                success: function (returnItems) {
+                    if (returnItems && returnItems.length > 0) {
+                        returnItems.forEach((item, index) => {
+                            let newRow = `
+                            <tr data-row-index="${index}">
+                                <td>
+                                    <select class="form-select item-dropdown" id="item_${index}" onchange="UpdatePriceAndUnit(${index})">
+                                        ${InventoryItems.map(invItem =>
+                                            `<option value="${invItem.itemId}"
+                                                ${invItem.itemId === item.fkInventoryItemId ? 'selected' : ''}
+                                                data-unit="${invItem.unit}"
+                                                data-price="${invItem.pricePerUnit}">${invItem.itemName}</option>`
+                                        ).join('')}
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="itemReturnReason_${index}"
+                                           value="${item.returnReason || ''}" />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control quantity-input" id="quantity_${index}"
+                                           value="${item.quantity || 0}" min="0" step="0.01" oninput="CalculatePrice(${index})" />
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control unit-field" id="unit_${index}"
+                                           value="${item.unit || ''}" readonly />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control item-price" id="price_${index}"
+                                           value="${item.pricePerUnit || 0}" readonly step="0.01" />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control item-discount" id="discount_${index}"
+                                           value="${item.discount || 0}" min="0" max="100" step="0.01" oninput="CalculatePrice(${index})" />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control item-total-price" id="totalPrice_${index}"
+                                           value="${item.returnPrice || 0}" readonly step="0.01" />
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger" onclick="RemoveReturnItemRow(this)" title="Remove">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <select class="form-select" id="reuseDestination_${index}" onchange="UpdateReuseDestination(${index})">
+                                        <option value="Discarded" ${item.reuseDestination === "Waste" ? "selected" : ""}>Discarded</option>
+                                        <option value="Recycled" ${item.reuseDestination === "Recycled" ? "selected" : ""}>Recycled</option>
+                                       
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-select" id="reuseDestinationType_${index}" style="display:none;"></select>
+                                </td>
+                            </tr>`;
+
+                            $('#tblReturnItems tbody').append(newRow);
+
+                            // Initialize Select2 for item dropdown
+                            $(`#item_${index}`).select2({
+                                dropdownParent: $('#returnModal')
+                            });
+
+                            // Update reuse destination
+                            UpdateReuseDestination(index);
+
+                            // Set reuse destination item if available
+                            if (item.fkReuseDestianationItemId) {
+                                setTimeout(() => {
+                                    $(`#reuseDestinationType_${index}`).val(item.fkReuseDestianationItemId).trigger('change');
+                                }, 100);
+                            }
+                        });
+                    }
+
+                    $('#returnModal').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Error fetching return items: ' + error);
+                }
+            });
+        }
+
+        // Save Return
+            function SaveReturn() {
+            // Validate form
+            if (!ValidateReturnForm()) {
+                toastr.warning('Please fill in all required fields correctly');
+                return;
+            }
+
+            let returnItems = [];
+            let returnData = {
+                returnId: parseInt($('#txtReturnIdHidden').val()) || 0,
+                fkcotomerID: parseInt($('#ddlCustomer').val()),
+                returnDate: $('#txtReturnDate').val(),
+                returnDescription: $('#txtReasonForReturn').val(),
+                TotalReturnPrice: parseFloat($('#txtFinalPrice').val()) || 0
+            };
+
+            // Collect return items data
+            $('#tblReturnItems tbody tr').each(function (index) {
+                let rowIndex = $(this).data('row-index') || index;
+                let returnItem = {
+                    fkInventoryItemId: parseInt($(this).find(`#item_${rowIndex}`).val()),
+                    returnReason: $(this).find(`#itemReturnReason_${rowIndex}`).val(),
+                    quantity: parseFloat($(this).find(`#quantity_${rowIndex}`).val()) || 0,
+                    unit: $(this).find(`#unit_${rowIndex}`).val(),
+                    price: parseFloat($(this).find(`#price_${rowIndex}`).val()) || 0,
+                    discount: parseFloat($(this).find(`#discount_${rowIndex}`).val()) || 0,
+                    returnPrice: parseFloat($(this).find(`#totalPrice_${rowIndex}`).val()) || 0,
+                    ReuseDestination: $(this).find(`#reuseDestination_${rowIndex}`).val(),
+                    fkReuseDestianationItemId: parseInt($(this).find(`#reuseDestinationType_${rowIndex}`).val()) || null
+                };
+                returnItems.push(returnItem);
+            });
+
+            // Show loading state
+            const saveBtn = $('button[onclick="SaveReturn()"]');
+            saveBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+            $.ajax({
+                url: '/ReturnManagement/AddOrEditReturn',
+                type: 'POST',
+               
+                data: { returnData: returnData, returnItems: returnItems },
+                success: function(response) {
+                    if (response && response.success !== false) {
+                        toastr.success('Return saved successfully!');
+                        $('#returnModal').modal('hide');
+                        GetReturnsData();
+                    } else {
+                        toastr.error(response.message || 'Failed to save return. Please try again.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Error saving return: ' + error);
+                },
+                complete: function() {
+                    // Reset button state
+                    saveBtn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Return');
+                }
+            });
+        }
+
+
+                // Delete Return
+                function DeleteReturn(returnId) {
+                    $.ajax({
+                        url: '/ReturnManagement/DeleteReturn',
+                        type: 'POST',
+                        data: { returnId: returnId },
+                        success: function(response) {
+                            if (response === true) {
+                                toastr.success('Return deleted successfully!');
+                                GetReturnsData();
+                            } else {
+                                toastr.error('Failed to delete return. Please try again.');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            toastr.error('Error deleting return: ' + error);
+                        }
+                    });
+                }
+
+                // Clear Modal Data
+                function ClearReturnModalData() {
+                    $('.ClearReturnModalData').val('');
+                    $('.ClearReturnModalData').removeClass('is-invalid');
+                    $('#tblReturnItems tbody').empty();
+
+                    // Reset Select2 dropdowns
+                    $('#ddlCustomer').val('').trigger('change');
+
+                    // Reset form validation states
+                    $('.form-control, .form-select').removeClass('is-invalid');
+                }
+
+                // Utility function to format currency
+                function formatCurrency(amount) {
+                    return '₹' + parseFloat(amount || 0).toFixed(2);
+                }
+
+                // Utility function to format date
+                function formatDate(dateString) {
+                    if (!dateString) return '';
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en-IN');
+                }
+
+                // Export Returns Data (Optional Feature)
+                function ExportReturnsData() {
+                    $.ajax({
+                        url: '/ReturnManagement/ExportReturns',
+                        type: 'GET',
+                        success: function(response) {
+                            // Handle export response
+                            if (response && response.data) {
+                                // Create and download CSV file
+                                const csvContent = "data:text/csv;charset=utf-8," + response.data;
+                                const encodedUri = encodeURI(csvContent);
+                                const link = document.createElement("a");
+                                link.setAttribute("href", encodedUri);
+                                link.setAttribute("download", "returns_data.csv");
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                toastr.success('Returns data exported successfully!');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            toastr.error('Error exporting data: ' + error);
+                        }
+                    });
+                }
+
+                // Print Return Details (Optional Feature)
+                function PrintReturn(returnId) {
+                    window.open(`/ReturnManagement/PrintReturn?returnId=${returnId}`, '_blank');
+                }
+
+                // Initialize tooltips (Bootstrap 5)
+                function initializeTooltips() {
+                    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl);
+                    });
+                }
+
+                // Handle modal events
+                $('#returnModal').on('shown.bs.modal', function () {
+                    // Initialize Select2 dropdowns when modal is shown
+                    $('#ddlCustomer').select2({
+                        dropdownParent: $('#returnModal'),
+                        placeholder: 'Select Customer',
+                        allowClear: true
+                    });
+
+                    // Focus on first input
+                    $('#ddlCustomer').focus();
+                });
+
+                $('#returnModal').on('hidden.bs.modal', function () {
+                    // Clean up when modal is hidden
+                    ClearReturnModalData();
+                });
+
+                // Handle form submission on Enter key
+                $('#returnModal').on('keypress', function(e) {
+                    if (e.which === 13 && !$(e.target).is('textarea')) {
+                        e.preventDefault();
+                        SaveReturn();
+                    }
+                });
+
+                // Initialize tooltips when document is ready
+                $(document).ready(function() {
+                    initializeTooltips();
+                });
+
+    </script>
+</body>
+</html>

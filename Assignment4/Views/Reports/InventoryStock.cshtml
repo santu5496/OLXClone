@@ -1,0 +1,167 @@
+﻿<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<div class="container-fluid mt-2">
+    <h4>Current Inventory Stock</h4>
+    <table id="tblInventoryStock" class="dataTables_wrapper table-bordered mt-3" style="width:100%">
+        <thead>
+            <tr>
+                <th style="display:none;">ID</th>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th>Last Updated</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<div class="container-fluid">
+    <input type="file" id="importExcel" accept=".xlsx, .xls" style="display: none;" />
+    <button id="importBtn" class="customBtn mt-2"><i class="fas fa-file-excel me-1"></i> Import Excel</button>
+</div>
+<script>
+    $(document).ready(function(){
+        GetInventoryData();
+    });
+    function GetInventoryData(){
+        const today = (() => {
+            const date = new Date();
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mmNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                             'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const mmm = mmNames[date.getMonth()];
+            const yyyy = date.getFullYear();
+            return `${dd}-${mmm}-${yyyy}`;
+        })();
+        $.ajax({
+            url: '/Reports/GetInventoryStock',
+            type: 'GET',
+            success: function (response) {
+                 if ($.fn.DataTable.isDataTable('#tblInventoryStock')) {
+                    $('#tblInventoryStock').DataTable().clear().destroy();
+                }
+                let table = $('#tblInventoryStock').DataTable({
+                    columnDefs: [
+                        { targets: 0, visible: false }
+                    ],
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy',
+                        {
+                            extend: 'excel',
+                            title: "InventoryStock" + '_Data',
+                            filename: "InventoryStock" + '_' + today
+                        },
+                        {
+                            extend: 'pdf',
+                            title: "InventoryStock" + '_Data',
+                            filename: "InventoryStock" + '_' + today
+                        },
+                        'print'
+                    ],
+                    pageLength: 10
+                });
+                table.clear();
+
+                //     const columnsConfig = [
+                //       { title: "Item Name" },
+                //       { title: "Quantity" },
+                //       { title: "Unit" },
+                //       { title: "Last Updated" }
+                //     ];
+
+                // if ($.fn.DataTable.isDataTable('#tblInventoryStock')) {
+                //     $('#tblInventoryStock').DataTable().clear().destroy();
+                // }
+
+                // var table = $('#tblInventoryStock').DataTable({
+                //     destroy: true,
+                //     processing: true,
+                //     serverSide: false,
+                //     data: [], // Will add data later
+                //     columns: columnsConfig,
+                //     dom: 'Bfrtip',
+                //     buttons: ['copy', 'excel', 'pdf', 'print']
+                // });
+                response.data.forEach(item => {
+                    table.row.add([
+                        item.id,
+                        item.itemName,
+                        item.quantity,
+                        item.unit,
+                        item.lastUpdated
+                    ]);
+                });
+
+                table.draw();
+            }
+        });
+        }
+     let importedList = []; // This will store the final list of { id, quantity }
+
+       // Delegated click event for #importBtn
+       // Delegated click event for #importBtn
+    document.addEventListener('click', function (e) {
+        if (e.target && e.target.id === 'importBtn') {
+            const input = document.getElementById('importExcel');
+            if (input) input.click();
+        }
+    });
+
+    // Delegated change event for #importExcel
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.id === 'importExcel') {
+            const fileInput = e.target;
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                const importedList = jsonData
+                    .filter(row => row["InventoryStock_Data"] !== "ID")
+                    .map(row => ({
+                        id: row["InventoryStock_Data"],
+                        quantity: row["__EMPTY_1"]
+                    }));
+
+                // Send data via AJAX
+                    $.ajax({
+                        url: '/Reports/UpdateInventoryQuantities',
+                        type: 'POST', // Tells server you're sending JSON
+                        data: {data:JSON.stringify(importedList)},   // Convert JS array to JSON string
+                        success: function (response) {
+                            if (response) {
+                                 GetInventoryData();
+                                msgPopup('success', 'Inventory Data Updated successfully');
+
+                            } else {
+                                msgPopup('error', 'Error updating Data');
+                            }
+                        },
+                        error: function () {
+                            msgPopup('error', 'Error sending request');
+                        }
+                    });
+
+
+                // Reset input so same file can be selected again
+                fileInput.value = '';
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+    });
+
+
+
+</script>

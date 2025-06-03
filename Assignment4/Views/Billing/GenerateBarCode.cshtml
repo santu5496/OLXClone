@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<style>
+    .loader {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 20px;
+        font-weight: bold;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+    }
+</style>
+<body>
+
+    <div class="mt-1" style="display:flex;justify-content:space-evenly">
+
+        <div class="container mt-3">
+            <div class="row align-items-center g-3">
+                <!-- Select Items -->
+                <div class="col-lg-4 col-md-6">
+                    <label>Select Items:</label>
+                    <select id="itemSelect" class="selectpicker w-100" multiple data-actions-box="true" data-live-search="true"></select>
+                </div>
+
+                <!-- Enter Number of Barcodes -->
+                <div class="col-lg-4 col-md-6">
+                    <label>Enter Number of Barcodes:</label>
+                    <input type="number" id="barcodeCount" class="form-control" placeholder="Enter Number">
+                </div>
+
+                <!-- Buttons -->
+                <div class="col-lg-4 col-md-12 d-flex gap-2">
+                    <button id="generateBarcode" class="btn btn-primary w-100 mt-4">Generate Barcode</button>
+                    <button id="downloadPDF" class="btn btn-success w-100 mt-4">Download Barcode PDF</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="loader" id="loadingIndicator">Generating PDF, please wait...</div>
+    </div>
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="d-flex flex-wrap justify-content-center" id="barcodeContainer"></div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            // ✅ Load items into multi-select dropdown
+            $.get("/Billing/GetFinishedGoodsItems", function (data) {
+                // data.forEach(item => {
+                //     $("#itemSelect").append(`<option value="${item.itemId}">${item.itemName}</option>`);
+                // });
+
+                const policyOptions = data.map(item => {
+                        return `<option value="${item.itemId}">${item.itemName}</option>`;
+                    }).join("");
+
+                    // Append options to the selectpicker
+                    $('#itemSelect').html(policyOptions);
+
+                    // Reinitialize selectpicker after adding options
+                    $('#itemSelect').selectpicker('refresh');
+            });
+
+            // ✅ Generate barcodes when button is clicked
+            $("#generateBarcode").click(function () {
+                $("#barcodeContainer").empty(); // Clear previous barcodes
+                let selectedItems = $("#itemSelect").val();
+                let count = $("#barcodeCount").val();
+
+                if (!selectedItems || count < 1) {
+                    alert("Select items and enter a valid number.");
+                    return;
+                }
+
+                $.ajax({
+                    url: "/Billing/GenerateBarcodes",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(selectedItems),
+                    success: function (response) {
+                        response.forEach(item => {
+                            for (let i = 0; i < count; i++) {
+                                $("#barcodeContainer").append(`
+                                    <div class="barcode-item text-center m-2">
+                                        <img src="${item.barcode}" class="barcode-img" />
+                                        <p>${item.itemName} (${item.itemQuatity} ${item.itemUnit})</p>
+                                    </div>
+                                `);
+                            }
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error generating barcodes:", xhr.status, error);
+                        alert("Failed to generate barcodes. Please check API response.");
+                    }
+                });
+            });
+
+        //           $("#downloadPDF").click(async function () {
+        //     let container = document.getElementById("barcodeContainer");
+        //     let { jsPDF } = window.jspdf;
+        //     let pdf = new jsPDF("p", "mm", "a4");
+        //     let pageHeight = pdf.internal.pageSize.height;
+
+        //     $("#loadingIndicator").show(); // Show Loader
+
+        //     let canvas = await html2canvas(container, { scale: 2 });
+        //     let imgData = canvas.toDataURL("image/png");
+
+        //     let imgWidth = 210; // A4 width in mm
+        //     let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        //     let yPosition = 0;
+        //     let pageBreakHeight = pageHeight - 110; // Leave some margin
+
+        //     while (yPosition < imgHeight) {
+        //         pdf.addImage(imgData, "PNG", 0, -yPosition, imgWidth, imgHeight);
+        //         yPosition += pageBreakHeight;
+        //         if (yPosition < imgHeight) pdf.addPage(); // Add new page if content overflows
+        //     }
+
+        //     pdf.save("Barcodes.pdf");
+        //     $("#loadingIndicator").hide(); // Hide Loader
+        // });
+
+
+        $("#downloadPDF").click(async function () {
+            let container = document.getElementById("barcodeContainer");
+            let { jsPDF } = window.jspdf;
+            let pdf = new jsPDF("p", "mm", "a4");
+            let pageHeight = pdf.internal.pageSize.height;
+
+            $("#loadingIndicator").show(); // Show Loader
+
+            let canvas = await html2canvas(container, { scale: 2 });
+            let imgData = canvas.toDataURL("image/png");
+
+            let imgWidth = 210; // A4 width in mm
+            let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            let bottomMargin = 20; // Bottom margin in mm
+            let fixedPageHeight = pageHeight - bottomMargin; // Fixed height for each page
+            let yPosition = 0;
+
+            while (yPosition < imgHeight) {
+                // Add the image for the current page
+                pdf.addImage(imgData, "PNG", 0, -yPosition, imgWidth, imgHeight);
+
+                // Move the yPosition by the fixed page height
+                yPosition += fixedPageHeight;
+
+                // Add a new page if there's more content
+                if (yPosition < imgHeight) {
+                    pdf.addPage();
+                }
+            }
+
+            pdf.save("Barcodes.pdf");
+            $("#loadingIndicator").hide(); // Hide Loader
+        });    });
+    </script>
+
+    <style>
+        .barcode-item {
+            text-align: center;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 160px;
+        }
+
+        .barcode-img {
+            width: 150px;
+            height: auto;
+        }
+    </style>
+
+</body>
+</html>

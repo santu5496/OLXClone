@@ -1,0 +1,151 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@{
+    var userName = User.Identity.Name;
+}
+<style>
+    .input-card {
+        background-color: #ffffff;
+        padding: 0;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+    }
+
+    .input-card-header {
+        background-color: #f0f0f0;
+        padding: 5px 10px;
+        font-weight: bold;
+        font-size: 18px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .input-card-body {
+        padding: 10px;
+        text-align: center;
+    }
+</style>
+<div class="row container-fluid mt-2">
+    <div class="col-md-6">
+        <div class="input-card">
+            <div class="input-card-header">
+                Last 7 Days Finished Goods
+            </div>
+            <div class="input-card-body">
+                <canvas id="cookedChart" height="150"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="detailsSection" class="container-fluid" style="display:none;margin-top:20px;">
+    <div class="input-card">
+        <div class="input-card-header">
+            Cooked Log Details
+        </div>
+        <div class="input-card-body">
+            <table border="1" cellpadding="5" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Target Quantity</th>
+                        <th>Actual Quantity</th>
+                        <th>Reason For Difference</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="detailsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+      $(document).ready(function () {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(endDate.getDate() - 300);
+
+        const formattedStartDate = startDate.toISOString().split('T')[0];
+        const formattedEndDate = endDate.toISOString().split('T')[0];
+
+        $.ajax({
+            url: '/Reports/GetFinishedGoodsDashboardData',
+            method: 'GET',
+            data: {
+                startDate: formattedStartDate,
+                endDate: formattedEndDate
+            },
+            success: function (data) {
+                const labels = data.map(x => new Date(x.Date).toLocaleDateString());
+                const targetData = data.map(x => x.TotalTarget);
+                const actualData = data.map(x => x.TotalActual);
+
+                const ctx = document.getElementById('cookedChart').getContext('2d');
+                const cookedChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Target Quantity',
+                                data: targetData,
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                            },
+                            {
+                                label: 'Actual Quantity',
+                                data: actualData,
+                                backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        onClick: (event, elements) => {
+                            if (elements.length > 0) {
+                                const index = elements[0].index;
+                                const selectedDate = data[index].Date;
+                                loadGridDataByDate(selectedDate);
+                            }
+                        }
+                    }
+                });
+            },
+            error: function (err) {
+                console.error("Error fetching chart data:", err);
+            }
+        });
+    });
+    function loadGridDataByDate(date) {
+        $.ajax({
+            url: '/Reports/GetCookedLogsDetials',
+            method: 'GET',
+            data: { date: date },
+            success: function (data) {
+                const tableBody = $('#detailsTableBody');
+                tableBody.empty();
+
+                data.forEach(item => {
+                    let reason = item.ReasonForDiff?item.ReasonForDiff:"NA";
+                    tableBody.append(`
+                        <tr>
+                            <td>${item.ItemName}</td>
+                            <td>${item.TargetQuantity}</td>
+                            <td>${item.ActualQuantity}</td>
+                            <td>${reason}</td>
+                            <td>${new Date(item.Date).toLocaleString()}</td>
+                        </tr>
+                    `);
+                });
+
+                $('#detailsSection').show();
+            },
+            error: function (err) {
+                console.error("Error fetching cooked log details:", err);
+            }
+        });
+    }
+
+
+
+</script>

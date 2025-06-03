@@ -1,0 +1,176 @@
+﻿.table > :not(caption) > * > * {
+    padding: .1rem .3rem !important;
+}
+ol, ul {
+    padding-left: 0.3rem !important;
+}
+.table{
+    border:1px solid black !important;
+}
+    .table th, .table td {
+        border: 1px solid black !important;
+    }
+
+    .contentEnd{
+        display:flex;
+        justify-content:end;
+    }
+    .contentCenter{
+        display:flex;
+        justify-content:center;
+    }
+
+.dataTables_wrapper {
+    border: 1px solid;
+    border-color: #a89cc9 !important;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #f7f6fa
+}
+
+.customBtn {
+    background-color: #6750a4;
+    color: white;
+    font-weight: 600;
+    border-radius: 5px;
+    border-color: #6750a4;
+    box-shadow:none !important;
+    padding:3px 10px 3px 10px; 
+}
+.select2-dropdown {
+    z-index: 999999 !important;
+}
+.select2-container {
+    z-index: 999999 !important;
+}
+
+.select2-container--open {
+    z-index: 999999 !important;
+}
+.dataTable {
+    margin-top: 10px !important;
+}
+table.dataTable thead th, table.dataTable thead td {
+    border: 1px solid rgba(0, 0, 0, 0.3) !important;
+}
+
+table.dataTable{
+    border-collapse:collapse !important;
+}
+.multiselect-container {
+    width: 100% !important; 
+    box-sizing: border-box; 
+    max-height:200px;
+    overflow-y:scroll;
+}
+.error-message-field {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+.nav-tabs {
+    --bs-nav-tabs-border-width: none !important;
+    --bs-nav-tabs-border-color: none !important;
+    --bs-nav-tabs-border-radius: none !important;
+    --bs-nav-tabs-link-hover-border-color: none !important;
+    --bs-nav-tabs-link-active-color: #6750a4 !important;
+    --bs-nav-tabs-link-active-bg: none !important;
+    --bs-nav-tabs-link-active-border-color: var(--bs-border-color) var(--bs-border-color) var(--bs-body-bg);
+    border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
+}
+
+.nav {
+    --bs-nav-link-font-weight: 600 !important;
+     --bs-nav-link-color: none !important; 
+    
+}
+.nav-tabs .nav-link.active { 
+    border-bottom: 3px solid #6750a4 !important; 
+}
+
+.signatureContainer, .signatureContainerImage {
+    background-color: #f2f2f2;
+    width: 80%;
+    height: 60%
+}
+
+.signature-box canvas {
+    border-bottom: 1px solid #000;
+    cursor: crosshair;
+}
+
+@media (min-width: 350px) and (max-width: 660px) {
+    .custom-modal-dialog {
+        width: 95%;
+        margin: 2rem auto;
+    }
+}
+
+@media (min-width: 660px) and (max-width: 768px) {
+    .custom-modal-dialog {
+        width: 80%;
+        margin: 2rem auto;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 900px) {
+    .custom-modal-dialog {
+        width: 75%;
+        margin: 2rem auto;
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1100px) {
+    .custom-modal-dialog {
+        width: 65%;
+        margin: 2rem auto;
+    }
+}
+
+@media (min-width: 1101px)and (max-width: 1300px) {
+    .custom-modal-dialog {
+        width: 55%;
+        margin: 2rem auto;
+    }
+}
+
+@media (min-width: 1301px) {
+    .custom-modal-dialog {
+        width: 40%;
+        margin: 2rem auto;
+    }
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+    table thead {
+        background-color: #f3eae5;
+        color: black;
+        text-align: left;
+    }
+
+    table th, table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    table tbody tr:hover {
+        background-color: #ece5e3; /* Light hover effect */
+    }
+
+    table th {
+        position: relative;
+    }
+
+        table th::after {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            margin-left: 5px;
+            font-size: 12px;
+            color: black;
+            cursor: pointer;
+        }

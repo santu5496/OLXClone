@@ -1,0 +1,414 @@
+﻿
+
+<ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
+
+    <li class="nav-item">
+        <a class="nav-link active" id="dailyExpenseRecords" data-bs-toggle="tab" href="#expenseRecordsTab" role="tab" aria-selected="true">Daily Expense Records</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link " id="dailyExpenseMaster" data-bs-toggle="tab" href="#dailyExpenseMasterTab" role="tab" aria-controls="profile" aria-selected="true">Expense Items</a>
+    </li>
+
+</ul>
+<div class="tab-content mt-2" id="myTabContent">
+    <div class="tab-pane fade active show" id="expenseRecordsTab" role="tabpanel">
+        <!-- Button to Open Modal -->
+        <button type="button" class="customBtn mb-2 mt-2" onclick="OpenDailyExpensePopup()">
+            Add Daily Expense
+        </button>
+        <table id="tblDailyExpenseDetails" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount Given</th>
+                    <th>Amount Spent</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="dailyExpenseMasterTab" role="tabpanel">
+        <div class="container-fluid mt-3">
+            <button class="customBtn mb-2 mt-2" onclick="ClearExpenseItemForm()">Add Daily Expense Item</button>
+
+            <table id="tblDailyExpense" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item Name</th>
+                        <th>Item Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal for Adding/Edit Daily Expense Item -->
+<div class="modal fade" id="dailyExpenseItemModal" tabindex="-1" aria-labelledby="dailyExpenseItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dailyExpenseItemModalLabel">Add Daily Expense Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Item Name</label>
+                    <input type="text" class="form-control ClearExpenseItemModalData requiredfield" id="txtItemName" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Item Description</label>
+                    <textarea class="form-control ClearExpenseItemModalData requiredfield" id="txtItemDescription"></textarea>
+                </div>
+                <input type="hidden" class="ClearExpenseItemModalData" id="txtItemId" />
+            </div>
+            <div class="modal-footer">
+                <button type="submit" onclick="SaveDailyExpenseItem()" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="expenseModalLabel">Daily Expense Entry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <input type="hidden" id="txtExpenseItemId">
+            <div class="modal-body">
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label for="expenseDate" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="expenseDate">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="amountGiven" class="form-label">Amount Given</label>
+                        <input type="number" class="form-control" id="amountGiven" placeholder="Enter amount given">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <button class="btn btn-secondary" id="addRow">+ Add Expense Row</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="expenseGrid">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width:20%">Item</th>
+                                <th style="width:15%">Amount</th>
+                                <th style="width:60%">Reason</th>
+                                <th style="width:5%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic rows will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-3 text-end">
+                    <strong>Total Expenses: ₹<span id="totalAmountSpent">0.00</span></strong>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success" id="submitExpense" onclick="SaveDailyExpenseDetails()">Save Expense</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    let items = [];
+    $(document).ready(function () {
+        LoadItemsFromJson();
+        $('#tblDailyExpense').on('click', '.btn-edit', function () {
+            var fullData = JSON.parse($(this).attr('data-full-data'));
+            EditDailyExpenseItem(fullData);
+        });
+        $('#tblDailyExpenseDetails').on('click', '.btn-edit', function () {
+            var fullData = JSON.parse($(this).attr('data-full-data'));
+            BindExpenseDetails(fullData);
+        });
+
+        $('#tblDailyExpense').on('click', '.btn-delete', function () {
+            var ID = $(this).attr('data-id');
+            DeleteWarning(DeleteDailyExpenseItem, ID);
+        });
+        $('#tblDailyExpenseDetails').on('click', '.btn-delete', function () {
+            var ID = $(this).attr('data-id');
+            DeleteWarning(DeleteDailyExpenses, ID);
+        });
+
+        $("#addRow").on("click", function () {
+            addRow(0);
+        });
+
+        $(document).on("input", ".amount", recalculateTotal);
+        $(document).on("click", ".removeRow", function () {
+            $(this).closest("tr").remove();
+            recalculateTotal();
+        });
+        GetDailyExpenses();
+        GetDailyExpenseItems(); // Fetch data when the page loads
+    });
+    function LoadItemsFromJson(){
+        $.getJSON("/jsonFiles/expenseMasterItem.json", function (data) {
+            items = data;
+        });
+    }
+    function addRow(rowIndex, callback) {
+        const tableBody = document.querySelector('#expenseGrid tbody');
+            const rows = tableBody.querySelectorAll('tr');
+
+            if (rows.length > 0) {
+                const lastRow = rows[rows.length - 1];
+                rowIndex = rows.length;
+            }
+        const row = `
+            <tr>
+                <td>${getItemDropdownHtml(rowIndex)}</td>
+                <td><input type="number" class="form-control amount" id="itemAmount_${rowIndex}" /></td>
+                <td><input type="text" class="form-control reason" id="itemDesc_${rowIndex}" /></td>
+                <td><button class="btn btn-danger removeRow">Remove</button></td>
+            </tr>`;
+
+        $("#expenseGrid tbody").append(row);
+
+        if (typeof callback === 'function') {
+            callback(rowIndex);
+        }
+    }
+
+    function recalculateTotal() {
+        let total = 0;
+        $("#expenseGrid tbody tr").each(function () {
+            const amount = parseFloat($(this).find(".amount").val()) || 0;
+            total += amount;
+        });
+        $("#totalAmountSpent").text(total.toFixed(2));
+    }
+    function GetDailyExpenseItems() {
+        var table = $('#tblDailyExpense').DataTable();
+        table.clear();
+        table.draw();
+
+        $.ajax({
+            url: '/DailyExpense/GetItems',
+            type: 'POST',
+            success: function (response) {
+                response.forEach(function (item) {
+                    table.row.add([
+                        item.itemID,
+                        item.itemName,
+                        item.itemDescription,
+                        '<div class="contentCenter">' +
+                        '<i class="fa fa-edit me-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item) + '\'></i>' +
+                        '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + item.itemID + '\'></i>' +
+                        '</div>'
+                    ]).draw();
+                });
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+    }
+
+    function ClearExpenseItemForm() {
+        $('.ClearExpenseItemModalData').val('');
+        $('#dailyExpenseItemModal').modal('toggle');
+    }
+
+    function SaveDailyExpenseItem() {
+        if (CheckEmptyFields()) {
+            var expenseItemData = {
+                itemID: $('#txtItemId').val(),
+                itemName: $('#txtItemName').val(),
+                itemDescription: $('#txtItemDescription').val()
+            };
+
+            $.ajax({
+                url: "/DailyExpense/CreateItem",
+                type: 'POST',
+                data: {newItem : expenseItemData},
+                success: function (response) {
+                    msgPopup('success', 'Expense Item saved successfully');
+                    $('#dailyExpenseItemModal').modal('toggle');
+                    GetDailyExpenseItems();
+                    LoadItemsFromJson();
+                },
+                error: function (xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+        }
+    }
+
+    function EditDailyExpenseItem(item) {
+        $('#txtItemId').val(item.itemID);
+        $('#txtItemName').val(item.itemName);
+        $('#txtItemDescription').val(item.itemDescription);
+        $('#dailyExpenseItemModal').modal('show');
+    }
+
+    function DeleteDailyExpenseItem(itemId) {
+        $.ajax({
+            url: '/DailyExpense/DeleteItem',
+            type: 'POST',
+            data: { id: itemId },
+            success: function () {
+                msgPopup('success', 'Expense Item deleted successfully');
+                GetDailyExpenseItems();
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+
+    function getItemDropdownHtml(index) {
+        return `<select class="form-control form-select item-name" id="itemsDdl_${index}">
+                    ${items.map(item => `<option value="${item.ItemID}">${item.ItemName}</option>`).join('')}
+                </select>`;
+    }
+
+    function OpenDailyExpensePopup(){
+        $('#txtExpenseItemId').val('');
+        $('#expenseDate').val(getCurrentDate());
+        $('#amountGiven').val('');
+        $('#expenseGrid tbody').empty();
+       $('#expenseModal').modal('toggle');
+    }
+
+    function GetDailyExpenses() {
+        var table = $('#tblDailyExpenseDetails').DataTable();
+        table.clear();
+        table.draw();
+
+        $.ajax({
+            url: '/DailyExpense/GetAllExpenses',
+            type: 'POST',
+            success: function (response) {
+                response.forEach(function (item) {
+                    table.row.add([
+                        item.expenseDate,
+                        item.amountGiven,
+                        item.amountSpent,
+                        '<div class="contentCenter">' +
+                        '<i class="fa fa-edit me-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item) + '\'></i>' +
+                        '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + item.id + '\'></i>' +
+                        '</div>'
+                    ]).draw();
+                });
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+    }
+
+
+    function SaveDailyExpenseDetails() {
+       // if (CheckEmptyFields()) {
+            var expenseItemData = {
+                id: $('#txtExpenseItemId').val(),
+                expenseDate: $('#expenseDate').val(),
+                amountSpent: $('#totalAmountSpent').text(),
+                amountGiven: $('#amountGiven').val(),
+                expenseDetails:getTableDataString()
+            };
+
+            $.ajax({
+                url: "/DailyExpense/AddOrEditDailyExpense",
+                type: 'POST',
+                data: {expense : expenseItemData},
+                success: function (response) {
+                    if(response.success){
+                        msgPopup('success', response.message);
+                        $('#expenseModal').modal('toggle');
+                        GetDailyExpenses();
+                    }else{
+                        msgPopup('error', response.message);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+       // }
+    }
+
+     function DeleteDailyExpenses(itemId) {
+        $.ajax({
+            url: '/DailyExpense/DeleteExpense',
+            type: 'POST',
+            data: { id: itemId },
+            success: function (response) {
+                if(response.success){
+                    msgPopup('success', response.message);
+                }else{
+                    msgPopup('error', response.message);
+                }
+                GetDailyExpenseItems();
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+
+    function BindExpenseDetails(data){
+        $('#expenseGrid tbody').empty();
+        $('#txtExpenseItemId').val(data.id);
+        $('#expenseDate').val(formatDate(new Date(data.expenseDate)));
+        $('#amountGiven').val(data.amountGiven);
+        $('#totalAmountSpent').text(data.amountSpent);
+        let itemData = data.expenseDetails != null ? data.expenseDetails.split("~") : null;
+
+        if (itemData != null) {
+            itemData.forEach(function (item, index) {
+                addRow(index, function (rowIndex) {
+                    let values = item.split("|");
+                    $('#itemsDdl_' + rowIndex).val(values[0]);
+                    $('#itemAmount_' + rowIndex).val(values[1]);
+                    $('#itemDesc_' + rowIndex).val(values[2]);
+                });
+            });
+        }
+        $('#expenseModal').modal('toggle');
+
+    }
+    function getTableDataString() {
+        const table = document.getElementById('expenseGrid');
+        const rows = table.querySelectorAll('tbody tr');
+        const rowData = [];
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const cellData = [];
+
+            cells.forEach((cell, index) => {
+                let value = "";
+                value = cell.children[0].value;
+                cellData.push(value);
+            });
+
+            rowData.push(cellData.join('|'));
+        });
+
+
+
+        return rowData.join('~');
+    }
+</script>

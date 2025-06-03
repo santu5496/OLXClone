@@ -1,0 +1,49 @@
+﻿
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card" style="background-color:#f7f6fa">
+                <div class="card-body">
+                    <div class="row p-2" style="display:flex;justify-content:space-evenly">
+                        <!-- Date Range Picker Columns -->
+                        <div class="col-4 row">
+                            <div class="col-3">
+                                <label class="mt-1">Start Date:</label>
+                            </div>
+                            <div class="col-9">
+                                <input type="datetime-local" id="startDate" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-4    row">
+                            <div class="col-3">
+                                <label class="mt-1">End Date:</label>
+                            </div>
+                            <div class="col-9   ">
+                                <input type="datetime-local" id="endDate" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <button id="btnSearch" class="customBtn">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('startDate').value = GetFormattedStartDate(new Date());
+        document.getElementById('endDate').value = GetFormatedDateValue(new Date());
+
+        $('#startDate').on('change',function(){
+            checkrange('startDate', 'endDate');
+        });
+        $('#endDate').on('change', function () {
+            checkrange('startDate', 'endDate');
+        });
+
+    });
+  
+</script>

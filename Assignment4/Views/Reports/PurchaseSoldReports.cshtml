@@ -1,0 +1,295 @@
+﻿<div>
+    @Html.Partial("~/Partialviews/_SearchBar.cshtml")
+</div>
+
+
+
+
+<div class="container-fluid mt-3">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="bill-tab" data-bs-toggle="tab" href="#billReportTab" role="tab" aria-selected="true">Bill Report</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="purchase-tab" data-bs-toggle="tab" href="#purchaseTab" role="tab" aria-selected="false">Purchase Report</a>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-2" id="myTabContent">
+        <!-- Bill Report Tab -->
+        <div class="tab-pane fade show active" id="billReportTab" role="tabpanel">
+          
+            <table id="billReportTable" class="dataTables_wrapper table-bordered mt-3" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Bill Date</th>
+                        <th>Payment Mode</th>
+                        <th>Payment Status</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <canvas id="billReportChart" height="100"></canvas>
+        </div>
+
+        <!-- Purchase Report Tab -->
+        <div class="tab-pane fade" id="purchaseTab" role="tabpanel">
+         
+            <table id="purchaseTable" class="dataTables_wrapper table-bordered mt-3" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Supplier Name</th>
+                        <th>Purchase Date</th>
+                        <th>Payment Mode</th>
+                        <th>Payment Status</th>
+                        <th>Item Name</th>
+                        <th>Quantity & Unit</th>
+                        <th>Price Per Unit</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <canvas id="purchaseReportChart" height="100"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Chart -->
+<canvas id="purchaseChart" class="mt-4"></canvas>
+
+<script>
+    $(document).ready(function () {
+        loadPurchaseReports();
+
+        $('#btnSearch').on('click', function () {
+            loadPurchaseReports();
+            loadBillReports();
+        });
+
+        //initializeDataTable();
+         const table = $('#billReportTable').DataTable({
+        columns: [
+            { data: 'customerName' },
+            { data: 'billDate' },
+            { data: 'paymentMode' },
+            { data: 'paymentStatus' },
+            { data: 'itemName' },
+            { data: 'quantity' },
+            { data: 'totalAmount' }
+        ]
+        });
+
+        initializeDataTable('#purchaseTable',  [
+            { data: 'supplierName', title: 'Supplier Name' },
+            { data: 'purchaseDate', title: 'Purchase Date' },
+            { data: 'paymentMode', title: 'Payment Mode' },
+            { data: 'paymentStatus', title: 'Payment Status' },
+            { data: 'itemName', title: 'Item Name' },
+            { data: 'quantityUnit', title: 'Quantity & Unit' },
+            { data: 'pricePerUnit', title: 'Price Per Unit' },
+            { data: 'detailTotalAmount', title: 'Total Amount' }
+        ]);
+        initializeDataTable('#billReportTable',  [
+            { data: 'customerName', title: 'Customer Name' },
+            { data: 'billDate', title: 'Bill Date' },
+            { data: 'paymentMode', title: 'Payment Mode' },
+            { data: 'paymentStatus', title: 'Payment Status' },
+            { data: 'itemName', title: 'Item Name' },
+            { data: 'quantity', title: 'Quantity' },
+            { data: 'totalAmount', title: 'Total Amount' }
+        ]);
+    });
+
+    //    function initializeDataTable() {
+    //     $('#purchaseTable').DataTable({
+    //         "destroy": true,
+    //         "processing": true,
+    //         "serverSide": false,
+    //         "data": [],
+    //         "columns": [
+    //             { "data": "supplierName", "title": "Supplier Name" },
+    //             { "data": "purchaseDate", "title": "Purchase Date" },
+    //             { "data": "paymentMode", "title": "Payment Mode" },
+    //             { "data": "paymentStatus", "title": "Payment Status" },
+    //             { "data": "itemName", "title": "Item Name" },
+    //             { "data": "quantityUnit", "title": "Quantity & Unit" },
+    //             { "data": "pricePerUnit", "title": "Price Per Unit" },
+    //             { "data": "detailTotalAmount", "title": "Total Amount" }
+    //         ],
+    //         "dom": 'Bfrtip', // Enables the built-in DataTables buttons
+    //         "buttons": ['copy', 'excel', 'pdf', 'print'] // Default export buttons
+    //     });
+    // }
+
+    function initializeDataTable(tableId, columnsConfig) {
+        $(tableId).DataTable({
+            "destroy": true,
+            "processing": true,
+            "serverSide": false,
+            "data": [],
+            "columns": columnsConfig,
+            "dom": 'Bfrtip',
+            "buttons": ['copy', 'excel', 'pdf', 'print']
+        });
+    }
+
+    function loadPurchaseReports() {
+        let startDate = $("#startDate").val();
+        let endDate = $("#endDate").val();
+
+        $.ajax({
+            url: '/Reports/GetPurchaseReports',
+            type: 'GET',
+            data: { startDate: startDate, endDate: endDate },
+            success: function (response) {
+                let table = $('#purchaseTable').DataTable();
+                table.clear();
+
+                response.data.forEach(item => {
+                    item.purchaseDate = FormatDateInReadableFormat(item.purchaseDate); // Format date
+                    item.quantityUnit = `${item.quantity} ${item.unit}`; // Combine Quantity & Unit
+                    table.row.add(item);
+                });
+
+                table.draw();
+                 renderPurchaseReportChart(document.getElementById('purchaseReportChart'), response.data);
+              //  updateChart(response.data);
+            }
+        });
+    }
+    function loadBillReports() {
+        let startDate = $("#startDate").val();
+        let endDate = $("#endDate").val();
+
+        $.ajax({
+            url: '/Reports/GetBillReport',
+            type: 'GET',
+            data: { startDate: startDate, endDate: endDate },
+            success: function (response) {
+                let table = $('#billReportTable').DataTable();
+                table.clear();
+
+                response.forEach(item => {
+                    item.billDate = FormatDateInReadableFormat(item.billDate); // Format date
+                   // item.quantityUnit = `${item.quantity} ${item.unit}`; // Combine Quantity & Unit
+                    table.row.add(item);
+                });
+
+                table.draw();
+             
+               renderBillReportChart(document.getElementById('billReportChart'), response);
+               // updateChart(response.data);
+            }
+        });
+    }
+
+    // Chart.js for Visualization
+  
+    // Function to format date in readable format (DD-MM-YYYY)
+    function FormatDateInReadableFormat(dateString) {
+        let date = new Date(dateString);
+        let day = ("0" + date.getDate()).slice(-2);
+        let month = ("0" + (date.getMonth() + 1)).slice(-2);
+        let year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    }
+    function renderChart(chartId, labels, dataValues, labelName, bgColor) {
+        new Chart(chartId, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: labelName,
+                    data: dataValues,
+                    backgroundColor: bgColor,
+                    borderColor: bgColor.map(color => color.replace('0.5', '1')), // Darker borders
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+        function getRandomColor() {
+        const colors = [
+            'rgba(75, 192, 192, 0.7)',
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(153, 102, 255, 0.7)'
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+        // Render Bill Report Chart
+    function renderBillReportChart(chartId, data) {
+        const groupedData = {};
+
+        data.forEach(item => {
+            const date = item.billDate;
+            if (!groupedData[date]) groupedData[date] = {};
+            groupedData[date][item.customerName] =
+                (groupedData[date][item.customerName] || 0) + item.totalAmount;
+        });
+
+        const labels = Object.keys(groupedData);
+        const customerNames = [...new Set(data.map(item => item.customerName))];
+
+        const datasets = customerNames.map(customer => ({
+            label: customer,
+            data: labels.map(date => groupedData[date][customer] || 0),
+            backgroundColor: getRandomColor()
+        }));
+
+        renderChart(chartId, labels, datasets);
+    }
+
+    // Render Purchase Report Chart
+    function renderPurchaseReportChart(chartId, data) {
+        const groupedData = {};
+
+        data.forEach(item => {
+            const date = item.purchaseDate;
+            if (!groupedData[date]) groupedData[date] = {};
+            groupedData[date][item.supplierName] =
+                (groupedData[date][item.supplierName] || 0) + item.detailTotalAmount;
+        });
+
+        const labels = Object.keys(groupedData);
+        const supplierNames = [...new Set(data.map(item => item.supplierName))];
+
+        const datasets = supplierNames.map(supplier => ({
+            label: supplier,
+            data: labels.map(date => groupedData[date][supplier] || 0),
+            backgroundColor: getRandomColor()
+        }));
+
+        renderChart(chartId, labels, datasets);
+    }
+
+    // Common Chart Rendering Function
+    function renderChart(chartId, labels, datasets) {
+        new Chart(chartId, {
+            type: 'bar',
+            data: { labels, datasets },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true, beginAtZero: true }
+                },
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+    }
+</script>

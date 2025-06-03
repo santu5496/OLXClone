@@ -1,0 +1,13 @@
+{
+    "units": {
+        "kg": [ "g", "mg" ],
+        "g": [ "mg" ],
+        "ltr": [ "ml" ],
+        "ml": [],
+        "pcs": [],
+        "dz": [ "pcs" ],
+        "cup": [ "ml" ],
+        "tbsp": [ "tsp", "ml" ],
+        "tsp": [ "ml" ]
+    }
+}

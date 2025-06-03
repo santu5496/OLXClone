@@ -1,0 +1,172 @@
+﻿@using Newtonsoft.Json
+@{
+    ViewData["Title"] = "Daily Report";
+}
+@{
+    var totalSales = JsonConvert.DeserializeObject<List<dynamic>>(ViewBag.TotalSales.ToString());
+    var TotalPurchased = JsonConvert.DeserializeObject<List<dynamic>>(ViewBag.TotalPurchased.ToString());
+    var TotalProduced = JsonConvert.DeserializeObject<List<dynamic>>(ViewBag.TotalProduced.ToString());
+}
+<style>
+    .bgTheme {
+        background-color: #f3eae5;
+    }
+
+    .card-header {
+        border-radius: 10px 10px 0px 0px !important;
+    }
+
+    .card {
+        border-radius: 10px;
+    }
+</style>
+<div class="container-fluid mt-4">
+    <h2 class="text-center">📋 Daily Report for @DateTime.Now.ToString("dd-MMMM-yyyy")</h2>
+    <hr />
+
+    <div class="row mt-4">
+        <!-- Total Sales Report -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bgTheme">
+                    <h4><i class="fas fa-shopping-cart"></i> Total Sales Report</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="height: 400px; overflow-y: auto;">
+                        <table id="salesTable" class="dataTables_wrapper table-bordered">
+                            <thead class="bgTheme">
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Quantity Sold</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in totalSales)
+                                {
+                                    <tr>
+                                        <td>@item.ItemName</td>
+                                        <td><span class="d-flex justify-content-center">@item.TotalSold</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Produced Report -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bgTheme">
+                    <h4><i class="fas fa-industry"></i> Total Finished Goods Produced</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="height: 400px; overflow-y: auto;">
+                        <table id="producedTable" class="dataTables_wrapper table-bordered">
+                            <thead class="bgTheme">
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Quantity Produced</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in TotalProduced)
+                                {
+                                    <tr>
+                                        <td>@item.ItemName</td>
+                                        <td><span class="text-bold d-flex justify-content-center">@item.TotalProduced</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Purchased Report -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bgTheme">
+                    <h4><i class="fas fa-boxes"></i> Total Items Purchased</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="height: 400px; overflow-y: auto;">
+                        <table id="purchasedTable" class="dataTables_wrapper table-bordered">
+                            <thead class="bgTheme">
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Quantity Purchased</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in TotalPurchased)
+                                {
+                                    <tr>
+                                        <td>@item.itemName</td>
+                                        <td><span class="d-flex justify-content-center">@item.totalPurchased</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*  <div class="text-center mt-4">
+        <a asp-action="ExportToPDF" asp-route-reportDate="@DateTime.Now" class="btn btn-success">
+            <i class="fas fa-file-pdf"></i> Download PDF Report
+        </a>
+    </div> *@
+</div>
+
+<script>
+        $(document).ready(function () {
+        const tableConfigs = {
+            'salesTable': 'Sales',
+            'producedTable': 'Produced',
+            'purchasedTable': 'Purchased'
+        };
+
+        // Get today's date in DD-MMM-YYYY format
+        const today = (() => {
+            const date = new Date();
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mmNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                             'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const mmm = mmNames[date.getMonth()];
+            const yyyy = date.getFullYear();
+            return `${dd}-${mmm}-${yyyy}`;
+        })();
+
+        $.each(tableConfigs, function (tableId, baseName) {
+            $('#' + tableId).DataTable({
+                paging: true,
+                lengthChange: false,
+                searching: true,
+                ordering: true,
+                info: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy',
+                    {
+                        extend: 'excel',
+                        title: baseName + '_Data',
+                        filename: baseName + '_' + today
+                    },
+                    {
+                        extend: 'pdf',
+                        title: baseName + '_Data',
+                        filename: baseName + '_' + today
+                    },
+                    'print'
+                ],
+                pageLength: 10
+            });
+        });
+    });
+
+</script>

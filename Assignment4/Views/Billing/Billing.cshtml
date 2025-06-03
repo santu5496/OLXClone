@@ -1,0 +1,401 @@
+﻿
+<style>
+    .billing-container {
+        display: flex;
+    }
+
+    .category-list, .items-list, .billing-section {
+        padding: 10px;
+    }
+
+    .billing-section {
+        border-left: 1px solid #ddd;
+    }
+
+    .category-list {
+        border-right: 1px solid #ddd;
+    }
+
+    .item-card {
+        cursor: pointer;
+        padding: 10px;
+        border: 1px solid #ddd;
+        margin-bottom: 5px;
+    }
+
+
+    .order-card {
+        background-color: #ffffff;
+        border-left: 5px solid #4CAF50; /* Bold green left border for emphasis */
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+        }
+
+        .order-card .title {
+            font-weight: bold;
+            color: #4CAF50; /* Green title for consistency */
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+        }
+
+        .order-card .info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 10px;
+            color: #555; /* Soft gray for text */
+        }
+
+            .order-card .info div {
+                display: flex;
+                justify-content: space-between; /* Aligns labels and values neatly */
+            }
+
+        .order-card .btn-primary {
+            background-color: #4CAF50;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            padding: 6px 15px;
+            border-radius: 6px;
+            width: 100%; /* Full-width button for better touch accessibility */
+            transition: background-color 0.3s ease;
+        }
+
+            .order-card .btn-primary:hover {
+                background-color: #45a049; /* Darker green on hover */
+            }
+</style>
+<div class="container-fluid mt-4 mb-4">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-2">
+            Select Customer:
+        </div>
+        <div class="col-md-3">
+            <select id="ddlCustomer" class="form-control form-select" onchange="FetchCustomerDetails(this.value)"></select>
+        </div>
+        <div id="orderContainer" class="row mt-4"></div>
+        @* <div class="col-md-2">
+            Select Order:
+        </div>
+        <div class="col-md-3">
+            <select id="ddlOrders"></select>
+        </div> *@
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Category List -->
+        <div class="col-md-2 col-sm-12 category-list">
+            <h4>Categories</h4><hr>
+            <div id="categoryContainer"></div>
+        </div>
+
+        <!-- Items List -->
+        <div class="col-md-6 col-sm-12 items-list">
+            <div class="row">
+                <div class="col-auto">
+                    <h4>Items</h4>
+                </div>
+                <div class="col">
+                    <input type="text" id="searchInput" placeholder="Search items..." class="form-control">
+                </div>
+            </div>
+            <hr>
+            <div id="itemsContainer" class="row"></div>
+        </div>
+
+        <!-- Billing Section -->
+        <div class="col-md-4 col-sm-12 billing-section">
+            <h4>Bill Summary</h4><hr>
+
+            <table class="table table-bordered" style="height:350px;overflow:auto">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th>Unit</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="billItems"></tbody>
+            </table>
+            <h4>Total Amount: <span id="totalAmount">0</span> ₹</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Payment Status</label>
+                    <select id="ddlPaymentStatus" class="form-control form-select" onchange="ValidatePaymentMode(this.value)">
+                        <option value="UnPaid" selected>UnPaid</option>
+                        <option value="Partial">Partialy Paid</option>
+                        <option value="Paid">Paid</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label>Payment Mode</label>
+                    <select id="ddlPaymentMode" class="form-control form-select" disabled>
+                        <option value="NA">NA</option>
+                        <option value="Cash">Cash</option>
+                        <option value="PhonePay">Phone Pay</option>
+                        <option value="GooglePay">Google Pay</option>
+                        <option value="NetBanking">Net Banking</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-3 d-flex justify-content-center">
+                <div class="col-auto mt-2">
+                    <strong>Advance Amount : </strong>
+
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="txtadvanceAmount" />
+                </div>
+
+            </div>
+            <div style="display:flex;justify-content:center">
+                <button class="btn btn-danger mt-3 me-2" onclick="generatePDF()">
+                    <i class="fas fa-file-pdf"></i> Generate Bill
+                </button>
+
+                <button class="btn btn-success mt-3 ml-2" onclick="SaveBillItems()">
+                    <i class="fas fa-save"></i> Save Bill
+                </button>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/BillOperation.js"></script>
+<script>
+
+    let scannedData = '';
+    var SelectedOrderId;
+    window.addEventListener('keypress', function(e) {
+        if (e.key.length === 1) {
+            scannedData += e.key;  // Collect each character
+        } else if (e.key === 'Enter') {
+            if (scannedData.trim()) {
+                GetItemsDetailsById(scannedData.trim()); // Process data
+                scannedData = '';  // Reset for the next scan
+            }
+            e.preventDefault();  // Prevent unexpected behavior
+        }
+    });
+
+    $(document).ready(function() {
+        loadCategories();
+
+        $(document).on("click", ".item-card", function() {
+            let itemId = $(this).data("id");
+            let itemName = $(this).data("name");
+            let itemPrice = $(this).data("price");
+            let itemUnit = $(this).data("unit");
+            let unitforPrice = $(this).data("priceqty");
+            let maxValue = $(this).data("maxval");
+
+            addItemToBill(itemId, itemName, itemPrice, itemUnit, unitforPrice,maxValue);
+        });
+            $(document).on("click", ".category-btn", function () {
+                selectedCategoryId = $(this).data("id");
+                fetchItems(selectedCategoryId);
+            });
+
+            $("#searchInput").on("input", function () {
+                const searchText = $(this).val();
+                fetchItems('', searchText);
+            });
+
+        $('#ddlCustomer').select2({});
+
+    });
+
+    function fetchItems(categoryId, searchText = "") {
+        $.ajax({
+            url: '/Billing/GetBillingItemsByCategory',
+            type: 'POST',
+            data: {
+                catId: categoryId,
+                search: searchText
+            },
+            success: function (response) {
+                let html = "";
+                response.forEach(item => {
+                    html += `<div class="item-card col-md-3 m-2" data-id="${item.itemId}" data-unit="${item.unit}" data-name="${item.itemName}" data-maxval=${item.maxQuantity} data-price="${item.pricePerUnit}" data-priceqty="${item.priceQuantity}">
+                                ${item.itemName} (${item.priceQuantity}${item.unit}) - ₹${item.pricePerUnit}
+                             </div>`;
+                });
+                $("#itemsContainer").html(html);
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+    }
+
+
+    $(document).ready(function() {
+        $.ajax({
+            url: '/Configuration/GetCustomer',
+            type: 'GET',
+            success: function(response) {
+                let html = '<option value="">Select Customer</option>';
+                response.forEach(customer => {
+                    html += `<option value="${customer.customerId}">${customer.customerName}</option>`;
+                });
+                $('#ddlCustomer').html(html);
+            },
+            error: function(xhr, status, error) {
+                alert('An error occurred while fetching customer details: ' + error);
+            }
+        });
+    });
+
+
+    function loadCategories() {
+        $.ajax({
+            url: '/Configuration/GetCategory',
+            type: 'GET',
+            success: function(response) {
+                let html = "";
+                response.forEach(category => {
+                    html += `<button class="customBtn category-btn m-2 col-md-5" data-id="${category.id}">
+                                        ${category.categoryName}
+                                     </button>`;
+                });
+                $("#categoryContainer").html(html);
+            },
+            error: function(xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+    }
+
+    // function updateTotal(row) {
+    //     let qty = row.find(".qty-input").val();
+    //     let price = row.find(".price").text();
+    //     row.find(".total").text(qty * price);
+    //     updateGrandTotal();
+    // }
+
+
+
+    function SaveBillItems() {
+        let itemsList = [];
+        $("#billItems tr").each(function () {
+            let row = $(this);
+            let itemId = row.data('id');
+            let qty = parseFloat(row.find(".qty-input").val()) || 0;
+            let unit = row.find(".unit").text().trim();
+            let price = parseFloat(row.find(".total").text()) || 0;
+
+            // Add item details to the list
+            itemsList.push({
+                fkItemId: itemId,
+                quantity: qty,
+                unit: unit,
+                price: price
+            });
+        });
+        let billData = {};
+        billData.fkCustomerId  = $('#ddlCustomer').val();
+        billData.paymentMode   = $('#ddlPaymentMode').val();
+        billData.paymentStatus = $('#ddlPaymentStatus').val();
+        billData.finalAmount = $('#totalAmount').text();
+        billData.advanceAmount = $('#txtadvanceAmount').val();
+
+        $.ajax({
+            url: '/Billing/SaveBill',
+            type: 'POST',
+            data: {
+                billData: billData,
+                billItems: JSON.stringify(itemsList),
+                orderId: SelectedOrderId
+                },
+            success: function (response) {
+                if(response){
+                msgPopup('success','BillData Saved successfully!');
+                }else{
+                    msgPopup('error','Bill Data Not Saved' );
+                }
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+
+    function FetchCustomerDetails(customerId){
+        SelectedOrderId = '';
+         $.ajax({
+            url: '/Billing/GetOrderDetailsByCustomer',
+            type: 'GET',
+            data: { customerId: customerId },
+            success: function (response) {
+                if (response && response.length > 0) {
+                    renderOrderCards(response);
+                } else {
+                    $('#orderContainer').html('<p>No orders found for this customer.</p>');
+                }
+            },
+            error: function (xhr) {
+                alert('Error fetching order details: ' + xhr.responseJSON.message);
+            }
+        });
+    }
+
+    function renderOrderCards(data) {
+        let html = '';
+        data.forEach(order => {
+            html += `
+                   <div class="col-md-3">
+        <div class="order-card">
+            <div class="title">Order ID: ${order.orderId}</div>
+            <div class="info">
+                <div><strong>Order Date:</strong> <span>${formatDate(order.orderDate)}</span></div>
+                <div><strong>Total Amount:</strong> <span>₹${order.totalAmount.toFixed(2)}</span></div>
+                <div><strong>Status:</strong> <span>${order.status}</span></div>
+            </div>
+            <button class="btn btn-primary btn-sm"
+                onclick="loadBillItems(${JSON.stringify(order.billOrderItems).replace(/"/g, '&quot;')}, ${order.orderId})">
+                View Items
+            </button>
+        </div>
+    </div>`;
+        });
+        $('#orderContainer').html(html);
+    }
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short', // For "Jan", "Feb", etc.
+            year: 'numeric'
+        });
+    }
+    function loadBillItems(billItems,orderId) {
+        $('#billItems').empty();
+        SelectedOrderId = orderId;
+        billItems.forEach(item => {
+            addItemToBill(
+                item.fkItemId,
+                item.itemName,
+                item.pricePerUnit,
+                item.unit,
+                item.unitForPrice,
+                item.remainingQty,//Max Quantity
+                item.remainingQty,
+            );
+        });
+    }
+</script>

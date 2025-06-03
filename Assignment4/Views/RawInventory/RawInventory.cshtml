@@ -1,0 +1,539 @@
+﻿<!-- Button to Add New Raw Item -->
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="me-2 mt-1">Start Date:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="datetime-local" id="startDate" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="me-2 mt-1">End Date:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="datetime-local" id="endDate" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="me-2 mt-1">Suppliers:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select id="ddlSupplierSearchBar" class="form-control selectpicker" multiple data-live-search="true"></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mt-2">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="me-2 mt-1">Payment Status:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select id="ddlPaymentStatus" class="form-control form-select">
+                                        <option value="" selected>Select Status</option>
+                                        <option value="UnPaid">UnPaid</option>
+                                        <option value="PartialPaid">Partially Paid</option>
+                                        <option value="Paid">Paid</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 mt-2">
+                            <button id="btnSearch" class="customBtn w-100">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt-2">
+    <button type="button" class="customBtn mb-2" onclick="clearInventoryStockModalFields()" data-bs-toggle="modal" data-bs-target="#purchasedItemsModal">
+        Add Purchase Entry
+    </button>
+
+    <!-- Inventory Log Table -->
+    <table id="InventoryLogTable" class="dataTables_wrapper table-bordered">
+        <thead>
+            <tr>
+                <th>Supplier Name</th>
+                <th>Total Amount (₹)</th>
+                <th>Payment Status</th>
+                <th>Payment Mode</th>
+                <th>Purchase Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<div class="modal fade" id="purchasedItemsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Purchased Items</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Supplier Name</label>
+                        <select id="ddlSupplier" class="form-control form-select"></select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label>Payment Status</label>
+                        <select id="ddlPaymentStatusPurchase" class="form-control form-select select-search" onchange="validatePurchasePaymentMode(this.value)">
+                            <option value="UnPaid" selected>UnPaid</option>
+                            <option value="Paid">Paid</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mt-3">
+                        <label>Payment Mode</label>
+                        <select id="ddlPaymentModePurchase" class="form-control form-select select-search" disabled>
+                            <option value="NA">NA</option>
+                            <option value="Cash">Cash</option>
+                            <option value="PhonePay">Phone Pay</option>
+                            <option value="GooglePay">Google Pay</option>
+                            <option value="NetBanking">Net Banking</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mt-4 row">
+                        <div class="col-auto mt-3">
+                            <h5>Total Amount :</h5>
+                        </div>
+                        <div class="col-auto mt-3">
+                            <span id="totalPurchaseAmount" style="font-weight:700">0</span> ₹
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mt-3">
+                        <label>Advance Amount</label>
+                        <input type="text" id="advanceAmount" class="form-control" />
+                    </div>
+
+                </div>
+
+                @*  <div class="row">
+                    <div class="col-md-6 mt-3">
+                        <button id="btnAddNewItemRow" class="btn btn-primary">Add New Item</button>
+                    </div>
+                </div> *@
+                <div class="row d-flex justify-content-evenly">
+                    <div class="col-auto mt-4">
+                        <label>Select Item :</label>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <select id="ddlItems" class="form-control form-select"></select>
+                    </div>
+                    <div class="col-md-2 mt-3">
+                        <button id="btnAddNewItemRow" class="customBtn" onclick="AddPurchaseItem()">Add Item</button>
+                    </div>
+                </div>
+                <div class="">
+                    <table class="table-bordered table-responsive mt-4 ml-2 me-2">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Unit</th>
+                                <th>Total</th>
+                                <th>Price(Per Unit)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="purchaseItems"></tbody>
+                    </table>
+                </div>
+
+                <input type="hidden" id="txtPurchaseIdHidden">
+            </div>
+            <div class="modal-footer">
+                <button type="submit" onclick="SaveInventoryLog()" class="btn btn-success">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery AJAX CRUD Operations -->
+<script>
+    $(document).ready(() => {
+
+        const currentDate = new Date();
+        const pastDate = new Date(currentDate);
+        pastDate.setDate(currentDate.getDate() - 3);
+
+        $('#startDate').val(GetFormattedStartDate(pastDate));
+        $('#endDate').val(GetFormatedDateValue(currentDate));
+
+        $('#startDate, #endDate').on('change', function () {
+            checkrange('startDate', 'endDate');
+        });
+        getInventoryLogs();
+        loadItems();
+        loadSuppliers();
+        BindRawItems();
+
+        $('#btnSearch').on('click',function(){
+            getInventoryLogs();
+        });
+        // Handle edit button click dynamically
+         $('#InventoryLogTable').on('click', '.btn-edit', function() {
+            var purchaseData = JSON.parse($(this).attr('data-full-data'));
+            bindPurchasedItems(purchaseData);
+        });
+
+    });
+    function BindRawItems() {
+        $.get('/RawInventory/GetAllRawItems', function (response) {
+            response.forEach(function (item) {
+                $('#ddlItems').append('<option value="' + item.itemId + '" unit="'+item.unit+'">' + item.itemName + '</option>');
+            });
+        });
+    }
+    function clearInventoryStockModalFields(){
+
+    }
+
+        // Bind Purchased Items
+    function bindPurchasedItems(purchaseData) {
+        $("#purchaseItems").empty();
+        $('#ddlSupplier').val(purchaseData.fkSupplierId);
+        $('#txtPurchaseIdHidden').val(purchaseData.purchaseId);
+        $('#totalPurchaseAmount').text(purchaseData.totalAmount);
+        $('#ddlPaymentStatusPurchase').val(purchaseData.paymentStatus);
+
+        if ($('#ddlPaymentStatusPurchase').val() === "UnPaid") {
+            $('#ddlPaymentModePurchase').prop('disabled', true);
+        } else {
+            $('#ddlPaymentModePurchase').prop('disabled', false);
+        }
+
+        $('#ddlPaymentModePurchase').val(purchaseData.paymentMode);
+
+        $.ajax({
+            url: '/RawInventory/GetPurchasedItemsById',
+            type: 'POST',
+            data: { purchaseId: purchaseData.purchaseId },
+            success: function (response) {
+                response.forEach(function (item) {
+                    addPurchaseItemRow(item.itemId,item.itemName, item.quantity, item.unit, item.pricePerUnit,item.totalAmount);
+                });
+                calculateTotalPrice();
+                 $('#purchasedItemsModal').modal('toggle');
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+
+       
+    }
+        function validatePurchasePaymentMode(status) {
+        if (status == "UnPaid") {
+            $('#ddlPaymentModePurchase').val('NA');
+            $('#ddlPaymentModePurchase').prop('disabled', true);
+        } else {
+            $('#ddlPaymentModePurchase').prop('disabled', false);
+        }
+    }
+    function AddPurchaseItem(){
+        let itemName = $('#ddlItems').find('option:selected').text();
+        let itemId = $('#ddlItems').val();
+        let unit = $('#ddlItems option:selected').attr('unit');
+        addPurchaseItemRow(itemId,itemName,1,unit,0)
+    }
+
+    // Calculate Total Price
+       function calculateTotalPrice() {
+        let totalAmount = 0;
+
+        $('#purchaseItems tr').each(function () {
+            const quantity = parseFloat($(this).find('.qty-input').val()) || 0;
+            const ttlprice = parseFloat($(this).find('.total').val()) || 0;
+
+            const total = (ttlprice / quantity).toFixed(2);
+            $(this).find('.priceperUnit').text(total);
+
+            totalAmount += parseFloat(ttlprice);
+        });
+
+        $('#totalPurchaseAmount').text(totalAmount.toFixed(2));
+    }
+
+    // Add Purchase Item Row Function
+    // function addPurchaseItemRow(itemName, quantity, unit, pricePerUnit) {
+    //     $("#purchaseItems").append(`
+    //         <tr>
+    //             <td>
+    //                 <input type="text" class="form-control item-name" value="${itemName}" placeholder="Enter item">
+    //             </td>
+    //             <td>
+    //                 <input type="number" class="qty-input form-control"
+    //                        min="0" value="${quantity}"
+    //                        onchange="calculateTotalPrice()"
+    //                        style="width:75px;">
+    //             </td>
+    //             <td>
+    //                 <input type="text" class="form-control unit" value="${unit}">
+    //             </td>
+    //             <td>
+    //                 <input type="number" class="price form-control"
+    //                        min="0" value="${pricePerUnit}"
+    //                        onchange="calculateTotalPrice()"
+    //                        style="width:100px;">
+    //             </td>
+    //             <td class="total">0</td>
+    //             <td>
+    //                 <button class="btn btn-danger btn-sm remove-item" onclick="removePurchaseItem(this)">X</button>
+    //             </td>
+    //         </tr>
+    //     `);
+    //     calculateTotalPrice(); // Recalculate total on row addition
+    // }
+
+      function addPurchaseItemRow(itemId, itemName, quantity, unit, pricePerUnit = 0,totalAmount = 0) {
+        let existingRow = $("#purchaseItems").find(`tr[data-id='${itemId}']`);
+
+        if (existingRow.length > 0) {
+            // Item already exists, increase quantity
+            let qtyInput = existingRow.find(".qty-input");
+            let currentQty = parseInt(qtyInput.val()) || 0;
+            qtyInput.val(currentQty +1);
+            calculateTotalPrice();
+        } else {
+            // Generate dropdown options
+            // const unitDropdown = unitOptions.map(option =>
+            //     `<option value="${option}" ${option === unit ? 'selected' : ''}>${option}</option>`
+            // ).join('');
+                const unitOptions = ['ltr', 'kg', 'g', 'ml', 'mg', 'pcs'];
+
+    const unitDropdown = unitOptions.map(option =>
+        `<option value="${option}" ${option === unit ? 'selected' : ''}>${option}</option>`
+    ).join('');
+
+            // Append new row if item doesn't exist
+            $("#purchaseItems").append(`
+                <tr data-id="${itemId}">
+                    <td>
+                        <input type="text" class="form-control item-name" value="${itemName}" placeholder="Enter item">
+                    </td>
+                    <td>
+                        <input type="number" class="qty-input form-control"
+                               min="1" value="${quantity}"
+                               oninput="calculateTotalPrice()"
+                               style="width:75px;">
+                    </td>
+                    <td>
+                        <select class="form-control form-select unit">${unitDropdown}</select>
+                    </td>
+                    <td>
+                        <input type="number" class="total form-control"
+                               min="0" value="${totalAmount}"
+                               oninput="calculateTotalPrice()"
+                               style="width:100px;">
+                    </td>
+                    <td class="priceperUnit">${pricePerUnit}</td>
+
+                    <td>
+                        <button class="btn btn-danger btn-sm remove-item" onclick="removePurchaseItem(this)">X</button>
+                    </td>
+                </tr>
+            `);
+
+            calculateTotalPrice();
+        }
+    }
+
+
+    // Remove Item
+    function removePurchaseItem(button) {
+        $(button).closest('tr').remove();
+        calculateTotalPrice();
+    }
+
+
+
+
+    function getInventoryLogs() {
+        var table = $('#InventoryLogTable').DataTable();
+        table.clear().draw();
+        let selectedSuppliers = $('#ddlSupplierSearchBar').val() || [];
+        let startDate = $('#startDate').val();
+        let endDate = $('#endDate').val();
+        let paymentStatus = $('#ddlPaymentStatus').val();
+        $.ajax({
+            url: '/RawInventory/GetPurchasedItems',
+            type: 'POST',
+            data: { startDate: startDate, endDate: endDate, supplierId: selectedSuppliers, paymentStatus: paymentStatus },
+            success: function (data) {
+                data.forEach(log => {
+                    table.row.add([
+                        log.supplierName,
+                        log.totalAmount,
+                        log.paymentStatus,
+                        log.paymentMode,
+                        log.purchaseDate,
+                        '<div class="contentCenter">' +
+                        '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(log) + '\'></i>' +
+                        '</div>'
+                    ]);
+                });
+                table.draw();
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching inventory logs:", error);
+            }
+        });
+    }
+
+    function SaveInventoryLog() {
+
+            let purchaseDetailsList = [];
+        $("#purchaseItems tr").each(function () {
+            let row = $(this);
+            let itemId = row.data('id'); // Matches fkItemId
+            let rawMaterialId = row.data('raw-material-id') || 0; // Add this if you track raw material ID
+            let itemName = row.find(".item-name").val().trim(); // Added for item name
+            let qty = parseFloat(row.find(".qty-input").val()) || 0;
+            let unit = row.find(".unit").val(); // Correct for dropdown selection
+            let totalAmount = parseFloat(row.find(".total").val()) || 0;
+            let pricePerUnit = parseFloat(row.find(".priceperUnit").text()) || 0; // Updated to retrieve text value
+
+            // Add item details to the list
+            purchaseDetailsList.push({
+                purchaseDetailId: 0, // Assuming it's auto-generated
+                fkRawMaterialId: rawMaterialId,
+                fkItemId: itemId,
+                itemName: itemName, // Added item name
+                quantity: qty,
+                unit: unit,
+                pricePerUnit: pricePerUnit,
+                totalAmount: totalAmount
+            });
+        });
+
+        let purchaseData = {};
+        purchaseData.supplierId  = $('#ddlSupplier').val();
+        purchaseData.logId  =  $('#txtPurchaseIdHidden').val();
+        purchaseData.paymentMode   = $('#ddlPaymentModePurchase').val();
+        purchaseData.paymentStatus = $('#ddlPaymentStatusPurchase').val();
+        purchaseData.totalAmount = $('#totalPurchaseAmount').text();
+        purchaseData.advanceAmount = $('#advanceAmount').text();
+         $.ajax({
+             url: "/RawInventory/AddOrEditRawMaterialLog",
+             type: 'POST',
+             data: {log:purchaseData,purchaseItems:purchaseDetailsList},
+             success: (response) => {
+                 if(response){
+                     $('#purchasedItemsModal').modal('toggle');
+                     msgPopup('success',"Data Saved Successfully");
+                     getInventoryLogs();
+                 }else{
+                      msgPopup('error',"Error Saving Data");
+                 }
+             },
+             error: (xhr, status, error) => console.error("Error saving inventory log:", error)
+         });
+     }
+
+    function editInventoryLog(log) {
+        $('#logId').val(log.logId);
+        $('#quantity').val(log.quantity);
+        $('#createdDate').val(log.createdDate);
+        $('#updatedDate').val(log.updatedDate);
+        $('#sUser').val(log.userName);
+
+
+            $('#itemId').val(log.itemID).trigger('change'); // Set and trigger change event
+            $('#ddlSupplier').val(log.supplierId).trigger('change');
+
+        // Show modal
+        $('#inventoryLogModal').modal('show');
+    }
+
+
+    function deleteInventoryLog(id) {
+        debugger
+        if (!confirm("Are you sure you want to delete this log?")) return;
+
+        $.ajax({
+            url: `/RawInventory/Delete/${id}`,
+            type: 'DELETE',
+            success: function () {
+                getInventoryLogs();
+            },
+            error: function (xhr, status, error) {
+                console.error("Error deleting inventory log:", error);
+            }
+        });
+    }
+
+    function loadItems() {
+        $.ajax({
+            url: '/Configuration/GetInventoryItems',
+            type: 'GET',
+            success: function (data) {
+                let dropdown = $('#itemId');
+                dropdown.empty().append('<option value="">Select Item</option>');
+                data.forEach(item => {
+                    dropdown.append(`<option value="${item.itemId}">${item.itemName}</option>`);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading items:", error);
+            }
+        });
+    }
+
+    function loadSuppliers() {
+        $.ajax({
+            url: '/Configuration/GetSupplierDts',
+            type: 'GET',
+            success: function (data) {
+                // let dropdown1 = $('#ddlSupplier');
+                // let dropdown2 = $('#ddlSupplierSearchBar');
+
+                // dropdown1.empty().append('<option value="">Select Supplier</option>');
+                // dropdown2.empty().append('<option value="">Select Supplier</option>');
+
+                // data.forEach(supplier => {
+                //     const option = `<option value="${supplier.supplierId}">${supplier.supplierName}</option>`;
+                //     dropdown1.append(option);
+                //     dropdown2.append(option);
+                // });
+                data.forEach(function (item) {
+                $('#ddlSupplier').append('<option value="' + item.supplierId + '">' + item.supplierName + '</option>');
+                $('#ddlSupplierSearchBar').append('<option value="' + item.supplierId + '">' + item.supplierName + '</option>');
+            });
+            $('#ddlSupplierSearchBar').selectpicker('refresh');
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading suppliers:", error);
+            }
+        });
+    }
+
+
+</script>

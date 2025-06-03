@@ -1,0 +1,486 @@
+﻿<style>
+
+</style>
+<div class="container-fluid mt-3">
+    <div>
+        @Html.Partial("~/Partialviews/_SearchBar.cshtml")
+    </div>
+    <button class="customBtn mb-2 mt-2" onclick="ClearFnGoodsItems()">Add Item</button>
+
+    <table id="tblFinishedGoods" class="dataTables_wrapper table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Item Name</th>
+                <th>Created Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+
+    <div class="modal fade" id="finishedGoodsModal" tabindex="-1" aria-labelledby="addfinishedGoodsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="finishedGoodsModalLabel">Add InventoryItem</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Select Item</label>
+                        <select class="form-select ClearfinishedGoodsModalData requiredfield requiredfield_FinGoods" id="ddlItem"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Target Quantity</label>
+                        <input type="number" class="form-control ClearfinishedGoodsModalData requiredfield requiredfield_FinGoods" id="txtTrgtQty" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Actual Quantity</label>
+                        <input type="number" class="form-control ClearfinishedGoodsModalData requiredfield requiredfield_FinGoods" id="txtActQty" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reason For Difference</label>
+                        <textarea rows="3" cols="30" class="form-control ClearfinishedGoodsModalData" id="txtDiffReason"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <button onclick="GetAvailableItemReciepe()" class="customBtn">Take From Inventory</button>
+                    </div>
+                    <div class="">
+                        <table id="tblItemsUsed" class="table-bordered table-responsive mt-4 ml-2 me-2">
+                            <thead>
+                                <tr>
+                                    <th>Select Item</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th> <span class="action-btn me-2" onclick="addRow(0)"><i class="fa-solid fa-circle-plus"></i></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <input type="hidden" class="ClearfinishedGoodsModalData" id="txtFinishedGoodIdHidden">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" onclick="SaveFinishedGoods()" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+            $(document).ready(function() {
+                $('#tblFinishedGoods').on('click', '.btn-edit', function() {
+
+                    var fullData = JSON.parse($(this).attr('data-full-data'));
+
+                    EditFinishedGoods(fullData);
+
+                });
+
+                $('#tblFinishedGoods').on('click', '.btn-delete', function() {
+
+                    var ID = JSON.parse($(this).attr('data-id'));
+
+                    DeleteWarning(DeleteFinishedGoods, ID);
+
+
+                });
+                GetFinishedGoodsData();
+                getInventoryItems();
+                 $('#btnSearch').on('click', function () {
+                GetFinishedGoodsData();
+            });
+            });
+
+        function ClearFnGoodsItems() {
+            $('.ClearfinishedGoodsModalData').val('');
+            $('#tblItemsUsed tbody').empty();
+            addRow(0);
+            $('#finishedGoodsModal').modal('toggle');
+        }
+
+        function SaveFinishedGoods() {
+            if (CheckEmptyFields('FinGoods'))
+            {
+                var itemdata = {};
+                itemdata.logId = $('#txtFinishedGoodIdHidden').val();
+                itemdata.fkItemId = $('#ddlItem').val();
+                itemdata.targetQuantity = $('#txtTrgtQty').val();
+                itemdata.actualQuantity = $('#txtActQty').val();
+                itemdata.reasonForDiff = $('#txtDiffReason').val();
+                let ItemsUsedList = GetItemsUsedList();
+                $.ajax({
+                    url: "/FinishedGoods/AddorEditFinishedGoods",
+                    type: 'POST',
+                    data: {
+                        fnGoods: itemdata,
+                        items: ItemsUsedList
+                    },
+                    success: function(response) {
+                        if (response) {
+                            msgPopup('success', 'data saved successfully');
+                            $('#finishedGoodsModal').modal('toggle');
+                            GetFinishedGoodsData();
+                        } else {
+                            msgPopup('error','Failed to ' + (id ? 'update' : 'add') + ' data.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('An error occurred: ' + error);
+                    }
+                });
+            }
+        }
+        function GetFinishedGoodsData() {
+             let startDate = $('#startDate').val();
+            let endDate = $('#endDate').val();
+             var table = $('#tblFinishedGoods').DataTable();
+            table.clear();
+            table.draw();
+               $.ajax({
+                    url: '/FinishedGoods/GetFinishedGoods',
+                    type: 'POST',
+                    data: { sd: startDate, ed: endDate },
+                    success: function (response) {
+                            response.forEach(function (item) {
+
+                    table.row.add([
+
+                        item.logId,
+
+                        item.itemName,
+
+                        FormatDateInReadableFormat(item.createdDate),
+
+                        '<div class="contentCenter">' +
+
+                        '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item) + '\'></i>' +
+
+                        '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(item.logId) + '\'></i>' +
+
+                        '</div>'
+
+                    ]).draw();
+
+                    });
+
+                        },
+                    error: function (xhr, status, error) {
+                        alert('An error occurred: ' + error);
+                    }
+                });
+
+            }
+
+        function GetItemsUsedList() {
+               var table = document.getElementById('tblItemsUsed');
+        var rows = table.getElementsByTagName('tr');
+        const itemsUsed = [];
+
+        for (var i = 1; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName('td');
+            var itemUsed = {};
+
+            if (cells.length >= 3) {
+                itemUsed.fkMasterItemId = cells[0].querySelector('select') ? cells[0].querySelector('select').value : cells[0].textContent.trim();
+                itemUsed.quantity = cells[1].querySelector('input') ? cells[1].querySelector('input').value : cells[1].textContent.trim();
+                itemUsed.unit = cells[2].querySelector('input') ? cells[2].querySelector('input').value : cells[2].textContent.trim();
+
+                itemsUsed.push(itemUsed);
+            }
+        }
+            return itemsUsed;
+        }
+
+        function getInventoryItems() {
+            $.ajax({
+                url: '/FinishedGoods/GetFinishedGoodsItems',
+                type: 'POST',
+                success: function(response) {
+
+                    const selectElement = $('#ddlItem');
+                    selectElement.empty();
+
+                    let options = `<option value="">Select Item</option>`;
+
+                    if (response && response.length > 0) {
+                        options += response.map(item => `<option value="${item.itemId}">${item.itemName}</option>`).join('');
+                    }
+
+                    selectElement.html(options);
+
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+
+        }
+
+
+        function deleteInventoryItem(id) {
+
+            $.ajax({
+                url: '/Configuration/DeleteInventoryItems',
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                success: function(response) {
+
+                    if (response) {
+                        msgPopup('success', 'data deleted successfully');
+                    } else {
+                        msgPopup('error', response.toString());
+                    }
+
+                    getInventoryItems();
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+        }
+
+        function EditFinishedGoods(data) {
+            $('#txtFinishedGoodIdHidden').val(data.logId);
+            $('#ddlItem').val(data.itemId);
+            $('#descriptionInput').val(data.reasonForDiff);
+            $('#txtTrgtQty').val(data.targetQuantity);
+            $('#txtActQty').val(data.actualQuantity);
+            GetIngredientsUsedByLogId(data.logId);
+            $('#finishedGoodsModal').modal('toggle');
+
+        }
+
+        function addRow(index, callback,itemUnit) {
+            const tableBody = document.querySelector('#tblItemsUsed tbody');
+            const rows = tableBody.querySelectorAll('tr');
+
+            if (rows.length > 0) {
+                const lastRow = rows[rows.length - 1];
+                index = rows.length;
+
+            }
+            const newRow = document.createElement('tr');
+            newRow.id = "itemRow_" + index;
+            newRow.innerHTML = `
+                                <td>
+                                            <select class="item-select form-select requiredfield requiredfield_FinGoods" indexVal="${index}" id="itemDdl_${index}" onchange="GetInventoryItemQuantity(this)">
+                                    </select>
+                                </td>
+                                <td>
+                                            <input type="number" id="itemQuantity_${index}" data-maxval=""  onkeyup=RestrictQuantity(this) class="custom-item form-control requiredfield requiredfield_FinGoods" placeholder="Enter Quantity">
+                                </td>
+                                                            <td><select id="itemUnit_${index}" class="quantity form-control form-select requiredfield requiredfield_FinGoods" onchange="RestrictQuantity(document.getElementById('itemQuantity_${index}'))"></select></td>
+
+                                <td>
+
+                                    <span class="ml-2 remove-btn" onclick="removeRow(this)"><i class="fa-solid fa-circle-minus"></i></span>
+                                </td>
+                                    `;
+
+            tableBody.appendChild(newRow);
+           // GetInventoryItemQuantity($('#itemDdl_' +index)[0]);
+
+            BindItemsDropdown('itemDdl_' + index, function() {
+                if (callback) callback(index);
+            });
+            if(itemUnit){
+                BindUnitFromJson(itemUnit,index);
+            }
+        }
+
+        function BindItemsDropdown(id, onComplete) {
+            $.ajax({
+                type: "GET",
+                url: '/Configuration/GetInventoryItems',
+                success: function(response) {
+                    const selectElement = $('#' + id);
+
+                    selectElement.empty(); // Clear any existing options
+                    const $defaultOption = $('<option>', {
+                        value: '',
+                        text: 'Select Item',
+                        selected: true
+                    });
+                    selectElement.append($defaultOption);
+                    $.each(response, function(index, item) {
+                        const $option = $('<option>', {
+                            value: item.itemId,
+                            text: item.itemName
+                        });
+                        selectElement.append($option);
+                    });
+
+                    if (onComplete) onComplete();
+                },
+                error: function(response) {}
+            });
+        }
+
+        function removeRow(button) {
+            const row = button.closest('tr');
+            const table = document.getElementById('tblItemsUsed');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            row.remove();
+        }
+
+        function convertToMainUnit(value, selectedUnit, mainUnit) {
+            if (selectedUnit === mainUnit) return value; // No conversion needed
+
+            if (unitConversions[selectedUnit] && unitConversions[selectedUnit][mainUnit]) {
+                return value * unitConversions[selectedUnit][mainUnit]; // Convert sub-unit to main unit
+            } else if (unitConversions[mainUnit] && unitConversions[mainUnit][selectedUnit]) {
+                return value / unitConversions[mainUnit][selectedUnit]; // Convert main unit to sub-unit
+            }
+
+            return value; // Default return if no conversion found
+        }
+
+        const unitConversions = {
+            "kg": { "g": 1000, "mg": 1000000 },
+            "g": { "kg": 0.001, "mg": 1000 },
+            "mg": { "g": 0.001, "kg": 0.000001 },
+            "ltr": { "ml": 1000 },
+            "ml": { "ltr": 0.001 },
+            "pcs": {},
+            "dz": { "pcs": 12 }
+        };
+
+
+        function RestrictQuantity(input) {
+            let currentIndexVal = input.id.split('_')[1]; // Extract row index
+            let enteredQty = parseFloat(input.value); // Get user input
+            let availableQty = parseFloat($('#' + input.id).attr('data-maxval')); // Get max quantity (main unit)
+            let selectedUnit = $('#itemUnit_' + currentIndexVal).val(); // Get selected unit
+            let mainUnit = $('#itemUnit_' + currentIndexVal + ' option:first').val(); // Get main unit from dropdown
+
+            if (isNaN(enteredQty) || enteredQty <= 0) {
+                input.value = ""; // Clear invalid input
+                return;
+            }
+
+            let convertedQty = convertToMainUnit(enteredQty, selectedUnit, mainUnit); // Convert input to main unit
+
+
+            if (convertedQty > availableQty) {
+                msgPopup("warning",`Quantity exceeds available stock! (Max: ${availableQty} ${mainUnit})`);
+                input.value = ""; // Reset input if invalid
+            }
+        }
+
+
+
+     function GetInventoryItemQuantity(attr) {
+        let currentIndexVal = attr.attributes.indexval.value;
+
+        $.ajax({
+            type: "GET",
+            data: { id: attr.value },
+                url: '/FinishedGoods/GetInventoryItemsQuantity', // Ensure this API returns { quantity, unit }
+            success: function(response) {
+                if (response.quantity > 0) {
+                    $('#itemQuantity_' + currentIndexVal).attr('data-maxval', response.quantity);
+                    BindUnitFromJson(response.unit,currentIndexVal);
+                } else {
+                    msgPopup('error', 'Item Quantity not available');
+                }
+            },
+            error: function(response) {
+                console.error("Error fetching inventory data:", response);
+            }
+        });
+    }
+    function BindUnitFromJson(unitVal,currentIndexVal){
+         $.getJSON('/unit.json', function(jsonData) {
+                                let unit = unitVal;
+                                let subUnits = jsonData.units[unit] || []; // Get sub-units array
+                                let $select = $('#itemUnit_' + currentIndexVal);
+                                $select.empty();
+
+                                $select.append(`<option value="${unit}">${unit}</option>`);
+
+                                subUnits.forEach(subUnit => {
+                                    $select.append(`<option value="${subUnit}">${subUnit}</option>`);
+                                });
+         });
+    }
+
+        function GetAvailableItemReciepe() {
+            if($('#ddlItem').val() != ''){
+            let itemId=$('#ddlItem').val();
+            let Qty = $('#txtTrgtQty').val();
+            $.ajax({
+                type: "GET",
+                data: {
+                    id: itemId,baseQuantity : Qty
+                },
+                url: '/FinishedGoods/GetItemsUsedforProduct',
+                success: function(response) {
+                    BindItemsUsedTblData(response,true);
+                },
+                error: function(response) {}
+            });
+            }else{
+                msgPopup('warning','Please Select Item')
+            }
+        }
+
+        function BindItemsUsedTblData(response,isEdit = false) {
+            $('#tblItemsUsed tbody').empty();
+            response.forEach(function(item, index) {
+                addRow(index, function(rowIndex) {
+
+                    $('#itemDdl_' + rowIndex).val(item.fkMasterItemId);
+                    $('#itemQuantity_' + rowIndex).val(item.quantity);
+                    $('#itemUnit_' + rowIndex).val(item.unit);
+                },item.unit);
+            });
+        }
+
+        function DeleteFinishedGoods(id){
+            $.ajax({
+                url: '/FinishedGoods/DeleteFinishedGoods',
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                success: function(response) {
+                    if (response) {
+                        msgPopup('success', 'Data Deleted Successfully');
+                    } else {
+                        msgPopup('error', response.toString());
+                    }
+                    GetFinishedGoodsData();
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+        }
+        function GetIngredientsUsedByLogId(id){
+              $.ajax({
+                url: '/FinishedGoods/GetIngredientsUsedByLogId',
+                type: 'POST',
+                data: {
+                    logId: id
+                },
+                success: function(response) {
+                     BindItemsUsedTblData(response);
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+        }
+</script>

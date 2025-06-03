@@ -1,0 +1,436 @@
+﻿
+
+    <!-- Button to Add New Recipe -->
+    <button type="button" class="customBtn mb-2 mt-2" data-bs-toggle="modal" data-bs-target="#recipeModal">
+        Add New Recipe
+    </button>
+
+    <!-- Recipe Table -->
+    <table id="recipeTable" class="dataTables_wrapper table-bordered">
+        <thead>
+            <tr>
+                <th>Recipe Name</th>
+                <th>BaseQuantity</th>
+
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Recipe Modal -->
+    <div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="recipeModalLabel">Add/Edit Recipe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <input type="hidden" id="recipeId">
+
+                    <div class="mb-3">
+                        <label for="recipeName" class="form-label">Recipe Name</label>
+                        <select class="form-control" style="width: 100%;" tabindex="0" id="recipeNamedropdown">
+                            <option>Default select</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="BaseQty" class="form-lable">Base Quantity</label>
+                        <input type="text" class="form-control control" id="BaseQty" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="BaseQtyUnit" class="form-lable">Unit</label>
+                    <select class="form-control" style="width: 100%;" tabindex="0" id="BaseQtyUnit">
+                            <option value="kg">kg</option>
+                            <option value="ltr">ltr</option>
+                            <option value="g">g</option>
+                            <option value="ml">ml</option>
+                            <option value="mg">mg</option>
+                            <option value="pcs">pcs</option>
+                        </select>
+                    </div>
+                  
+                    <table id="tblIngradients" class="table-bordered table-responsive mt-4 ml-2 me-2">
+                        <thead>
+                            <tr>
+                                <th>Select Item</th>
+                                <th>Quantity</th>
+                                <th>Unit</th>
+                                <th> <span class="action-btn me-2" onclick="addRow(0)"><i class="fa-solid fa-circle-plus"></i></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                  
+                    <div class="modal-footer">
+                        <button onclick="saveRecipe()" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function BindItemToMainRecipeItem()
+        {
+            BaBaseQtyUnit
+        }
+        $(document).ready(function () {
+            LoadItemsToDDL();
+            GetRecipeData();
+           
+            // Event listener for editing recipe
+            
+
+            $('#recipeTable').on('click', '.btn-edit', function() {
+
+                var fullData = JSON.parse($(this).attr('data-full-data'));
+
+                EditRecipeData(fullData);
+
+            });
+
+            $('#recipeTable').on('click', '.btn-delete', function() {
+
+                var ID = JSON.parse($(this).attr('data-id'));
+
+                DeleteWarning(deleteRecipeItem, ID);
+
+
+
+            }); 
+            $('#BaseQtyUnit').select2({
+              dropdownParent: $('#recipeModal') // Important!
+            });
+            $('#recipeNamedropdown').select2({
+                dropdownParent: $('#recipeModal') // Important!
+            });
+
+        });
+            function deleteRecipeItem(id) {
+
+            $.ajax({
+                url: '/Recipe/DeleteRecipe',
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                success: function(response) {
+
+                    if (response) {
+                        msgPopup('success', 'data deleted successfully');
+                    } else {
+                        msgPopup('error', response.toString());
+                    }
+
+                   // getInventoryItems();
+                    GetRecipeData();
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+         
+        }
+
+        function LoadItemsToDDL() {
+            $.ajax({
+                url: '/Configuration/GetInventoryItems',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log("Received data:", data); // Debugging
+                    if (!Array.isArray(data)) {
+                        console.error("Expected an array but received:", data);
+                        return;
+                    }
+
+                    $("#recipeNamedropdown").each(function () {
+                        let dropdown = $(this);
+                        dropdown.empty().append('<option value="">Select Item</option>');
+
+                        data.forEach(item => {
+                            // Create option with additional data attributes
+                            dropdown.append(
+                                `<option
+                                    value="${item.itemId}"
+                                    data-unit="${item.unit || ''}"
+                                    data-default-quantity="${item.defaultQuantity || ''}"
+                                >
+                                    ${item.itemName}
+                                </option>`
+                            );
+                        });
+
+                        // Add event listener to handle unit binding
+                        dropdown.on('change', function() {
+                            const selectedOption = $(this).find('option:selected');
+                            const unit = selectedOption.data('unit') || '';
+                            const defaultQuantity = selectedOption.data('default-quantity') || '';
+
+                            // Automatically populate the unit field
+                            $('#BaseQtyUnit').val(unit);
+
+                            // Optional: Populate default quantity if available
+                            if (defaultQuantity) {
+                                $('#BaseQty').val(defaultQuantity);
+                            }
+                        });
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error loading items:", error);
+                }
+            });
+        }
+
+        // Example usage in other functions
+        function someOtherFunction() {
+            // Retrieve unit and other data when needed
+            const selectedOption = $('#recipeNamedropdown option:selected');
+            const unit = selectedOption.data('unit');
+            const defaultQuantity = selectedOption.data('default-quantity');
+        }
+
+        // Function to save a recipe along with ingredients
+        function saveRecipe()
+        {
+          var table = document.getElementById('tblIngradients');
+          var rows = table.getElementsByTagName('tr');
+          const RecipeIngradientsUsed = [];
+
+        for (var i = 1; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName('td');
+            var itemUsed = {};
+
+            if (cells.length >= 3) {
+                itemUsed.fkMasterItemId = cells[0].querySelector('select') ? cells[0].querySelector('select').value : cells[0].textContent.trim();
+                itemUsed.quantity = cells[1].querySelector('input') ? cells[1].querySelector('input').value : cells[1].textContent.trim();
+                itemUsed.unit = itemUsed.unit = cells[2].querySelector('input')? cells[2].querySelector('input').value: cells[2].textContent.trim();
+
+                RecipeIngradientsUsed.push(itemUsed);
+            }
+        }
+
+            let item1 = {
+                fkItemName: $("#recipeNamedropdown").val(),
+                baseQuantity: $("#BaseQty").val(),
+                recipeId: $("#recipeId").val(),
+                unit: $("#BaseQtyUnit").val()
+            };
+
+            $.ajax({
+                url: "/Recipe/AddRecipe",
+                type: "POST",
+                data: { item: item1, RecipeIngradientsUsed: RecipeIngradientsUsed },
+                success: function (response) {
+                    alert("Recipe saved successfully!");
+                },
+                error: function (xhr) {
+                    alert("Error saving recipe: " + xhr.responseText);
+                }
+            });
+            $('#recipeModal').modal('toggle');
+            GetRecipeData();
+
+        }
+
+    
+        // Function to get recipe data and populate the table
+        function GetRecipeData() {
+            var table = $('#recipeTable').DataTable();
+            table.clear().draw();
+
+            $.ajax({
+                url: '/Recipe/GetRecipe', // Fixed incorrect URL
+                type: 'GET',
+                success: function (response) {
+                    response.forEach(function (item) {
+                        table.row.add([
+                            item.itemName,
+                            item.baseQuantity,
+
+                            '<div class="contentCenter">' +
+
+                    '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item) + '\'></i>' +
+
+                    '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(item.recipeId) + '\'></i>' +
+
+                    '</div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+        }
+
+        function BindItemsUsedTblData(response) {
+            $('#tblIngradients tbody').empty();
+            response.forEach(function(item, index) {
+                addRow(index, function(rowIndex) {
+
+                    $('#itemDdl_' + rowIndex).val(item.fkMasterItemId);
+                    $('#itemQuantity_' + rowIndex).val(item.quantity);
+                    $('#itemUnit_' + rowIndex).val(item.unit);
+                });
+            });
+        }
+
+              function addRow(index, callback) {
+            const tableBody = document.querySelector('#tblIngradients tbody');
+            const rows = tableBody.querySelectorAll('tr');
+
+            // Determine the index for the new row
+            if (rows.length > 0) {
+                index = rows.length;
+            }
+
+            const newRow = document.createElement('tr');
+            newRow.id = "itemRow_" + index;
+            newRow.innerHTML = `
+                <td>
+                    <select class="item-select form-select" indexVal="${index}" id="itemDdl_${index}">
+                    </select>
+                </td>
+                <td>
+                    <input type="number" id="itemQuantity_${index}"
+                           data-maxval="" class="custom-item form-control"
+                           placeholder="Enter Quantity">
+                </td>
+                <td>
+                    <input type="text" id="itemUnit_${index}"
+                           class="quantity form-control"
+                           readonly>
+                </td>
+                <td>
+                    <span class="ml-2 remove-btn" onclick="removeRow(this)">
+                        <i class="fa-solid fa-circle-minus"></i>
+                    </span>
+                </td>
+            `;
+
+            tableBody.appendChild(newRow);
+
+            BindItemsDropdown('itemDdl_' + index, function() {
+                // Add event listener for unit binding
+                const selectElement = document.getElementById('itemDdl_' + index);
+                selectElement.addEventListener('change', function() {
+                    bindUnitForItem(this);
+                });
+
+                if (callback) callback(index);
+            });
+        }
+
+        function BindItemsDropdown(id, onComplete) {
+            $.ajax({
+                type: "GET",
+                url: '/Configuration/GetInventoryItems',
+                success: function(response) {
+                    const selectElement = $('#' + id);
+
+                    // Clear existing options
+                    selectElement.empty();
+
+                    // Add default option
+                    const $defaultOption = $('<option>', {
+                        value: '',
+                        text: 'Select Item',
+                        selected: true
+                    });
+                    selectElement.append($defaultOption);
+
+                    // Add inventory items
+                    $.each(response, function(index, item) {
+                        const $option = $('<option>', {
+                            value: item.itemId,
+                            text: item.itemName,
+                            // Store additional item data as a data attribute
+                            'data-unit': item.unit || ''
+                        });
+                        selectElement.append($option);
+                    });
+
+                    if (onComplete) onComplete();
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading items:", error);
+                }
+            });
+        }
+
+        function bindUnitForItem(selectElement) {
+            // Get the row index from the select element
+            const rowIndex = selectElement.getAttribute('indexVal');
+
+            // Find the corresponding unit input
+            const unitInput = document.getElementById('itemUnit_' + rowIndex);
+
+            // Get the selected option
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+
+            // Get the unit from the data attribute
+            const unit = selectedOption.getAttribute('data-unit') || '';
+
+            // Set the unit in the input field
+            if (unitInput) {
+                unitInput.value = unit;
+            }
+        }
+
+        // // When editing an existing recipe, you can use this to pre-select and bind units
+        // function EditRecipeData(data) {
+        //     // ... existing code ...
+
+        //     // After populating the ingredients, ensure units are bound
+        //     $('#tblIngradients tbody tr').each(function() {
+        //         const $select = $(this).find('.item-select');
+        //         const $unitInput = $(this).find('.quantity');
+
+        //         // Find the option that matches the item
+        //         const $matchingOption = $select.find(`option[value="${$select.val()}"]`);
+
+        //         // Set the unit if found
+        //         if ($matchingOption.length) {
+        //             $unitInput.val($matchingOption.data('unit') || '');
+        //         }
+        //     });
+        // }
+
+
+            function EditRecipeData(data) {
+
+             $("#recipeNamedropdown").val(data.fkItemName);
+             $("#BaseQty").val(data.baseQuantity);
+             $("#recipeId").val(data.recipeId);
+             $("#BaseQtyUnit").val(data.unit);
+            GetIngredientsUsedByLogId(data.recipeId);
+            $('#recipeModal').modal('toggle');
+            GetRecipeData();
+
+        }
+            function GetIngredientsUsedByLogId(id){
+              $.ajax({
+                url: '/Recipe/GetIngredients',
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                success: function(response) {
+                     BindItemsUsedTblData(response);
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+        }
+    </script>
+
