@@ -1,914 +1,213 @@
-﻿
-<div class="container-fluid mt-3">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
+﻿@{
+    ViewData["Title"] = "Manage Car Brands";
+}
 
-        <li class="nav-item">
-            <a class="nav-link active" id="room-tab" data-bs-toggle="tab" href="#inventoryTab" role="tab" aria-selected="true">Inventory Items</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link " id="profile-tab" data-bs-toggle="tab" href="#supplier" role="tab" aria-controls="profile" aria-selected="true">Supplier</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link " id="profile-tab" data-bs-toggle="tab" href="#category" role="tab" aria-controls="profile" aria-selected="true">Category</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link " id="profile-tab" data-bs-toggle="tab" href="#customerTab" role="tab" aria-controls="profile" aria-selected="true">Customer</a>
-        </li>
+<div class="container-fluid mt-4">
+    <h2>Car Brands Management</h2>
 
-    </ul>
-
-    <div class="tab-content mt-2" id="myTabContent">
-
-        <div class="tab-pane fade active show" id="inventoryTab" role="tabpanel">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearInventoryStockModalFieldsfcn()" data-bs-toggle="modal" data-bs-target="#inventoryItemModal">
-                Add InventoryItem
-            </button>
-            <table id="InventoryItemTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Item Name</th>
-                        <th>Item Type</th>
-                        <th>Description</th>
-                        <th>Categeory</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated here via JavaScript -->
-                </tbody>
-            </table>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text" id="txtSearch" class="form-control" placeholder="Search brands..." />
         </div>
-        <div class="tab-pane fade " id="supplier" role="tabpanel">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearSupplierDtsModalFieldsfcn()">
-                Add Supplier
-            </button>
-            <table id="SupplierTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Supplier Name</th>
-                        <th>Contact No</th>
-                        <th>Address</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated here via JavaScript -->
-                </tbody>
-            </table>
-
+        <div class="col-md-8 d-flex justify-content-end">
+            <button id="btnAddNew" class="btn btn-success">Add New Brand</button>
         </div>
+    </div>
 
-        <div class="tab-pane fade " id="category" role="tabpanel">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearCategoryModalFieldsFcn()">
-                Add Category
-            </button>
-            <table id="CategoryTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Category Name</th>
-                        <th>Description</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated here via JavaScript -->
-                </tbody>
-            </table>
+    <table class="table table-bordered table-striped" id="tblCarBrands">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Country</th>
+                <th>Website</th>
+                <th>Luxury</th>
+                <th>Active</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
 
-        </div>
+<!-- Modal for Add/Edit Brand -->
+<div class="modal fade" id="brandModal" tabindex="-1" aria-labelledby="brandModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="brandForm" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="brandModalLabel">Add/Edit Brand</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="brandId" />
 
-        <div class="tab-pane fade " id="customerTab" role="tabpanel">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearCustomerModalFieldsFcn()">
-                Add Customer
-            </button>
-            <table id="CustomerTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Customer Name</th>
-                        <th>Address</th>
-                        <th>Phone No</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated here via JavaScript -->
-                </tbody>
-            </table>
-        </div>
+                <div class="mb-3">
+                    <label for="brandName" class="form-label">Brand Name</label>
+                    <input type="text" id="brandName" class="form-control" maxlength="60" required />
+                </div>
 
-        @* Add Inventory Item Pop-up *@
-        <div class="modal fade" id="inventoryItemModal" tabindex="-1" aria-labelledby="addInventoryItemModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addInventoryItemModalLabel">Add Inventory Item</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="inventoryItemform">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="ingrediantNameInput" class="form-label">Item Name</label>
-                                    <input type="text" class="form-control ClearInventoryItemModalData requiredfield requiredfield_Inv" onkeyup="CheckNameAlreadyExist(this,'InventoryItemTable','itemNameMessage','btnInvetoryItemModal')" id="ingrediantNameInput" required>
-                                    <span id="itemNameMessage"></span>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="itemType" class="form-label">Item Type</label>
-                                    <select class="form-control form-select ClearInventoryItemModalData requiredfield requiredfield_Inv" id="itemType" onchange="HideUnitAndPrice(this.value)" required>
-                                        <option value="">Select Item Type</option>
-                                        <option value="raw">Raw</option>
-                                        <option value="finishedgoods">Finished Goods</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3 nonRaw">
-                                    <label for="categoryType" class="form-label">Category</label>
-                                    <select class="form-control ClearInventoryItemModalData form-select" id="categoryType" required>
-                                        <option value="">Select Category</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="descriptionInput" class="form-label">Description</label>
-                                    <textarea rows="5" cols="30" class="form-control ClearInventoryItemModalData" id="descriptionInput"></textarea>
-                                </div>
-                            </div>
+                <div class="mb-3">
+                    <label for="brandCountry" class="form-label">Country of Origin</label>
+                    <input type="text" id="brandCountry" class="form-control" maxlength="50" />
+                </div>
 
-                            <div class="mb-3 nonRaw">
-                                <label for="itemPrice" class="form-label">Item Price</label>
-                                <input type="number" class="form-control ClearInventoryItemModalData" id="itemPrice" required>
-                            </div>
-                            <div class="row">
-                                <div class="mb-3 col-md-6 nonRaw">
-                                    <label for="unit" class="form-label">Quantity</label>
-                                    <input type="text" class="form-control ClearInventoryItemModalData" id="quantityUnit" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="unit" class="form-label">Unit</label>
-                                    <select type="text" class="form-control form-select ClearInventoryItemModalData" id="unit">
-                                        <option value="kg">kg</option>
-                                        <option value="ltr">ltr</option>
-                                        <option value="g">g</option>
-                                        <option value="ml">ml</option>
-                                        <option value="mg">mg</option>
-                                        <option value="pcs">pcs</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <input type="hidden" class="ClearInventoryItemModalData" id="selectedInventoryItemID">
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" onclick="saveInventoryItem()" id="btnInvetoryItemModal" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
+                <div class="mb-3">
+                    <label for="brandWebsite" class="form-label">Brand Website</label>
+                    <input type="url" id="brandWebsite" class="form-control" maxlength="200" />
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" id="isLuxuryBrand" class="form-check-input" />
+                    <label for="isLuxuryBrand" class="form-check-label">Is Luxury Brand</label>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" id="isActiveBrand" class="form-check-input" checked />
+                    <label for="isActiveBrand" class="form-check-label">Is Active Brand</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="brandNotes" class="form-label">Notes</label>
+                    <textarea id="brandNotes" class="form-control" rows="3" maxlength="500"></textarea>
                 </div>
             </div>
-        </div>
 
-        @* Add Supplier Details Pop-up *@
-        <div class="modal fade" id="supplierDtsModal" tabindex="-1" aria-labelledby="addSupplierDtsModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addSupplierDtsModalLabel">Add Supplier Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="supplierDtsform">
-                            <div class="mb-3">
-                                <label for="supplierNameInput" class="form-label">Supplier Name</label>
-                                <input type="text" class="form-control ClearSupplierDtsModalData requiredfield requiredfield_Sup" onkeyup="CheckNameAlreadyExist(this,'SupplierTable','supplierNameMessage','btnSupplierModal')" id="supplierNameInput" required>
-                                <span id="supplierNameMessage"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label for="supplierContactInput" class="form-label">Conatct No</label>
-                                <input type="text" class="form-control ClearSupplierDtsModalData requiredfield_Sup requiredfield PhonenumberValidation" id="supplierContactInput" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="supplierAddressInput" class="form-label">Address</label>
-                                <textarea rows="5" cols="30" class="form-control ClearSupplierDtsModalData" id="supplierAddressInput"></textarea>
-                            </div>
-                            @* <div class="mb-3">
-                                <label for="supplierStateInput" class="form-label">State</label>
-                                <input type="text" class="form-control ClearSupplierDtsModalData requiredfield_Sup requiredfield" id="supplierStateInput" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="supplierCityInput" class="form-label">City</label>
-                                <input type="text" class="form-control ClearSupplierDtsModalData requiredfield_Sup requiredfield" id="supplierCityInput" required>
-                            </div> *@
-
-                            <input type="hidden" class="ClearSupplierDtsModalData" id="selectedSupplierID">
-
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" onclick="saveSupplierDetails()" id="btnSupplierModal" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save Brand</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
-        </div>
-
-        @* Add Category Details Pop-up *@ 
-        <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="categoryModalLabel">Add Category</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="categoryItemform">
-                            <div class="mb-3">
-                                <label for="txtCategoryName" class="form-label">Category Name</label>
-                                <input type="text" class="form-control ClearCategoryModalData requiredfield requiredfield_Cat" onkeyup="CheckNameAlreadyExist(this,'CategoryTable','categoryNameMessage','btnCategoryModal')" id="txtCategoryName" required>
-                                <span id="categoryNameMessage"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label for="txtCategoryDesc" class="form-label">Description</label>
-                                <textarea rows="5" cols="30" class="form-control ClearCategoryaModalDat" id="txtCategoryDesc"></textarea>
-                            </div>
-                            <input type="hidden" class="ClearCategoryModalData" id="selectedCategoryID">
-
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" onclick="saveCategory()" id="btnCategoryModal" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        @* Add Customer Details Pop-up *@ 
-        <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="customerModalLabel">Add Customer</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="categoryItemform">
-                            <div class="mb-3">
-                                <label for="txtCustomerName" class="form-label">Customer Name</label>
-                                <input type="text" class="form-control ClearCustomerModalData requiredfield requiredfield_Cust" onkeyup="CheckNameAlreadyExist(this,'CustomerTable','custNameMessage','btnCustomerModal')" id="txtCustomerName" required>
-                                <span id="custNameMessage"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label for="txtCustomerAddress" class="form-label">Address</label>
-                                <textarea rows="5" cols="30" class="form-control ClearCustomerModalData" id="txtCustomerAddress"></textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="txtCustomerPhone" class="form-label">Phone No</label>
-                                <input type="text" class="form-control ClearCustomerModalData requiredfield requiredfield_Cust" id="txtCustomerPhone" required>
-                                <small id="phoneError" class="text-danger"></small>
-                            </div>
-
-                            <input type="hidden" class="ClearCustomerModalData" id="selectedcustomerID">
-
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" onclick="saveCustomer()" id="btnCustomerModal" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        </form>
     </div>
 </div>
 
+<!-- jQuery and Bootstrap JS (use your versions) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-
-       $(document).ready(function() {
-           $('#InventoryItemTable').on('click', '.btn-edit', function () {
-
-                   var fullData = JSON.parse($(this).attr('data-full-data'));
-
-                   editInventoryItem(fullData);
-
-               });
-
-           $('#InventoryItemTable').on('click', '.btn-delete', function () {
-
-                   var ID = JSON.parse($(this).attr('data-id'));
-
-                   DeleteWarning(deleteInventoryItem,ID);
-
-
-               });
-
-           $('#SupplierTable').on('click', '.btn-edit', function () {
-
-                   var fullData = JSON.parse($(this).attr('data-full-data'));
-
-                   editSupplierdts(fullData);
-
-               });
-
-
-           $('#SupplierTable').on('click', '.btn-delete', function () {
-
-                   var ID = JSON.parse($(this).attr('data-id'));
-
-                   DeleteWarning(deleteSupplierdts,ID);
-
-
-               });
-
-           $('#CategoryTable').on('click', '.btn-edit', function () {
-
-                   var fullData = JSON.parse($(this).attr('data-full-data'));
-
-                   editCategory(fullData);
-
-               });
-
-           $('#CategoryTable').on('click', '.btn-delete', function () {
-
-                   var ID = JSON.parse($(this).attr('data-id'));
-
-                   DeleteWarning(deleteCategory,ID);
-
-
-               });
-
-
-           $('#CustomerTable').on('click', '.btn-edit', function () {
-
-                   var fullData = JSON.parse($(this).attr('data-full-data'));
-
-                   editCustomerDts(fullData);
-
-               });
-
-           $('#CustomerTable').on('click', '.btn-delete', function () {
-
-                   var ID = JSON.parse($(this).attr('data-id'));
-
-                   DeleteWarning(deleteCustomer,ID);
-
-
-               });
-
-
-           getInventoryItems();
-           getSupplierDts();
-           getCategory();
-           getCustomerDts();
-       });
-
-         //to validate phoneNo
-         document.getElementById("txtCustomerPhone").addEventListener("input", function () {
-           let phoneInput = this.value.trim();
-           let phoneError = document.getElementById("phoneError");
-
-
-           let phonePattern = /^[0-9]{10}$/;
-
-           if (!phonePattern.test(phoneInput)) {
-               phoneError.textContent = "Enter a valid 10-digit phone number.";
-           } else {
-               phoneError.textContent = "";
-           }
-       });
-
-
-        function ClearInventoryStockModalFieldsfcn()
-         {
-           $('.ClearInventoryItemModalData').val('');
-           $('#inventoryItemModal').modal('toggle');
-         }
-
-         function ClearSupplierDtsModalFieldsfcn()
-         {
-           $('.ClearSupplierDtsModalData').val('');
-           $("#supplierDtsModal").modal('toggle');
-         }
-
-         function ClearCategoryModalFieldsFcn()
-         {
-             $('.ClearCategoryModalData').val('');
-             $('#categoryModal').modal('toggle');
-         }
-
-         function ClearCustomerModalFieldsFcn()
-         {
-            $('.ClearCustomerModalData').val('');
-            $('#customerModal').modal('toggle');
-         }
-
-
-       function ClearInventoryItemModalData()
-       {
-           $('.ClearInventoryItemModalData').val('');
-       }
-
-       function ClearSupplierDtsModalData()
-       {
-           $('.ClearSupplierDtsModalData').val('');
-       }
-
-       function ClearCategoryModalData()
-       {
-           $('.ClearCategoryModalData').val('');
-       }
-
-           function ClearCustomerModalData()
-       {
-           $('.ClearCustomerModalData').val('');
-       }
-
-
-       function HideUnitAndPrice(value)
-       {
-           if(value == 'raw')
-           {
-               $('.nonRaw').hide();
-           }
-           else
-           {
-               $('.nonRaw').show();
-           }
-       }
-
-       // Function to save or update InventoryItem
-        function saveInventoryItem() {
-            if(CheckEmptyFields('Inv')){
-           var itemdata = {};
-            itemdata.itemId = $('#selectedInventoryItemID').val(); // Retrieve ID from hidden input
-            itemdata.itemName = $('#ingrediantNameInput').val(); // Retrieve ingredientName from input
-            itemdata.itemDescription = $('#descriptionInput').val(); // Retrieve description from input
-            itemdata.itemType = $('#itemType').val()
-            itemdata.unit = $('#unit').val()
-            itemdata.pricePerUnit = $('#itemPrice').val()
-            itemdata.fkCategoryId = $('#categoryType').val()
-            itemdata.priceQuantity = $('#quantityUnit').val()
-           var url = '/Configuration/AddOrEditInventoryItem' ; // Determine if updating or adding
-
-           $.ajax({
-               url: url,
-               type: 'POST',
-               data: {
-                   item : itemdata
-               },
-               success: function (response) {
-                   if (response) {
-                       msgPopup('success', 'data saved successfully');
-                       $('#inventoryItemModal').modal('toggle');
-                       getInventoryItems();
-                   } else {
-                       alert('Failed to ' + (id ? 'update' : 'add') + ' data.');
-                   }
-               },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-           });
-           }
-       }
-
-       // Function to getInventoryItems
-       function getInventoryItems() {
-            var table = InitializeDatatableWithSlNo('InventoryItemTable','InventoryItemMaster');
-              $.ajax({
-                   url: '/Configuration/GetInventoryItems',
-                   type: 'POST',
-                   success: function (response) {
-                           response.forEach(function (item) {
-
-                   table.row.add([
-
-                       '',
-
-                       item.itemName,
-
-                       item.itemType,
-
-                       item.itemDescription,
-
-                       item.categeoryName,
-
-                       '<div class="contentCenter">' +
-
-                       '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item) + '\'></i>' +
-
-                       '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(item.itemId) + '\'></i>' +
-
-                       '</div>'
-
-                   ]).draw();
-
-                   });
-
-                       },
-                   error: function (xhr, status, error) {
-                       alert('An error occurred: ' + error);
-                   }
-               });
-
-           }
-
-           //function to delete Inventory Item
-           function deleteInventoryItem(id) {
-
-       $.ajax({
-           url: '/Configuration/DeleteInventoryItems',
-           type: 'POST',
-           data: {
-               id : id
-           },
-           success: function (response) {
-
-               if(response)
-               {
-                   msgPopup('success', 'data deleted successfully');
-               }
-               else
-               {
-                   msgPopup('error', response.toString());
-               }
-
-               getInventoryItems();
-               },
-           error: function (xhr, status, error) {
-               alert('An error occurred: ' + error);
-           }
-       });
-           }
-
-           function editInventoryItem(data) {
-               $('#selectedInventoryItemID').val(data.itemId);
-               $('#ingrediantNameInput').val(data.itemName);
-               $('#descriptionInput').val(data.itemDescription);
-               $('#itemType').val(data.itemType);
-               $('#categoryType').val(data.fkCategoryId);
-               $('#unit').val(data.unit);
-               $('#itemPrice').val(data.pricePerUnit);
-               $('#quantityUnit').val(data.priceQuantity);
-
-               $('#inventoryItemModal').modal('toggle');
-
-           }
-
-
-           //function to save or update SupplierDetails
-           function saveSupplierDetails() {
-               if(CheckEmptyFields('Sup')){
-               var supplierdata = {};
-               supplierdata.supplierId = $('#selectedSupplierID').val();
-               supplierdata.supplierName = $('#supplierNameInput').val();
-               supplierdata.phoneNumber = $('#supplierContactInput').val();
-               supplierdata.address = $('#supplierAddressInput').val();
-               supplierdata.state = "Karnataka";//HardCoded Values
-               supplierdata.city = "Belgaum";
-               var url = '/Configuration/AddOrEditSupplierDetails'
-
-               $.ajax({
-               url: url,
-               type: 'POST',
-               data: {
-                   supplier : supplierdata
-               },
-               success: function (response) {
-                   if (response) {
-                       msgPopup('success', 'data saved successfully');
-                       $('#supplierDtsModal').modal('toggle');
-                       getSupplierDts();
-                   } else {
-                       alert('Failed to ' + (id ? 'update' : 'add') + ' data.');
-                   }
-               },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-           });
-           }
-       }
-
-       //Get Supplier Details
-       function getSupplierDts() {
-               var table = InitializeDatatableWithSlNo('SupplierTable',"Suppliers");
-              $.ajax({
-                   url: '/Configuration/GetSupplierDts',
-                   type: 'POST',
-                   success: function (response) {
-                           response.forEach(function (supplier) {
-
-                   table.row.add([
-                       '',
-                       supplier.supplierName,
-
-                       supplier.phoneNumber,
-
-                       supplier.address,
-
-                       '<div class="contentCenter">' +
-
-                       '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(supplier) + '\'></i>' +
-
-                       '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(supplier.supplierId) + '\'></i>' +
-
-                       '</div>'
-
-                   ]).draw();
-
-                   });
-
-                       },
-                   error: function (xhr, status, error) {
-                       alert('An error occurred: ' + error);
-                   }
-               });
-
-           }
-
-           function editSupplierdts(data)
-           {
-               $('#selectedSupplierID').val(data.supplierId);
-               $('#supplierNameInput').val(data.supplierName);
-               $('#supplierContactInput').val(data.phoneNumber);
-               $('#supplierAddressInput').val(data.address);
-               $('#supplierStateInput').val(data.state);
-               $('#supplierCityInput').val(data.city);
-               $('#supplierDtsModal').modal('toggle');
-
-
-           }
-
-           // function to delete Supplier details
-               function deleteSupplierdts(id) {
-
-               $.ajax({
-                   url: '/Configuration/DeleteSupplier',
-                   type: 'POST',
-                   data: {
-                       id : id
-                   },
-                   success: function (response) {
-
-                       if(response)
-                       {
-                           msgPopup('success', 'data deleted successfully');
-                       }
-                       else
-                       {
-                           msgPopup('error', response.toString());
-                       }
-
-                       getSupplierDts();
-                       },
-                   error: function (xhr, status, error) {
-                       alert('An error occurred: ' + error);
-                   }
-               });
-           }
-
-           //function to save category
-            function saveCategory() {
-            if(CheckEmptyFields('Cat')){
-           var catdata = {};
-           catdata.id = $('#selectedCategoryID').val(); // Retrieve ID from hidden input
-           catdata.categoryName = $('#txtCategoryName').val(); // Retrieve ingredientName from input
-           catdata.description = $('#txtCategoryDesc').val(); // Retrieve description from input
-
-           $.ajax({
-               url: '/Configuration/AddorEditCategory',
-               type: 'POST',
-               data: {
-                   cat : catdata
-               },
-               success: function (response) {
-                   if (response) {
-                       msgPopup('success', 'data saved successfully');
-                       $('#categoryModal').modal('toggle');
-                       getCategory();
-                   } else {
-                       alert('Failed to ' + (id ? 'update' : 'add') + ' data.');
-                   }
-               },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-           });
-           }
-       }
-
-           function getCategory() {
-            //var table = $('#CategoryTable').DataTable();
-            var table = InitializeDatatableWithSlNo('CategoryTable',"Category");
-              $.ajax({
-                   url: '/Configuration/GetCategory',
-                   type: 'POST',
-                   success: function (response) {
-                           response.forEach(function (cat) {
-
-                   table.row.add([
-
-                       '',
-
-                       cat.categoryName,
-
-                       cat.description,
-
-                       '<div class="contentCenter">' +
-
-                       '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(cat) + '\'></i>' +
-
-                       '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(cat.id) + '\'></i>' +
-
-                       '</div>'
-
-                   ]).draw();
-
-                   });
-
-                   let categoryDropdown = document.getElementById('categoryType');
-
-                   response.forEach(category => {
-                       let option = document.createElement('option');
-                       option.value = category.id; // Assuming 'id' is the primary key
-                       option.textContent = category.categoryName;
-                       categoryDropdown.appendChild(option);
-                   });
-
-
-
-                       },
-                   error: function (xhr, status, error) {
-                       alert('An error occurred: ' + error);
-                   }
-               });
-
-           }
-
-           function editCategory(data) {
-               $('#selectedCategoryID').val(data.id);
-               $('#txtCategoryName').val(data.categoryName);
-               $('#txtCategoryDesc').val(data.description);
-               $('#categoryModal').modal('toggle');
-
-           }
-
-           function deleteCategory(id) {
-
-           $.ajax({
-               url: '/Configuration/DeleteCategory',
-               type: 'POST',
-               data: {
-                   id : id
-               },
-               success: function (response) {
-
-                   if(response)
-                   {
-                       msgPopup('success', 'data deleted successfully');
-                   }
-                   else
-                   {
-                       msgPopup('error', response.toString());
-                   }
-
-                   getCategory();
-                   },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-       });
-           }
-
-           //function to save Customer
-           function saveCustomer() {
-            if(CheckEmptyFields('Cust')){
-           var customerData = {};
-            customerData.customerId = $('#selectedcustomerID').val(); // Retrieve ID from hidden input
-            customerData.customerName = $('#txtCustomerName').val(); // Retrieve customerName from hidden input
-            customerData.phoneNo = $('#txtCustomerPhone').val(); // Retrieve phoneNo from input
-            customerData.address = $('#txtCustomerAddress').val(); // Retrieve address from input
-           var url = '/Configuration/AddorEditCustomer' ; // Determine if updating or adding
-
-           $.ajax({
-               url: url,
-               type: 'POST',
-               data: {
-                   cust : customerData
-               },
-               success: function (response) {
-                   if (response) {
-                       msgPopup('success', 'data saved successfully');
-                       $('#customerModal').modal('toggle');
-                       getCustomerDts();
-                   } else {
-                       alert('Failed to ' + (id ? 'update' : 'add') + ' data.');
-                   }
-               },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-           });
-           }
-       }
-
-       function getCustomerDts() {
-            var table = InitializeDatatableWithSlNo('CustomerTable','Customers');
-              $.ajax({
-                   url: '/Configuration/GetCustomer',
-                   type: 'POST',
-                   success: function (response) {
-                           response.forEach(function (customer) {
-
-                   table.row.add([
-
-                       '',
-
-                       customer.customerName,
-
-                       customer.address,
-
-                       customer.phoneNo,
-
-                       '<div class="contentCenter">' +
-
-                       '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(customer) + '\'></i>' +
-
-                       '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(customer.customerId) + '\'></i>' +
-
-                       '</div>'
-
-                   ]).draw();
-
-                   });
-
-                       },
-                   error: function (xhr, status, error) {
-                       alert('An error occurred: ' + error);
-                   }
-               });
-
-           }
-
-           function deleteCustomer(id) {
-
-           $.ajax({
-               url: '/Configuration/DeleteCustomer',
-               type: 'POST',
-               data: {
-                   id : id
-               },
-               success: function (response) {
-
-                   if(response)
-                   {
-                       msgPopup('success', 'data deleted successfully');
-                   }
-                   else
-                   {
-                       msgPopup('error', response.toString());
-                   }
-
-                   getCustomerDts();
-                   },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-       });
-           }
-
-    function editCustomerDts(data) {
-        $('#selectedcustomerID').val(data.customerId);
-        $('#txtCustomerName').val(data.customerName);
-        $('#txtCustomerAddress').val(data.address);
-        $('#txtCustomerPhone').val(data.phoneNo);
-        $('#customerModal').modal('toggle');
-
-    }
-
-
-           //validations
-    function CheckNameAlreadyExist(input,tblId,messageTextId,buttonId){
-           const enteredName = input.value.trim().toLowerCase();
-
-           const table = $('#'+tblId).DataTable();
-
-           const nameExists = table
-               .column(1)
-               .data()
-               .toArray()
-               .some(name => name.trim().toLowerCase() === enteredName);
-           if(nameExists){
-                $('#'+messageTextId).text('Name already exists!').css('color', 'red');
-                $('#'+ buttonId).prop('disabled',true);
-           }else{
-                $('#'+messageTextId).text('');
-                 $('#'+ buttonId).prop('disabled',false);
-           }
-    }
-
-
+    $(function () {
+        var brandModal = new bootstrap.Modal($('#brandModal')[0]);
+
+        function loadBrands(search = '') {
+            $.ajax({
+                url: '/CarBrands/GetAll',
+                type: 'GET',
+                data: { search: search },
+                success: function (data) {
+                    var tbody = $('#tblCarBrands tbody').empty();
+                    if (!data || data.length === 0) {
+                        tbody.append('<tr><td colspan="6" class="text-center">No brands found</td></tr>');
+                        return;
+                    }
+                    $.each(data, function (i, brand) {
+                        tbody.append(`<tr>
+                            <td>${brand.brandName}</td>
+                            <td>${brand.brandCountryOfOrigin || ''}</td>
+                            <td><a href="${brand.brandWebsite}" target="_blank">${brand.brandWebsite}</a></td>
+                            <td>${brand.isLuxuryBrand ? '✅' : '❌'}</td>
+                            <td>${brand.isActiveBrand ? '✅' : '❌'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning btn-edit" data-id="${brand.brandId}">Edit</button>
+                                <button class="btn btn-sm btn-danger btn-delete" data-id="${brand.brandId}">Delete</button>
+                            </td>
+                        </tr>`);
+                    });
+                },
+                error: function () {
+                    alert('Failed to load brands.');
+                }
+            });
+        }
+
+        loadBrands();
+
+        $('#txtSearch').on('input', function () {
+            loadBrands($(this).val());
+        });
+
+        $('#btnAddNew').click(function () {
+            clearForm();
+            $('#brandModalLabel').text('Add New Brand');
+            brandModal.show();
+        });
+
+        function clearForm() {
+            $('#brandId').val('');
+            $('#brandName').val('');
+            $('#brandCountry').val('');
+            $('#brandWebsite').val('');
+            $('#isLuxuryBrand').prop('checked', false);
+            $('#isActiveBrand').prop('checked', true);
+            $('#brandNotes').val('');
+        }
+
+        $('#brandForm').submit(function (e) {
+            e.preventDefault();
+
+            var brandData = {
+                brandId: $('#brandId').val(),
+                brandName: $('#brandName').val().trim(),
+                brandCountryOfOrigin: $('#brandCountry').val().trim(),
+                brandWebsite: $('#brandWebsite').val().trim(),
+                isLuxuryBrand: $('#isLuxuryBrand').prop('checked'),
+                isActiveBrand: $('#isActiveBrand').prop('checked'),
+                brandNotes: $('#brandNotes').val().trim()
+            };
+
+            var url = brandData.brandId ? '/CarBrands/Update' : '/CarBrands/Create';
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(brandData),
+                success: function (res) {
+                    alert(res.message || 'Operation successful');
+                    brandModal.hide();
+                    loadBrands();
+                },
+                error: function (xhr) {
+                    alert('Error: ' + xhr.responseText);
+                }
+            });
+        });
+
+        $('#tblCarBrands').on('click', '.btn-edit', function () {
+            var id = $(this).data('id');
+            $.ajax({
+                url: '/CarBrands/GetById?id=' + id,
+                type: 'GET',
+                success: function (brand) {
+                    $('#brandId').val(brand.brandId);
+                    $('#brandName').val(brand.brandName);
+                    $('#brandCountry').val(brand.brandCountryOfOrigin);
+                    $('#brandWebsite').val(brand.brandWebsite);
+                    $('#isLuxuryBrand').prop('checked', brand.isLuxuryBrand);
+                    $('#isActiveBrand').prop('checked', brand.isActiveBrand);
+                    $('#brandNotes').val(brand.brandNotes);
+                    $('#brandModalLabel').text('Edit Brand');
+                    brandModal.show();
+                },
+                error: function () {
+                    alert('Failed to load brand data.');
+                }
+            });
+        });
+
+        $('#tblCarBrands').on('click', '.btn-delete', function () {
+            if (!confirm('Are you sure you want to delete this brand?')) return;
+
+            var id = $(this).data('id');
+            $.ajax({
+                url: '/CarBrands/Delete?id=' + id,
+                type: 'DELETE',
+                success: function (res) {
+                    alert(res.message || 'Deleted successfully');
+                    loadBrands();
+                },
+                error: function (xhr) {
+                    alert('Delete failed: ' + xhr.responseText);
+                }
+            });
+        });
+    });
 </script>

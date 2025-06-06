@@ -13,454 +13,610 @@ public partial class Assignment4Context : DbContext
     {
     }
 
-    public virtual DbSet<BakedCookedLogs> BakedCookedLogs { get; set; }
+    public virtual DbSet<BusinessAnalytics> BusinessAnalytics { get; set; }
 
-    public virtual DbSet<BillOrderItems> BillOrderItems { get; set; }
+    public virtual DbSet<CarBrands> CarBrands { get; set; }
 
-    public virtual DbSet<Billing> Billing { get; set; }
+    public virtual DbSet<CarColors> CarColors { get; set; }
 
-    public virtual DbSet<Category> Category { get; set; }
+    public virtual DbSet<CarConditionLevels> CarConditionLevels { get; set; }
 
-    public virtual DbSet<Customers> Customers { get; set; }
+    public virtual DbSet<CarFeaturesList> CarFeaturesList { get; set; }
 
-    public virtual DbSet<DailyExpense> DailyExpense { get; set; }
+    public virtual DbSet<CarImages> CarImages { get; set; }
 
-    public virtual DbSet<Inventory> Inventory { get; set; }
+    public virtual DbSet<CarListingFeatures> CarListingFeatures { get; set; }
 
-    public virtual DbSet<InventoryItems> InventoryItems { get; set; }
+    public virtual DbSet<CarListingViews> CarListingViews { get; set; }
 
-    public virtual DbSet<ItemsUsedForGoods> ItemsUsedForGoods { get; set; }
+    public virtual DbSet<CarListings> CarListings { get; set; }
 
-    public virtual DbSet<MasterBranch> MasterBranch { get; set; }
+    public virtual DbSet<CarModels> CarModels { get; set; }
 
-    public virtual DbSet<Orders> Orders { get; set; }
+    public virtual DbSet<CarVariants> CarVariants { get; set; }
 
-    public virtual DbSet<PurchaseDetails> PurchaseDetails { get; set; }
+    public virtual DbSet<CustomerInquiries> CustomerInquiries { get; set; }
 
-    public virtual DbSet<RawMaterialLogs> RawMaterialLogs { get; set; }
+    public virtual DbSet<EngineSpecifications> EngineSpecifications { get; set; }
 
-    public virtual DbSet<Recipe> Recipe { get; set; }
+    public virtual DbSet<FuelTypes> FuelTypes { get; set; }
 
-    public virtual DbSet<ReturnItems> ReturnItems { get; set; }
+    public virtual DbSet<GeographicCities> GeographicCities { get; set; }
 
-    public virtual DbSet<ReturnManagement> ReturnManagement { get; set; }
+    public virtual DbSet<GeographicStates> GeographicStates { get; set; }
 
-    public virtual DbSet<Suppliers> Suppliers { get; set; }
+    public virtual DbSet<InsuranceProviders> InsuranceProviders { get; set; }
+
+    public virtual DbSet<RTOCodes> RTOCodes { get; set; }
+
+    public virtual DbSet<SystemConfiguration> SystemConfiguration { get; set; }
+
+    public virtual DbSet<TransmissionTypes> TransmissionTypes { get; set; }
+
+    public virtual DbSet<VehicleCategories> VehicleCategories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<BakedCookedLogs>(entity =>
+        modelBuilder.Entity<BusinessAnalytics>(entity =>
         {
-            entity.HasKey(e => e.logId).HasName("PK__BakedCoo__7839F64D5DA24432");
+            entity.HasKey(e => e.AnalyticsId).HasName("PK__Business__506974E34D6B8DF8");
 
-            entity.Property(e => e.actualQuantity).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.reasonForDiff)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.sUser)
+            entity.HasIndex(e => new { e.AnalyticsDate, e.MetricName }, "IX_BusinessAnalytics_Date").IsDescending(true, false);
+
+            entity.Property(e => e.CalculatedDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.MetricCategory).HasMaxLength(50);
+            entity.Property(e => e.MetricName)
                 .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.targetQuantity).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
+                .HasMaxLength(100);
+            entity.Property(e => e.MetricUnit).HasMaxLength(20);
+            entity.Property(e => e.MetricValue).HasColumnType("decimal(15, 2)");
 
-            entity.HasOne(d => d.fkItem).WithMany(p => p.BakedCookedLogs)
-                .HasForeignKey(d => d.fkItemId)
+            entity.HasOne(d => d.RelatedListing).WithMany(p => p.BusinessAnalytics)
+                .HasForeignKey(d => d.RelatedListingId)
+                .HasConstraintName("FK__BusinessA__Relat__51300E55");
+        });
+
+        modelBuilder.Entity<CarBrands>(entity =>
+        {
+            entity.HasKey(e => e.BrandId).HasName("PK__CarBrand__DAD4F05EAAF50D01");
+
+            entity.HasIndex(e => e.BrandName, "UQ__CarBrand__2206CE9B3671B32D").IsUnique();
+
+            entity.Property(e => e.BrandCountryOfOrigin).HasMaxLength(50);
+            entity.Property(e => e.BrandCreatedDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.BrandLogo).HasMaxLength(500);
+            entity.Property(e => e.BrandName)
+                .IsRequired()
+                .HasMaxLength(60);
+            entity.Property(e => e.BrandNotes).HasMaxLength(500);
+            entity.Property(e => e.BrandWebsite).HasMaxLength(200);
+            entity.Property(e => e.IsActiveBrand).HasDefaultValue(true);
+            entity.Property(e => e.IsLuxuryBrand).HasDefaultValue(false);
+        });
+
+        modelBuilder.Entity<CarColors>(entity =>
+        {
+            entity.HasKey(e => e.ColorId).HasName("PK__CarColor__8DA7674D3F294804");
+
+            entity.Property(e => e.ColorDisplayName).HasMaxLength(50);
+            entity.Property(e => e.ColorFamily).HasMaxLength(30);
+            entity.Property(e => e.ColorHexCode).HasMaxLength(10);
+            entity.Property(e => e.ColorName)
+                .IsRequired()
+                .HasMaxLength(40);
+            entity.Property(e => e.IsActiveColor).HasDefaultValue(true);
+            entity.Property(e => e.IsMetallicPaint).HasDefaultValue(false);
+            entity.Property(e => e.IsPearlPaint).HasDefaultValue(false);
+            entity.Property(e => e.IsSolidPaint).HasDefaultValue(true);
+            entity.Property(e => e.ResaleValueImpact).HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<CarConditionLevels>(entity =>
+        {
+            entity.HasKey(e => e.ConditionId).HasName("PK__CarCondi__37F5C0CF2997BEF2");
+
+            entity.Property(e => e.ConditionDescription).HasMaxLength(300);
+            entity.Property(e => e.ConditionName)
+                .IsRequired()
+                .HasMaxLength(30);
+            entity.Property(e => e.ExpectedPriceReduction).HasColumnType("decimal(4, 1)");
+            entity.Property(e => e.IsActiveCondition).HasDefaultValue(true);
+            entity.Property(e => e.RecommendedFor).HasMaxLength(200);
+            entity.Property(e => e.TypicalIssues).HasMaxLength(500);
+        });
+
+        modelBuilder.Entity<CarFeaturesList>(entity =>
+        {
+            entity.HasKey(e => e.FeatureId).HasName("PK__CarFeatu__82230BC96C364B6B");
+
+            entity.Property(e => e.AffectsResaleValue).HasDefaultValue(false);
+            entity.Property(e => e.FeatureCategory).HasMaxLength(50);
+            entity.Property(e => e.FeatureDescription).HasMaxLength(400);
+            entity.Property(e => e.FeatureDisplayName).HasMaxLength(120);
+            entity.Property(e => e.FeatureIcon).HasMaxLength(200);
+            entity.Property(e => e.FeatureImportanceLevel).HasMaxLength(20);
+            entity.Property(e => e.FeatureName)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.FeatureSubCategory).HasMaxLength(50);
+            entity.Property(e => e.IsActiveFeature).HasDefaultValue(true);
+            entity.Property(e => e.IsStandardFeature).HasDefaultValue(false);
+            entity.Property(e => e.TypicalFoundIn).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<CarImages>(entity =>
+        {
+            entity.HasKey(e => e.ImageId).HasName("PK__CarImage__7516F70C2B0AE2C2");
+
+            entity.HasIndex(e => new { e.ListingId, e.IsPrimaryImage }, "IX_CarImages_ListingId").IsDescending(false, true);
+
+            entity.HasIndex(e => new { e.ImageType, e.IsActiveImage }, "IX_CarImages_Type");
+
+            entity.Property(e => e.ImageCategory).HasMaxLength(30);
+            entity.Property(e => e.ImageDescription).HasMaxLength(200);
+            entity.Property(e => e.ImageFileName)
+                .IsRequired()
+                .HasMaxLength(200);
+            entity.Property(e => e.ImageFilePath)
+                .IsRequired()
+                .HasMaxLength(600);
+            entity.Property(e => e.ImageQuality).HasMaxLength(20);
+            entity.Property(e => e.ImageType).HasMaxLength(50);
+            entity.Property(e => e.ImageUploadDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.IsActiveImage).HasDefaultValue(true);
+            entity.Property(e => e.IsPrimaryImage).HasDefaultValue(false);
+            entity.Property(e => e.IsWatermarked).HasDefaultValue(false);
+
+            entity.HasOne(d => d.Listing).WithMany(p => p.CarImages)
+                .HasForeignKey(d => d.ListingId)
+                .HasConstraintName("FK__CarImages__Listi__2BFE89A6");
+        });
+
+        modelBuilder.Entity<CarListingFeatures>(entity =>
+        {
+            entity.HasKey(e => e.ListingFeatureId).HasName("PK__CarListi__0806118617AEB346");
+
+            entity.HasIndex(e => e.FeatureId, "IX_CarListingFeatures_FeatureId");
+
+            entity.HasIndex(e => e.ListingId, "IX_CarListingFeatures_ListingId");
+
+            entity.HasIndex(e => new { e.ListingId, e.FeatureId }, "UQ__CarListi__371C8E6D99CB733E").IsUnique();
+
+            entity.Property(e => e.FeatureCondition).HasMaxLength(30);
+            entity.Property(e => e.FeatureMappedDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.FeatureNotes).HasMaxLength(200);
+            entity.Property(e => e.IsFeatureAvailable).HasDefaultValue(true);
+
+            entity.HasOne(d => d.Feature).WithMany(p => p.CarListingFeatures)
+                .HasForeignKey(d => d.FeatureId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BakedCook__sUser__440B1D61");
+                .HasConstraintName("FK__CarListin__Featu__32AB8735");
+
+            entity.HasOne(d => d.Listing).WithMany(p => p.CarListingFeatures)
+                .HasForeignKey(d => d.ListingId)
+                .HasConstraintName("FK__CarListin__Listi__31B762FC");
         });
 
-        modelBuilder.Entity<BillOrderItems>(entity =>
+        modelBuilder.Entity<CarListingViews>(entity =>
         {
-            entity.HasKey(e => e.itemId).HasName("PK__BillOrde__56A128AADFA183BA");
+            entity.HasKey(e => e.ViewId).HasName("PK__CarListi__1E371CF66BA5286D");
 
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.deliveredQty).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.deliveredStatus)
-                .HasMaxLength(15)
-                .IsUnicode(false);
-            entity.Property(e => e.entryType)
-                .IsRequired()
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.price).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.sUser)
-                .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.unit)
-                .IsRequired()
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
-        });
+            entity.HasIndex(e => new { e.ListingId, e.ViewDate }, "IX_CarListingViews_ListingId").IsDescending(false, true);
 
-        modelBuilder.Entity<Billing>(entity =>
-        {
-            entity.HasKey(e => e.billId).HasName("PK__Billing__6D903F031488DD44");
+            entity.Property(e => e.ContactDetailsViewed).HasDefaultValue(false);
+            entity.Property(e => e.ImagesViewed).HasDefaultValue(0);
+            entity.Property(e => e.PagesViewed).HasDefaultValue(1);
+            entity.Property(e => e.PhoneNumberRevealed).HasDefaultValue(false);
+            entity.Property(e => e.ReferrerSource).HasMaxLength(300);
+            entity.Property(e => e.ViewDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.ViewerIPAddress).HasMaxLength(50);
+            entity.Property(e => e.ViewerLocation).HasMaxLength(100);
+            entity.Property(e => e.ViewerUserAgent).HasMaxLength(600);
 
-            entity.Property(e => e.advanceAmount).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.billDate).HasColumnType("datetime");
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.discount)
-                .HasDefaultValue(0m)
-                .HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.finalAmount).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.paymentMode)
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.paymentStatus)
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.sUser)
-                .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.taxAmount)
-                .HasDefaultValue(0m)
-                .HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.fkCustomer).WithMany(p => p.Billing)
-                .HasForeignKey(d => d.fkCustomerId)
-                .HasConstraintName("FK__Billing__fkCusto__5224328E");
-
-            entity.HasOne(d => d.fkOrder).WithMany(p => p.Billing)
-                .HasForeignKey(d => d.fkOrderId)
-                .HasConstraintName("FK__Billing__fkOrder__51300E55");
-        });
-
-        modelBuilder.Entity<Category>(entity =>
-        {
-            entity.HasKey(e => e.id).HasName("PK__Category__3213E83F5832D252");
-
-            entity.Property(e => e.categoryName)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.description)
-                .HasMaxLength(150)
-                .IsUnicode(false);
-            entity.Property(e => e.sUser)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<Customers>(entity =>
-        {
-            entity.HasKey(e => e.customerId).HasName("PK__Customer__B611CB7DE7FC3C72");
-
-            entity.Property(e => e.address)
-                .HasMaxLength(300)
-                .IsUnicode(false);
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.customerName)
-                .IsRequired()
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.phoneNo)
-                .IsRequired()
-                .HasMaxLength(15)
-                .IsUnicode(false);
-            entity.Property(e => e.sUser)
-                .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<DailyExpense>(entity =>
-        {
-            entity.HasKey(e => e.id).HasName("PK__DailyExp__3213E83F4DD23A49");
-
-            entity.Property(e => e.amountGiven).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.amountSpent).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.sUser)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.totalExpenses).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<Inventory>(entity =>
-        {
-            entity.HasKey(e => e.inventoryID).HasName("PK__Inventor__C4B7BC2269927F09");
-
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.quantity).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.sUser)
-                .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.item).WithMany(p => p.Inventory)
-                .HasForeignKey(d => d.itemID)
+            entity.HasOne(d => d.Listing).WithMany(p => p.CarListingViews)
+                .HasForeignKey(d => d.ListingId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Inventory__sUser__3A81B327");
+                .HasConstraintName("FK__CarListin__Listi__46B27FE2");
         });
 
-        modelBuilder.Entity<InventoryItems>(entity =>
+        modelBuilder.Entity<CarListings>(entity =>
         {
-            entity.HasKey(e => e.itemId).HasName("PK__Inventor__56A128AA82729B88");
+            entity.HasKey(e => e.ListingId).HasName("PK__CarListi__BF3EBED0BEC0D3A0");
 
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.itemDescription)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.itemName)
-                .IsRequired()
-                .HasMaxLength(150)
-                .IsUnicode(false);
-            entity.Property(e => e.itemType)
-                .IsRequired()
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.pricePerUnit).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.priceQuantity).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.sUser)
-                .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.unit)
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
+            entity.HasIndex(e => new { e.BrandId, e.ModelId }, "IX_CarListings_BrandModel");
 
-            entity.HasOne(d => d.fkCategory).WithMany(p => p.InventoryItems)
-                .HasForeignKey(d => d.fkCategoryId)
-                .HasConstraintName("FK_InventoryItems_Category");
-        });
+            entity.HasIndex(e => new { e.CategoryId, e.OverallConditionId }, "IX_CarListings_CategoryCondition");
 
-        modelBuilder.Entity<ItemsUsedForGoods>(entity =>
-        {
-            entity.HasKey(e => e.itemId).HasName("PK__ItemsUse__56A128AAB6526A8B");
+            entity.HasIndex(e => new { e.FuelTypeId, e.TransmissionId }, "IX_CarListings_FuelTransmission");
 
-            entity.Property(e => e.goodsType)
+            entity.HasIndex(e => e.KilometersOnOdometer, "IX_CarListings_Kilometers");
+
+            entity.HasIndex(e => new { e.StateId, e.CityId }, "IX_CarListings_Location");
+
+            entity.HasIndex(e => e.SellingPriceAsked, "IX_CarListings_PriceRange");
+
+            entity.HasIndex(e => new { e.ListingStatus, e.ListingCreatedDate }, "IX_CarListings_Status").IsDescending(false, true);
+
+            entity.HasIndex(e => e.ManufacturingYear, "IX_CarListings_Year").IsDescending();
+
+            entity.Property(e => e.AccidentSeverityLevel).HasMaxLength(20);
+            entity.Property(e => e.AreaOrLocality).HasMaxLength(120);
+            entity.Property(e => e.AvailableForContactDays).HasMaxLength(100);
+            entity.Property(e => e.AvailableForContactHours).HasMaxLength(50);
+            entity.Property(e => e.AvailableForPhysicalInspection).HasDefaultValue(true);
+            entity.Property(e => e.AvailableForTestDrive).HasDefaultValue(true);
+            entity.Property(e => e.AverageMonthlyKilometers).HasComputedColumnSql("(case when (datepart(year,getdate())-[ManufacturingYear])>(0) then [KilometersOnOdometer]/((datepart(year,getdate())-[ManufacturingYear])*(12)) else (0) end)", false);
+            entity.Property(e => e.ChassisNumber).HasMaxLength(30);
+            entity.Property(e => e.CombinedMileageKMPL)
+                .HasComputedColumnSql("(case when [MileageInCityKMPL] IS NOT NULL AND [MileageOnHighwayKMPL] IS NOT NULL then ([MileageInCityKMPL]+[MileageOnHighwayKMPL])/(2)  end)", false)
+                .HasColumnType("decimal(10, 6)");
+            entity.Property(e => e.CreatedByUserId).HasMaxLength(100);
+            entity.Property(e => e.CreatedFromIPAddress).HasMaxLength(50);
+            entity.Property(e => e.CurrentMarketPrice).HasColumnType("money");
+            entity.Property(e => e.EngineCapacityInLiters)
+                .HasComputedColumnSql("(CONVERT([decimal](4,1),[EngineCapacityInCC])/(1000))", false)
+                .HasColumnType("decimal(9, 6)");
+            entity.Property(e => e.EngineNumber).HasMaxLength(30);
+            entity.Property(e => e.EnginePowerInKW)
+                .HasComputedColumnSql("(CONVERT([decimal](6,1),[EnginePowerInBHP])*(0.746))", false)
+                .HasColumnType("numeric(10, 4)");
+            entity.Property(e => e.EstimatedRepairCost).HasColumnType("money");
+            entity.Property(e => e.ExactAddress).HasMaxLength(400);
+            entity.Property(e => e.FavoriteCount).HasDefaultValue(0);
+            entity.Property(e => e.HasAccidentHistory).HasDefaultValue(false);
+            entity.Property(e => e.HasCompleteServiceHistory).HasDefaultValue(false);
+            entity.Property(e => e.HasElectricalIssues).HasDefaultValue(false);
+            entity.Property(e => e.HasMechanicalIssues).HasDefaultValue(false);
+            entity.Property(e => e.InsuranceClaimHistory).HasDefaultValue(false);
+            entity.Property(e => e.InsurancePolicyNumber).HasMaxLength(50);
+            entity.Property(e => e.InsuranceType).HasMaxLength(40);
+            entity.Property(e => e.IsFeaturedListing).HasDefaultValue(false);
+            entity.Property(e => e.IsFloodAffected).HasDefaultValue(false);
+            entity.Property(e => e.IsPriceNegotiable).HasDefaultValue(true);
+            entity.Property(e => e.IsPromotedListing).HasDefaultValue(false);
+            entity.Property(e => e.IsUrgentSale).HasDefaultValue(false);
+            entity.Property(e => e.IsVerifiedListing).HasDefaultValue(false);
+            entity.Property(e => e.KnownIssuesOrProblems).HasMaxLength(500);
+            entity.Property(e => e.ListingCreatedDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.ListingLastModifiedDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.ListingSource).HasMaxLength(50);
+            entity.Property(e => e.ListingStatus)
+                .HasMaxLength(30)
+                .HasDefaultValue("Active");
+            entity.Property(e => e.ListingTitle)
                 .IsRequired()
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.quantity).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.unit)
+                .HasMaxLength(250);
+            entity.Property(e => e.MileageInCityKMPL).HasColumnType("decimal(4, 1)");
+            entity.Property(e => e.MileageOnHighwayKMPL).HasColumnType("decimal(4, 1)");
+            entity.Property(e => e.MinimumAcceptablePrice).HasColumnType("money");
+            entity.Property(e => e.ModifiedByUserId).HasMaxLength(100);
+            entity.Property(e => e.NumberOfInsuranceClaims).HasDefaultValue(0);
+            entity.Property(e => e.OriginalPurchasePrice).HasColumnType("money");
+            entity.Property(e => e.PinCode).HasMaxLength(10);
+            entity.Property(e => e.PollutionCertificateNumber).HasMaxLength(30);
+            entity.Property(e => e.PreferredContactMethod).HasMaxLength(30);
+            entity.Property(e => e.PreferredViewingLocation).HasMaxLength(200);
+            entity.Property(e => e.PriceIncludesTransfer).HasDefaultValue(false);
+            entity.Property(e => e.RegistrationNumber).HasMaxLength(25);
+            entity.Property(e => e.RequiresImmediateRepairs).HasDefaultValue(false);
+            entity.Property(e => e.SellerEmailAddress).HasMaxLength(120);
+            entity.Property(e => e.SellerName)
                 .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
+                .HasMaxLength(120);
+            entity.Property(e => e.SellerPrimaryPhone)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.SellerSecondaryPhone).HasMaxLength(20);
+            entity.Property(e => e.SellerType).HasMaxLength(30);
+            entity.Property(e => e.SellerWhatsAppNumber).HasMaxLength(20);
+            entity.Property(e => e.SellingPriceAsked).HasColumnType("money");
+            entity.Property(e => e.SellingReason).HasMaxLength(300);
+            entity.Property(e => e.ServicedAtAuthorizedCenter).HasDefaultValue(false);
+            entity.Property(e => e.SpecialHighlights).HasMaxLength(500);
+            entity.Property(e => e.TotalInquiries).HasDefaultValue(0);
+            entity.Property(e => e.TotalPhoneCalls).HasDefaultValue(0);
+            entity.Property(e => e.TotalPreviousOwners).HasDefaultValue(1);
+            entity.Property(e => e.TotalTestDrives).HasDefaultValue(0);
+            entity.Property(e => e.TotalViews).HasDefaultValue(0);
+            entity.Property(e => e.VehicleAge).HasComputedColumnSql("(datepart(year,getdate())-[ManufacturingYear])", false);
+            entity.Property(e => e.ViewingInstructions).HasMaxLength(300);
 
-            entity.HasOne(d => d.fkMasterItem).WithMany(p => p.ItemsUsedForGoods)
-                .HasForeignKey(d => d.fkMasterItemId)
+            entity.HasOne(d => d.Brand).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.BrandId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ItemsUsedF__unit__00200768");
-        });
+                .HasConstraintName("FK__CarListin__Brand__19DFD96B");
 
-        modelBuilder.Entity<MasterBranch>(entity =>
-        {
-            entity.HasKey(e => e.branchId).HasName("PK__MasterBr__751EBD5F1B981828");
+            entity.HasOne(d => d.Category).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.CategoryId)
+                .HasConstraintName("FK__CarListin__Categ__1CBC4616");
 
-            entity.Property(e => e.branchAddress).IsUnicode(false);
-            entity.Property(e => e.city)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.displayName)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.footerMessage)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.pincode)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.sUser)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<Orders>(entity =>
-        {
-            entity.HasKey(e => e.orderId).HasName("PK__Orders__0809335D1A14623F");
-
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.orderDate).HasColumnType("datetime");
-            entity.Property(e => e.orderPreparationStatus)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasDefaultValue("Not Started");
-            entity.Property(e => e.sUser)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.status)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasDefaultValue("Pending");
-            entity.Property(e => e.totalAmount).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.fkCustomer).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.fkCustomerId)
+            entity.HasOne(d => d.City).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.CityId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Customer");
+                .HasConstraintName("FK__CarListin__CityI__236943A5");
+
+            entity.HasOne(d => d.Color).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.ColorId)
+                .HasConstraintName("FK__CarListin__Color__208CD6FA");
+
+            entity.HasOne(d => d.EngineSpec).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.EngineSpecId)
+                .HasConstraintName("FK__CarListin__Engin__1DB06A4F");
+
+            entity.HasOne(d => d.FuelType).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.FuelTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__CarListin__FuelT__1EA48E88");
+
+            entity.HasOne(d => d.InsuranceProvider).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.InsuranceProviderId)
+                .HasConstraintName("FK__CarListin__Insur__25518C17");
+
+            entity.HasOne(d => d.Model).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.ModelId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__CarListin__Model__1AD3FDA4");
+
+            entity.HasOne(d => d.OverallCondition).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.OverallConditionId)
+                .HasConstraintName("FK__CarListin__Overa__2180FB33");
+
+            entity.HasOne(d => d.RTO).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.RTOId)
+                .HasConstraintName("FK__CarListin__RTOId__245D67DE");
+
+            entity.HasOne(d => d.State).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.StateId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__CarListin__State__22751F6C");
+
+            entity.HasOne(d => d.Transmission).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.TransmissionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__CarListin__Trans__1F98B2C1");
+
+            entity.HasOne(d => d.Variant).WithMany(p => p.CarListings)
+                .HasForeignKey(d => d.VariantId)
+                .HasConstraintName("FK__CarListin__Varia__1BC821DD");
         });
 
-        modelBuilder.Entity<PurchaseDetails>(entity =>
+        modelBuilder.Entity<CarModels>(entity =>
         {
-            entity.HasKey(e => e.purchaseDetailId).HasName("PK__Purchase__FA43B55B833A4C07");
+            entity.HasKey(e => e.ModelId).HasName("PK__CarModel__E8D7A12CF723DB3E");
 
-            entity.Property(e => e.pricePerUnit).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.quantity).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.totalAmount)
-                .HasComputedColumnSql("([quantity]*[pricePerUnit])", false)
-                .HasColumnType("decimal(21, 4)");
-            entity.Property(e => e.unit)
+            entity.Property(e => e.IsActiveModel).HasDefaultValue(true);
+            entity.Property(e => e.ModelBodyType).HasMaxLength(50);
+            entity.Property(e => e.ModelCreatedDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.ModelDescription).HasMaxLength(500);
+            entity.Property(e => e.ModelGeneration).HasMaxLength(50);
+            entity.Property(e => e.ModelName)
                 .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
+                .HasMaxLength(100);
 
-            entity.HasOne(d => d.fkItem).WithMany(p => p.PurchaseDetails)
-                .HasForeignKey(d => d.fkItemId)
+            entity.HasOne(d => d.Brand).WithMany(p => p.CarModels)
+                .HasForeignKey(d => d.BrandId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PurchaseD__fkIte__65370702");
-
-            entity.HasOne(d => d.fkRawMaterial).WithMany(p => p.PurchaseDetails)
-                .HasForeignKey(d => d.fkRawMaterialId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PurchaseD__fkRaw__6442E2C9");
+                .HasConstraintName("FK__CarModels__Brand__3F466844");
         });
 
-        modelBuilder.Entity<RawMaterialLogs>(entity =>
+        modelBuilder.Entity<CarVariants>(entity =>
         {
-            entity.HasKey(e => e.logId).HasName("PK__RawMater__7839F64DAFD47715");
+            entity.HasKey(e => e.VariantId).HasName("PK__CarVaria__0EA23384DFDB0DE7");
 
-            entity.Property(e => e.advanceAmount).HasColumnType("decimal(12, 2)");
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.paymentMode)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.paymentStatus)
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.purchaseDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.sUser)
+            entity.Property(e => e.IsActiveVariant).HasDefaultValue(true);
+            entity.Property(e => e.VariantCreatedDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.VariantCurrentPrice).HasColumnType("money");
+            entity.Property(e => e.VariantLaunchPrice).HasColumnType("money");
+            entity.Property(e => e.VariantName)
                 .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.totalAmount).HasColumnType("decimal(12, 2)");
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
+                .HasMaxLength(100);
+            entity.Property(e => e.VariantTrimLevel).HasMaxLength(30);
 
-            entity.HasOne(d => d.supplier).WithMany(p => p.RawMaterialLogs)
-                .HasForeignKey(d => d.supplierId)
+            entity.HasOne(d => d.Model).WithMany(p => p.CarVariants)
+                .HasForeignKey(d => d.ModelId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RawMateri__suppl__412EB0B6");
+                .HasConstraintName("FK__CarVarian__Model__440B1D61");
         });
 
-        modelBuilder.Entity<Recipe>(entity =>
+        modelBuilder.Entity<CustomerInquiries>(entity =>
         {
-            entity.HasKey(e => e.recipeId).HasName("PK__Recipe__C114EE834435AC73");
+            entity.HasKey(e => e.InquiryId).HasName("PK__Customer__05E6E7CFCE46D35C");
 
-            entity.Property(e => e.baseQuantity).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.sUser)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.unit)
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
-        });
+            entity.HasIndex(e => new { e.CustomerPhone, e.CustomerEmail }, "IX_CustomerInquiries_Customer");
 
-        modelBuilder.Entity<ReturnItems>(entity =>
-        {
-            entity.HasKey(e => e.returnItemTblId).HasName("PK__ReturnIt__B0970B68559BB302");
+            entity.HasIndex(e => e.ListingId, "IX_CustomerInquiries_ListingId");
 
-            entity.Property(e => e.ReuseDestination)
-                .HasMaxLength(25)
-                .IsUnicode(false);
-            entity.Property(e => e.discount).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.returnDescription)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.returnPrice).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.returnReason)
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.unit)
+            entity.HasIndex(e => new { e.InquiryStatus, e.InquiryDate }, "IX_CustomerInquiries_Status").IsDescending(false, true);
+
+            entity.Property(e => e.BudgetRange).HasMaxLength(50);
+            entity.Property(e => e.CustomerEmail).HasMaxLength(120);
+            entity.Property(e => e.CustomerLocation).HasMaxLength(100);
+            entity.Property(e => e.CustomerName)
                 .IsRequired()
-                .HasMaxLength(10)
-                .IsUnicode(false);
+                .HasMaxLength(120);
+            entity.Property(e => e.CustomerPhone)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.ExpectedPurchaseTimeline).HasMaxLength(30);
+            entity.Property(e => e.FinalPurchasePrice).HasColumnType("money");
+            entity.Property(e => e.FinanceRequired).HasDefaultValue(false);
+            entity.Property(e => e.FollowUpRequired).HasDefaultValue(false);
+            entity.Property(e => e.InquiryDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.InquiryStatus)
+                .HasMaxLength(30)
+                .HasDefaultValue("New");
+            entity.Property(e => e.InquirySubject).HasMaxLength(200);
+            entity.Property(e => e.InquiryType).HasMaxLength(50);
+            entity.Property(e => e.MadeOffer).HasDefaultValue(false);
+            entity.Property(e => e.OfferedPrice).HasColumnType("money");
+            entity.Property(e => e.PreferredContactMethod).HasMaxLength(30);
+            entity.Property(e => e.PriorityLevel)
+                .HasMaxLength(20)
+                .HasDefaultValue("Medium");
+            entity.Property(e => e.PurchasedCar).HasDefaultValue(false);
+            entity.Property(e => e.ResponseByUserId).HasMaxLength(100);
+            entity.Property(e => e.TookTestDrive).HasDefaultValue(false);
+            entity.Property(e => e.TradeInRequired).HasDefaultValue(false);
+            entity.Property(e => e.ViewedCarPhysically).HasDefaultValue(false);
 
-            entity.HasOne(d => d.fkInventoryItem).WithMany(p => p.ReturnItemsfkInventoryItem)
-                .HasForeignKey(d => d.fkInventoryItemId)
-                .HasConstraintName("FK__ReturnIte__fkInv__00DF2177");
-
-            entity.HasOne(d => d.fkReturn).WithMany(p => p.ReturnItems)
-                .HasForeignKey(d => d.fkReturnId)
+            entity.HasOne(d => d.Listing).WithMany(p => p.CustomerInquiries)
+                .HasForeignKey(d => d.ListingId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ReturnItems_ReturnManagement");
-
-            entity.HasOne(d => d.fkReuseDestianationItem).WithMany(p => p.ReturnItemsfkReuseDestianationItem)
-                .HasForeignKey(d => d.fkReuseDestianationItemId)
-                .HasConstraintName("FK_ReturnItems_ReuseDestianation");
+                .HasConstraintName("FK__CustomerI__Listi__3F115E1A");
         });
 
-        modelBuilder.Entity<ReturnManagement>(entity =>
+        modelBuilder.Entity<EngineSpecifications>(entity =>
         {
-            entity.HasKey(e => e.returnId).HasName("PK__ReturnMa__EBA76319A06031CD");
+            entity.HasKey(e => e.EngineSpecId).HasName("PK__EngineSp__FB2455311B4813D3");
 
-            entity.Property(e => e.TotalReturnPrice).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.createdDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.returnDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.returnDescription).HasMaxLength(1000);
-            entity.Property(e => e.sUser)
+            entity.Property(e => e.EngineDescription).HasMaxLength(300);
+            entity.Property(e => e.EngineType).HasMaxLength(50);
+            entity.Property(e => e.EngineValveConfiguration).HasMaxLength(20);
+            entity.Property(e => e.HybridSystem).HasDefaultValue(false);
+            entity.Property(e => e.IsActiveEngineSpec).HasDefaultValue(true);
+            entity.Property(e => e.NaturallyAspiratedEngine).HasDefaultValue(true);
+            entity.Property(e => e.PerformanceRating).HasMaxLength(20);
+            entity.Property(e => e.SuperchargedEngine).HasDefaultValue(false);
+            entity.Property(e => e.TurbochargedEngine).HasDefaultValue(false);
+        });
+
+        modelBuilder.Entity<FuelTypes>(entity =>
+        {
+            entity.HasKey(e => e.FuelTypeId).HasName("PK__FuelType__048BEE3741917C98");
+
+            entity.Property(e => e.AvailabilityLevel).HasMaxLength(20);
+            entity.Property(e => e.FuelEfficiencyRating).HasMaxLength(20);
+            entity.Property(e => e.FuelTypeDescription).HasMaxLength(200);
+            entity.Property(e => e.FuelTypeName)
                 .IsRequired()
-                .HasMaxLength(255);
-            entity.Property(e => e.updatedDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-
-            entity.HasOne(d => d.fkReternManagement).WithMany(p => p.InversefkReternManagement)
-                .HasForeignKey(d => d.fkReternManagementId)
-                .HasConstraintName("FK__ReturnMan__fkRet__02C769E9");
-
-            entity.HasOne(d => d.item).WithMany(p => p.ReturnManagement)
-                .HasForeignKey(d => d.itemId)
-                .HasConstraintName("FK__ReturnMan__itemI__3E1D39E1");
+                .HasMaxLength(30);
+            entity.Property(e => e.IsActiveFuelType).HasDefaultValue(true);
+            entity.Property(e => e.IsEcoFriendly).HasDefaultValue(false);
+            entity.Property(e => e.MaintenanceCostLevel).HasMaxLength(20);
+            entity.Property(e => e.TypicalFuelPrice).HasColumnType("decimal(6, 2)");
         });
 
-        modelBuilder.Entity<Suppliers>(entity =>
+        modelBuilder.Entity<GeographicCities>(entity =>
         {
-            entity.HasKey(e => e.supplierId).HasName("PK__Supplier__DB8E62EDD8307806");
+            entity.HasKey(e => e.CityId).HasName("PK__Geograph__F2D21B76512073BC");
 
-            entity.HasIndex(e => e.supplierName, "UQ__Supplier__60A488508AAE3824").IsUnique();
+            entity.Property(e => e.CityName)
+                .IsRequired()
+                .HasMaxLength(60);
+            entity.Property(e => e.CityType).HasMaxLength(20);
+            entity.Property(e => e.HasGoodCarMarket).HasDefaultValue(true);
+            entity.Property(e => e.IsActiveCity).HasDefaultValue(true);
+            entity.Property(e => e.TypicalCarDemand).HasMaxLength(20);
 
-            entity.Property(e => e.address).HasMaxLength(250);
-            entity.Property(e => e.city)
+            entity.HasOne(d => d.State).WithMany(p => p.GeographicCities)
+                .HasForeignKey(d => d.StateId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Geographi__State__5FB337D6");
+        });
+
+        modelBuilder.Entity<GeographicStates>(entity =>
+        {
+            entity.HasKey(e => e.StateId).HasName("PK__Geograph__C3BA3B3AF7F7B821");
+
+            entity.Property(e => e.CountryName)
+                .HasMaxLength(50)
+                .HasDefaultValue("India");
+            entity.Property(e => e.IsActiveState).HasDefaultValue(true);
+            entity.Property(e => e.PopularForCars).HasDefaultValue(true);
+            entity.Property(e => e.StateCode).HasMaxLength(10);
+            entity.Property(e => e.StateName)
+                .IsRequired()
+                .HasMaxLength(60);
+            entity.Property(e => e.StatePinCodePrefix).HasMaxLength(10);
+            entity.Property(e => e.StateRegion).HasMaxLength(30);
+        });
+
+        modelBuilder.Entity<InsuranceProviders>(entity =>
+        {
+            entity.HasKey(e => e.InsuranceProviderId).HasName("PK__Insuranc__D60846359F8FEC56");
+
+            entity.Property(e => e.ClaimSettlementRatio).HasColumnType("decimal(4, 1)");
+            entity.Property(e => e.CustomerServiceRating).HasMaxLength(20);
+            entity.Property(e => e.IsActiveProvider).HasDefaultValue(true);
+            entity.Property(e => e.ProviderName)
+                .IsRequired()
+                .HasMaxLength(80);
+            entity.Property(e => e.ProviderRating).HasColumnType("decimal(2, 1)");
+            entity.Property(e => e.ProviderType).HasMaxLength(30);
+        });
+
+        modelBuilder.Entity<RTOCodes>(entity =>
+        {
+            entity.HasKey(e => e.RTOId).HasName("PK__RTOCodes__9117C9DD90E1A166");
+
+            entity.HasIndex(e => e.RTOCode, "UQ__RTOCodes__E87D263E2D12AB01").IsUnique();
+
+            entity.Property(e => e.IsActiveRTO).HasDefaultValue(true);
+            entity.Property(e => e.RTOAddress).HasMaxLength(300);
+            entity.Property(e => e.RTOCode)
+                .IsRequired()
+                .HasMaxLength(10);
+            entity.Property(e => e.RTOContactNumber).HasMaxLength(50);
+            entity.Property(e => e.RTOName).HasMaxLength(100);
+
+            entity.HasOne(d => d.City).WithMany(p => p.RTOCodes)
+                .HasForeignKey(d => d.CityId)
+                .HasConstraintName("FK__RTOCodes__CityId__73BA3083");
+
+            entity.HasOne(d => d.State).WithMany(p => p.RTOCodes)
+                .HasForeignKey(d => d.StateId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__RTOCodes__StateI__72C60C4A");
+        });
+
+        modelBuilder.Entity<SystemConfiguration>(entity =>
+        {
+            entity.HasKey(e => e.ConfigId).HasName("PK__SystemCo__C3BC335C732C4699");
+
+            entity.HasIndex(e => e.ConfigKey, "UQ__SystemCo__4A30678437D67988").IsUnique();
+
+            entity.Property(e => e.ConfigCategory)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.createdDate).HasColumnType("datetime");
-            entity.Property(e => e.phoneNumber)
+            entity.Property(e => e.ConfigDataType).HasMaxLength(20);
+            entity.Property(e => e.ConfigDescription).HasMaxLength(300);
+            entity.Property(e => e.ConfigKey)
                 .IsRequired()
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.sUser)
+                .HasMaxLength(100);
+            entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.IsUserEditable).HasDefaultValue(true);
+            entity.Property(e => e.ModifiedByUserId).HasMaxLength(100);
+            entity.Property(e => e.ModifiedDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.RequiresRestart).HasDefaultValue(false);
+        });
+
+        modelBuilder.Entity<TransmissionTypes>(entity =>
+        {
+            entity.HasKey(e => e.TransmissionId).HasName("PK__Transmis__56E90A0E8A210874");
+
+            entity.Property(e => e.EaseOfDriving).HasMaxLength(20);
+            entity.Property(e => e.FuelEfficiencyImpact).HasMaxLength(20);
+            entity.Property(e => e.IsActiveTranmission).HasDefaultValue(true);
+            entity.Property(e => e.MaintenanceCost).HasMaxLength(20);
+            entity.Property(e => e.TransmissionDescription).HasMaxLength(300);
+            entity.Property(e => e.TransmissionFullName).HasMaxLength(100);
+            entity.Property(e => e.TransmissionName)
                 .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.state)
+                .HasMaxLength(40);
+        });
+
+        modelBuilder.Entity<VehicleCategories>(entity =>
+        {
+            entity.HasKey(e => e.CategoryId).HasName("PK__VehicleC__19093A0B9F711E77");
+
+            entity.Property(e => e.CategoryDescription).HasMaxLength(255);
+            entity.Property(e => e.CategoryIcon).HasMaxLength(200);
+            entity.Property(e => e.CategoryName)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.supplierName)
-                .IsRequired()
-                .HasMaxLength(255);
-            entity.Property(e => e.updatedDate).HasColumnType("datetime");
+            entity.Property(e => e.IsActiveCategory).HasDefaultValue(true);
+            entity.Property(e => e.TypicalPriceRange).HasMaxLength(50);
+            entity.Property(e => e.TypicalSeatingCapacity).HasMaxLength(20);
         });
 
         OnModelCreatingPartial(modelBuilder);

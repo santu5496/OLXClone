@@ -15,71 +15,87 @@
    "T4TemplatePath": null,
    "Tables": [
       {
-         "Name": "[dbo].[BakedCookedLogs]",
+         "Name": "[dbo].[BusinessAnalytics]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Billing]",
+         "Name": "[dbo].[CarBrands]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[BillOrderItems]",
+         "Name": "[dbo].[CarColors]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Category]",
+         "Name": "[dbo].[CarConditionLevels]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Customers]",
+         "Name": "[dbo].[CarFeaturesList]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[DailyExpense]",
+         "Name": "[dbo].[CarImages]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Inventory]",
+         "Name": "[dbo].[CarListingFeatures]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[InventoryItems]",
+         "Name": "[dbo].[CarListings]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ItemsUsedForGoods]",
+         "Name": "[dbo].[CarListingViews]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[MasterBranch]",
+         "Name": "[dbo].[CarModels]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Orders]",
+         "Name": "[dbo].[CarVariants]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[PurchaseDetails]",
+         "Name": "[dbo].[CustomerInquiries]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[RawMaterialLogs]",
+         "Name": "[dbo].[EngineSpecifications]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Recipe]",
+         "Name": "[dbo].[FuelTypes]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ReturnItems]",
+         "Name": "[dbo].[GeographicCities]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ReturnManagement]",
+         "Name": "[dbo].[GeographicStates]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Suppliers]",
+         "Name": "[dbo].[InsuranceProviders]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RTOCodes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[SystemConfiguration]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TransmissionTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VehicleCategories]",
          "ObjectType": 0
       }
    ],
