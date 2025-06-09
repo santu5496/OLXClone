@@ -1,7 +1,10 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using DbOperation.Interface;
 using DbOperation.Models;
 using Microsoft.EntityFrameworkCore;
+
 namespace DbOperation.Implementation
 {
     public class ConfigurationService : IConfigurationService
@@ -10,335 +13,187 @@ namespace DbOperation.Implementation
 
         public ConfigurationService(string dbConn)
         {
-            _dbConn = new DbContextOptionsBuilder<Assignment4Context>().UseSqlServer(dbConn).Options;
+            _dbConn = new DbContextOptionsBuilder<Assignment4Context>()
+                        .UseSqlServer(dbConn)
+                        .Options;
         }
 
-        #region InventoryItemsCRUD
-        public bool AddInventoryItem(InventoryItems Item)
+        // ======= Car Brands =======
+
+        public List<CarBrands> GetCarBrands(string? search)
+        {
+            using var Db = new Assignment4Context(_dbConn);
+            var query = Db.CarBrands.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var lowerSearch = search.Trim().ToLower();
+                query = query.Where(b => b.brandName.ToLower().Contains(lowerSearch));
+            }
+
+            return query.OrderBy(b => b.brandName).ToList();
+        }
+
+        public CarBrands? GetCarBrandById(int id)
+        {
+            using var Db = new Assignment4Context(_dbConn);
+            return Db.CarBrands.Find(id);
+        }
+
+        public bool AddCarBrand(CarBrands brand)
         {
             using var Db = new Assignment4Context(_dbConn);
             try
             {
-                Item.createdDate = DateTime.Now;
-                Item.updatedDate = DateTime.Now;
-                Item.sUser = "User";
-                Db.Add(Item);
+                var exists = Db.CarBrands.Any(b => b.brandName.ToLower() == brand.brandName.ToLower());
+                if (exists) return false;
+
+                Db.CarBrands.Add(brand);
                 Db.SaveChanges();
                 return true;
             }
-            catch
+            catch (Exception)
             {
                 return false;
             }
         }
 
-        public List<ItemMasterView> GetInventoryItems()
-        {
-            using var Db = new Assignment4Context(_dbConn);
-
-            var inventoryItems = (from item in Db.InventoryItems
-                                  join category in Db.Category
-
-                                  on item.fkCategoryId equals category.id
-                                  into catGroup
-                                  from category in catGroup.DefaultIfEmpty()
-                                  select new ItemMasterView
-                                  {
-                                      itemId = item.itemId,
-                                      itemName = item.itemName,
-                                      itemDescription = item.itemDescription,
-                                      createdDate = item.createdDate,
-                                      updatedDate = item.updatedDate,
-                                      sUser = item.sUser,
-                                      itemType = item.itemType,
-                                      unit = item.unit,
-                                      pricePerUnit = item.pricePerUnit,
-                                      fkCategoryId = item.fkCategoryId,
-                                      priceQuantity = item.priceQuantity,
-                                      categeoryName = category != null ? category.categoryName : null
-                                  }).ToList();
-
-            return inventoryItems;
-        }
-
-
-        public bool DeleteInventoryItem(int id)
+        public bool UpdateCarBrand(CarBrands brand)
         {
             using var Db = new Assignment4Context(_dbConn);
             try
             {
-                var result = Db.InventoryItems.Where(a => a.itemId == id).FirstOrDefault();
-                Db.Remove(result);
+                var existing = Db.CarBrands.Find(brand.brandId);
+                if (existing == null) return false;
+
+                var exists = Db.CarBrands.Any(b => b.brandId != brand.brandId && b.brandName.ToLower() == brand.brandName.ToLower());
+                if (exists) return false;
+
+                existing.brandName = brand.brandName;
+                existing.brandCountryOfOrigin = brand.brandCountryOfOrigin;
+                existing.brandWebsite = brand.brandWebsite;
+                existing.isLuxuryBrand = brand.isLuxuryBrand;
+                existing.isActiveBrand = brand.isActiveBrand;
+                existing.brandNotes = brand.brandNotes;
+
+                Db.CarBrands.Update(existing);
                 Db.SaveChanges();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
         }
 
-        public bool UpdateInventoryItem(InventoryItems inventory)
+        public bool DeleteCarBrand(int id)
         {
             using var Db = new Assignment4Context(_dbConn);
             try
             {
-                var existingInventoryItem = Db.InventoryItems.Find(inventory.itemId);
-                if (existingInventoryItem == null)
-                {
-                    return false;
-                }
-                existingInventoryItem.itemName = inventory.itemName;
-                existingInventoryItem.itemDescription = inventory.itemDescription;
-                existingInventoryItem.itemType = inventory.itemType;
-                existingInventoryItem.fkCategoryId = inventory.fkCategoryId;
-                existingInventoryItem.pricePerUnit = inventory.pricePerUnit;
-                existingInventoryItem.unit = inventory.unit;
-                existingInventoryItem.priceQuantity = inventory.priceQuantity;
-                existingInventoryItem.updatedDate = DateTime.Now;
-                Db.InventoryItems.Update(existingInventoryItem);
+                var brand = Db.CarBrands.Find(id);
+                if (brand == null) return false;
+
+                Db.CarBrands.Remove(brand);
                 Db.SaveChanges();
                 return true;
-
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
         }
 
-        #endregion 
+        // ======= Car Models =======
+
+        public List<CarModels> GetCarModels(string? search = null)
+        {
+            using var Db = new Assignment4Context(_dbConn);
+            var query = Db.CarModels.Include(m => m.brand).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var lowerSearch = search.Trim().ToLower();
+                query = query.Where(m => m.modelName.ToLower().Contains(lowerSearch)
+                                      || m.brand.brandName.ToLower().Contains(lowerSearch));
+            }
+
+            return query.OrderBy(m => m.modelName).ToList();
+        }
 
 
-        public bool AddSupplier(Suppliers suppliers)
+        public CarModels? GetCarModelById(int id)
+        {
+            using var Db = new Assignment4Context(_dbConn);
+            return Db.CarModels.Include(m => m.brand).FirstOrDefault(m => m.modelId == id);
+        }
+
+        public bool AddCarModel(CarModels model)
         {
             using var Db = new Assignment4Context(_dbConn);
             try
             {
-                suppliers.createdDate = DateTime.Now;
-                suppliers.updatedDate = DateTime.Now;
-                suppliers.sUser = "User";
-                Db.Add(suppliers);
+                // Prevent duplicate model names under same brand (case insensitive)
+                var exists = Db.CarModels.Any(m => m.brandId == model.brandId && m.modelName.ToLower() == model.modelName.ToLower());
+                if (exists) return false;
+
+                Db.CarModels.Add(model);
                 Db.SaveChanges();
                 return true;
-
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
         }
 
-        public List<Suppliers> GetSupplierDts()
-        {
-            using var Db = new Assignment4Context(_dbConn);
-            return Db.Suppliers.ToList();
-        }
-
-
-        public bool DeleteSupplier(int id)
+        public bool UpdateCarModel(CarModels model)
         {
             using var Db = new Assignment4Context(_dbConn);
             try
             {
-                var result = Db.Suppliers.Where(a => a.supplierId == id).FirstOrDefault();
-                Db.Remove(result);
+                var existing = Db.CarModels.Find(model.modelId);
+                if (existing == null) return false;
+
+                // Check duplicate under same brand, excluding self
+                var exists = Db.CarModels.Any(m => m.modelId != model.modelId && m.brandId == model.brandId && m.modelName.ToLower() == model.modelName.ToLower());
+                if (exists) return false;
+
+                existing.brandId = model.brandId;
+                existing.modelName = model.modelName;
+                existing.modelLaunchYear = model.modelLaunchYear;
+                existing.modelDiscontinuedYear = model.modelDiscontinuedYear;
+                existing.modelGeneration = model.modelGeneration;
+                existing.modelBodyType = model.modelBodyType;
+                existing.isActiveModel = model.isActiveModel;
+                existing.modelDescription = model.modelDescription;
+
+                Db.CarModels.Update(existing);
                 Db.SaveChanges();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
         }
 
-        public bool UpdateSupplier(Suppliers supplier)
+        public bool DeleteCarModel(int id)
         {
             using var Db = new Assignment4Context(_dbConn);
             try
             {
-                var existingSupplier = Db.Suppliers.Find(supplier.supplierId);
-                if (existingSupplier == null)
-                {
-                    return false;
-                }
+                var model = Db.CarModels.Find(id);
+                if (model == null) return false;
 
-                existingSupplier.supplierName = supplier.supplierName;
-                existingSupplier.phoneNumber = supplier.phoneNumber;
-                existingSupplier.address = supplier.address;
-                existingSupplier.state = supplier.state;
-                existingSupplier.city = supplier.city;
-
-                Db.Suppliers.Update(existingSupplier);
+                Db.CarModels.Remove(model);
                 Db.SaveChanges();
                 return true;
-
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
         }
-
-
-        public bool AddCategory(Category cat)
-        {
-            using var Db = new Assignment4Context(_dbConn);
-
-            try
-            {
-                cat.createdDate = DateTime.Now;
-                cat.updatedDate = DateTime.Now;
-                cat.sUser = "User";
-                Db.Add(cat);
-                Db.SaveChanges();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        public List<Category> GetCategory()
-        {
-            using var Db = new Assignment4Context(_dbConn);
-            return Db.Category.ToList();
-
-        }
-
-        public bool UpdateCategory(Category category)
-        {
-            using var Db = new Assignment4Context(_dbConn);
-            try
-            {
-                var existingCategory = Db.Category.Find(category.id);
-                if (existingCategory == null)
-                {
-                    return false;
-                }
-                existingCategory.categoryName = category.categoryName;
-                existingCategory.description = category.description;
-                Db.Category.Update(existingCategory);
-                Db.SaveChanges();
-                return true;
-
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        public bool DeleteCategory(int id)
-        {
-            using var Db = new Assignment4Context(_dbConn);
-            try
-            {
-                var result = Db.Category.Where(a => a.id == id).FirstOrDefault();
-                Db.Remove(result);
-                Db.SaveChanges();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        //Customer
-
-        public bool AddCustomer(Customers customer)
-        {
-            using var Db = new Assignment4Context(_dbConn);
-            try
-            {
-                customer.createdDate = DateTime.Now;
-                customer.updatedDate = DateTime.Now;
-                customer.sUser = "User";
-                Db.Add(customer);
-                Db.SaveChanges();
-                return true;
-
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        public List<Customers> GetCustomers()
-        {
-            using var Db = new Assignment4Context(_dbConn);
-            return Db.Customers.ToList();
-
-        }
-
-        public bool UpdateCustomer(Customers customers)
-        {
-            using var Db = new Assignment4Context(_dbConn);
-            try
-            {
-                var existingCustomer = Db.Customers.Find(customers.customerId);
-                if (existingCustomer == null)
-                {
-                    return false;
-                }
-                existingCustomer.customerName = customers.customerName;
-                existingCustomer.address = customers.address;
-                existingCustomer.phoneNo = customers.phoneNo;
-                Db.Customers.Update(existingCustomer);
-                Db.SaveChanges();
-                return true;
-
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        public bool DeleteCustomer(int id)
-        {
-            using var Db = new Assignment4Context(_dbConn);
-            try
-            {
-                var result = Db.Customers.Where(a => a.customerId == id).FirstOrDefault();
-                Db.Remove(result);
-                Db.SaveChanges();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        public dynamic GetCustomerDetailsWithUnpaidBills(int customerId)
-        {
-            using var db = new Assignment4Context(_dbConn);
-
-            var customerDetails = db.Customers
-                .Where(c => c.customerId == customerId)
-                .Select(c => new
-                {
-                    CustomerName = c.customerName,
-                    ID = c.customerId,
-                    PhoneNumber = c.phoneNo,
-                    Address = c.address,
-                    Bills = db.Billing
-                        .Where(b => b.fkCustomerId == c.customerId && b.paymentStatus != "Paid")
-                        .Select(b => new
-                        {
-                            BillDate = b.billDate,
-                            FinalAmount = b.finalAmount - (b.advanceAmount ?? 0)
-                        })
-                        .ToList()
-                })
-                .FirstOrDefault();
-
-            return customerDetails;
-        }
-
     }
 }

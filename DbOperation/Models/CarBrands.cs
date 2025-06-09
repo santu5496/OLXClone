@@ -7,23 +7,23 @@ namespace DbOperation.Models;
 
 public partial class CarBrands
 {
-    public int BrandId { get; set; }
+    public int brandId { get; set; }
 
-    public string BrandName { get; set; }
+    public string brandName { get; set; }
 
-    public string BrandCountryOfOrigin { get; set; }
+    public string brandCountryOfOrigin { get; set; }
 
-    public string BrandLogo { get; set; }
+    public string brandLogo { get; set; }
 
-    public string BrandWebsite { get; set; }
+    public string brandWebsite { get; set; }
 
-    public bool? IsLuxuryBrand { get; set; }
+    public bool? isLuxuryBrand { get; set; }
 
-    public bool? IsActiveBrand { get; set; }
+    public bool? isActiveBrand { get; set; }
 
-    public DateTime? BrandCreatedDate { get; set; }
+    public DateTime? brandCreatedDate { get; set; }
 
-    public string BrandNotes { get; set; }
+    public string brandNotes { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 

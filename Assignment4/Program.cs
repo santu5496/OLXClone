@@ -14,39 +14,39 @@ builder.Services.AddSingleton<IConfigurationService, ConfigurationService>(provi
 });
 
 
-builder.Services.AddSingleton<IInventoryMaterialLog, InventoryMaterialLogService>(provider =>
-{
-    return new InventoryMaterialLogService(builder.Configuration.GetConnectionString("Assignment4"));
-});
-builder.Services.AddSingleton<IFinishedGoodsService, FinishedGoodsService>(provider =>
-{
-    return new FinishedGoodsService(builder.Configuration.GetConnectionString("Assignment4"));
-});
-builder.Services.AddSingleton<IBillingService, BillingService>(provider =>
-{
-    return new BillingService(builder.Configuration.GetConnectionString("Assignment4"));
-});
+//builder.Services.AddSingleton<IInventoryMaterialLog, InventoryMaterialLogService>(provider =>
+//{
+//    return new InventoryMaterialLogService(builder.Configuration.GetConnectionString("Assignment4"));
+//});
+//builder.Services.AddSingleton<IFinishedGoodsService, FinishedGoodsService>(provider =>
+//{
+//    return new FinishedGoodsService(builder.Configuration.GetConnectionString("Assignment4"));
+//});
+//builder.Services.AddSingleton<IBillingService, BillingService>(provider =>
+//{
+//    return new BillingService(builder.Configuration.GetConnectionString("Assignment4"));
+//});
 
-builder.Services.AddSingleton<IRecipeService,RecipeService>(provider =>
-{
-    return new RecipeService(builder.Configuration.GetConnectionString("Assignment4"));
-});
-builder.Services.AddSingleton<IReturnmanagementService, ReturnManagementService>(provider =>
-{
-    return new ReturnManagementService(builder.Configuration.GetConnectionString("Assignment4"));
-});
-builder.Services.AddSingleton<IOrderManagement, OrderManagementSerivice>(provider =>
-{
-    return new OrderManagementSerivice(builder.Configuration.GetConnectionString("Assignment4"));
-});
-builder.Services.AddSingleton<IReportService, ReportService>(provider =>
-{
-    return new ReportService(builder.Configuration.GetConnectionString("Assignment4"),builder.Configuration.GetConnectionString("Assignment4"));
-});
-builder.Services.AddSingleton<IDailyExpenseService, DailyExpenseService>(provider =>
-{
-    return new DailyExpenseService(builder.Configuration.GetConnectionString("Assignment4"));
-});
+//builder.Services.AddSingleton<IRecipeService,RecipeService>(provider =>
+//{
+//    return new RecipeService(builder.Configuration.GetConnectionString("Assignment4"));
+//});
+//builder.Services.AddSingleton<IReturnmanagementService, ReturnManagementService>(provider =>
+//{
+//    return new ReturnManagementService(builder.Configuration.GetConnectionString("Assignment4"));
+//});
+//builder.Services.AddSingleton<IOrderManagement, OrderManagementSerivice>(provider =>
+//{
+//    return new OrderManagementSerivice(builder.Configuration.GetConnectionString("Assignment4"));
+//});
+//builder.Services.AddSingleton<IReportService, ReportService>(provider =>
+//{
+//    return new ReportService(builder.Configuration.GetConnectionString("Assignment4"),builder.Configuration.GetConnectionString("Assignment4"));
+//});
+//builder.Services.AddSingleton<IDailyExpenseService, DailyExpenseService>(provider =>
+//{
+//    return new DailyExpenseService(builder.Configuration.GetConnectionString("Assignment4"));
+//});
 //builder.Services.AddUserManagementServices(builder.Configuration);
 var app = builder.Build();
 

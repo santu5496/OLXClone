@@ -7,27 +7,27 @@ namespace DbOperation.Models;
 
 public partial class CarColors
 {
-    public int ColorId { get; set; }
+    public int colorId { get; set; }
 
-    public string ColorName { get; set; }
+    public string colorName { get; set; }
 
-    public string ColorDisplayName { get; set; }
+    public string colorDisplayName { get; set; }
 
-    public string ColorHexCode { get; set; }
+    public string colorHexCode { get; set; }
 
-    public string ColorFamily { get; set; }
+    public string colorFamily { get; set; }
 
-    public bool? IsMetallicPaint { get; set; }
+    public bool? isMetallicPaint { get; set; }
 
-    public bool? IsPearlPaint { get; set; }
+    public bool? isPearlPaint { get; set; }
 
-    public bool? IsSolidPaint { get; set; }
+    public bool? isSolidPaint { get; set; }
 
-    public int? PopularityRank { get; set; }
+    public int? popularityRank { get; set; }
 
-    public string ResaleValueImpact { get; set; }
+    public string resaleValueImpact { get; set; }
 
-    public bool? IsActiveColor { get; set; }
+    public bool? isActiveColor { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

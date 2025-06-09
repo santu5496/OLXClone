@@ -7,27 +7,27 @@ namespace DbOperation.Models;
 
 public partial class EngineSpecifications
 {
-    public int EngineSpecId { get; set; }
+    public int engineSpecId { get; set; }
 
-    public string EngineType { get; set; }
+    public string engineType { get; set; }
 
-    public int? EngineCylinders { get; set; }
+    public int? engineCylinders { get; set; }
 
-    public string EngineValveConfiguration { get; set; }
+    public string engineValveConfiguration { get; set; }
 
-    public bool? TurbochargedEngine { get; set; }
+    public bool? turbochargedEngine { get; set; }
 
-    public bool? SuperchargedEngine { get; set; }
+    public bool? superchargedEngine { get; set; }
 
-    public bool? NaturallyAspiratedEngine { get; set; }
+    public bool? naturallyAspiratedEngine { get; set; }
 
-    public bool? HybridSystem { get; set; }
+    public bool? hybridSystem { get; set; }
 
-    public string EngineDescription { get; set; }
+    public string engineDescription { get; set; }
 
-    public string PerformanceRating { get; set; }
+    public string performanceRating { get; set; }
 
-    public bool? IsActiveEngineSpec { get; set; }
+    public bool? isActiveEngineSpec { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

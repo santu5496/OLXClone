@@ -7,21 +7,21 @@ namespace DbOperation.Models;
 
 public partial class GeographicStates
 {
-    public int StateId { get; set; }
+    public int stateId { get; set; }
 
-    public string StateName { get; set; }
+    public string stateName { get; set; }
 
-    public string StateCode { get; set; }
+    public string stateCode { get; set; }
 
-    public string StateRegion { get; set; }
+    public string stateRegion { get; set; }
 
-    public string CountryName { get; set; }
+    public string countryName { get; set; }
 
-    public string StatePinCodePrefix { get; set; }
+    public string statePinCodePrefix { get; set; }
 
-    public bool? PopularForCars { get; set; }
+    public bool? popularForCars { get; set; }
 
-    public bool? IsActiveState { get; set; }
+    public bool? isActiveState { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 

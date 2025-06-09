@@ -7,25 +7,25 @@ namespace DbOperation.Models;
 
 public partial class CarVariants
 {
-    public int VariantId { get; set; }
+    public int variantId { get; set; }
 
-    public int ModelId { get; set; }
+    public int modelId { get; set; }
 
-    public string VariantName { get; set; }
+    public string variantName { get; set; }
 
-    public string VariantTrimLevel { get; set; }
+    public string variantTrimLevel { get; set; }
 
-    public decimal? VariantLaunchPrice { get; set; }
+    public decimal? variantLaunchPrice { get; set; }
 
-    public decimal? VariantCurrentPrice { get; set; }
+    public decimal? variantCurrentPrice { get; set; }
 
-    public bool? IsActiveVariant { get; set; }
+    public bool? isActiveVariant { get; set; }
 
-    public DateTime? VariantCreatedDate { get; set; }
+    public DateTime? variantCreatedDate { get; set; }
 
-    public string VariantFeatures { get; set; }
+    public string variantFeatures { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 
-    public virtual CarModels Model { get; set; }
+    public virtual CarModels model { get; set; }
 }

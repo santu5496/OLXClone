@@ -7,19 +7,19 @@ namespace DbOperation.Models;
 
 public partial class InsuranceProviders
 {
-    public int InsuranceProviderId { get; set; }
+    public int insuranceProviderId { get; set; }
 
-    public string ProviderName { get; set; }
+    public string providerName { get; set; }
 
-    public string ProviderType { get; set; }
+    public string providerType { get; set; }
 
-    public decimal? ProviderRating { get; set; }
+    public decimal? providerRating { get; set; }
 
-    public decimal? ClaimSettlementRatio { get; set; }
+    public decimal? claimSettlementRatio { get; set; }
 
-    public string CustomerServiceRating { get; set; }
+    public string customerServiceRating { get; set; }
 
-    public bool? IsActiveProvider { get; set; }
+    public bool? isActiveProvider { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

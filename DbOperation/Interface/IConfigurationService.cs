@@ -3,40 +3,21 @@
 namespace DbOperation.Interface
 {
     public interface IConfigurationService
+
     {
-        bool AddInventoryItem(InventoryItems Item);
+        List<CarBrands> GetCarBrands(string? search);
+        CarBrands? GetCarBrandById(int id);
+        bool AddCarBrand(CarBrands brand);
+        bool UpdateCarBrand(CarBrands brand);
+        bool DeleteCarBrand(int id);
 
-        List<ItemMasterView> GetInventoryItems();
+        List<CarModels> GetCarModels(string? search = null);
+        CarModels? GetCarModelById(int id);
+        bool AddCarModel(CarModels model);
+        bool UpdateCarModel(CarModels model);
+        bool DeleteCarModel(int id);
 
-        bool DeleteInventoryItem(int id);
 
-        bool UpdateInventoryItem(InventoryItems Item);
-
-        bool AddSupplier(Suppliers suppliers);
-
-        List<Suppliers> GetSupplierDts();
-
-        bool DeleteSupplier(int id);
-
-        bool UpdateSupplier(Suppliers suppliers);
-
-        bool AddCategory(Category cat);
-
-        List<Category> GetCategory();
-
-        bool UpdateCategory(Category category);
-
-        bool DeleteCategory(int id);
-
-        bool AddCustomer(Customers customer);
-
-        List<Customers> GetCustomers();
-
-        bool UpdateCustomer(Customers customer);
-
-        bool DeleteCustomer(int id);
-
-        dynamic GetCustomerDetailsWithUnpaidBills(int customerId);
     }
 
 }

@@ -7,21 +7,21 @@ namespace DbOperation.Models;
 
 public partial class CarListingFeatures
 {
-    public int ListingFeatureId { get; set; }
+    public int listingFeatureId { get; set; }
 
-    public int ListingId { get; set; }
+    public int listingId { get; set; }
 
-    public int FeatureId { get; set; }
+    public int featureId { get; set; }
 
-    public bool? IsFeatureAvailable { get; set; }
+    public bool? isFeatureAvailable { get; set; }
 
-    public string FeatureCondition { get; set; }
+    public string featureCondition { get; set; }
 
-    public string FeatureNotes { get; set; }
+    public string featureNotes { get; set; }
 
-    public DateTime? FeatureMappedDate { get; set; }
+    public DateTime? featureMappedDate { get; set; }
 
-    public virtual CarFeaturesList Feature { get; set; }
+    public virtual CarFeaturesList feature { get; set; }
 
-    public virtual CarListings Listing { get; set; }
+    public virtual CarListings listing { get; set; }
 }

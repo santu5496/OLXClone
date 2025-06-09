@@ -7,29 +7,29 @@ namespace DbOperation.Models;
 
 public partial class CarModels
 {
-    public int ModelId { get; set; }
+    public int modelId { get; set; }
 
-    public int BrandId { get; set; }
+    public int brandId { get; set; }
 
-    public string ModelName { get; set; }
+    public string modelName { get; set; }
 
-    public int? ModelLaunchYear { get; set; }
+    public int? modelLaunchYear { get; set; }
 
-    public int? ModelDiscontinuedYear { get; set; }
+    public int? modelDiscontinuedYear { get; set; }
 
-    public string ModelGeneration { get; set; }
+    public string modelGeneration { get; set; }
 
-    public string ModelBodyType { get; set; }
+    public string modelBodyType { get; set; }
 
-    public bool? IsActiveModel { get; set; }
+    public bool? isActiveModel { get; set; }
 
-    public DateTime? ModelCreatedDate { get; set; }
+    public DateTime? modelCreatedDate { get; set; }
 
-    public string ModelDescription { get; set; }
-
-    public virtual CarBrands Brand { get; set; }
+    public string modelDescription { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 
     public virtual ICollection<CarVariants> CarVariants { get; set; } = new List<CarVariants>();
+
+    public virtual CarBrands brand { get; set; }
 }

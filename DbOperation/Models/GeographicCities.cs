@@ -7,25 +7,25 @@ namespace DbOperation.Models;
 
 public partial class GeographicCities
 {
-    public int CityId { get; set; }
+    public int cityId { get; set; }
 
-    public int StateId { get; set; }
+    public int stateId { get; set; }
 
-    public string CityName { get; set; }
+    public string cityName { get; set; }
 
-    public string CityType { get; set; }
+    public string cityType { get; set; }
 
-    public int? CityPopulation { get; set; }
+    public int? cityPopulation { get; set; }
 
-    public bool? HasGoodCarMarket { get; set; }
+    public bool? hasGoodCarMarket { get; set; }
 
-    public string TypicalCarDemand { get; set; }
+    public string typicalCarDemand { get; set; }
 
-    public bool? IsActiveCity { get; set; }
+    public bool? isActiveCity { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 
     public virtual ICollection<RTOCodes> RTOCodes { get; set; } = new List<RTOCodes>();
 
-    public virtual GeographicStates State { get; set; }
+    public virtual GeographicStates state { get; set; }
 }

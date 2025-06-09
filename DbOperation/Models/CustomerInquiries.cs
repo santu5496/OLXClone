@@ -7,65 +7,65 @@ namespace DbOperation.Models;
 
 public partial class CustomerInquiries
 {
-    public int InquiryId { get; set; }
+    public int inquiryId { get; set; }
 
-    public int ListingId { get; set; }
+    public int listingId { get; set; }
 
-    public string InquiryType { get; set; }
+    public string inquiryType { get; set; }
 
-    public string CustomerName { get; set; }
+    public string customerName { get; set; }
 
-    public string CustomerPhone { get; set; }
+    public string customerPhone { get; set; }
 
-    public string CustomerEmail { get; set; }
+    public string customerEmail { get; set; }
 
-    public string CustomerLocation { get; set; }
+    public string customerLocation { get; set; }
 
-    public string InquirySubject { get; set; }
+    public string inquirySubject { get; set; }
 
-    public string InquiryMessage { get; set; }
+    public string inquiryMessage { get; set; }
 
-    public string BudgetRange { get; set; }
+    public string budgetRange { get; set; }
 
-    public bool? FinanceRequired { get; set; }
+    public bool? financeRequired { get; set; }
 
-    public bool? TradeInRequired { get; set; }
+    public bool? tradeInRequired { get; set; }
 
-    public string PreferredContactMethod { get; set; }
+    public string preferredContactMethod { get; set; }
 
-    public DateTime? InquiryDate { get; set; }
+    public DateTime? inquiryDate { get; set; }
 
-    public string InquiryStatus { get; set; }
+    public string inquiryStatus { get; set; }
 
-    public string PriorityLevel { get; set; }
+    public string priorityLevel { get; set; }
 
-    public string ExpectedPurchaseTimeline { get; set; }
+    public string expectedPurchaseTimeline { get; set; }
 
-    public DateTime? FirstResponseDate { get; set; }
+    public DateTime? firstResponseDate { get; set; }
 
-    public DateTime? LastContactDate { get; set; }
+    public DateTime? lastContactDate { get; set; }
 
-    public string ResponseByUserId { get; set; }
+    public string responseByUserId { get; set; }
 
-    public string ResponseNotes { get; set; }
+    public string responseNotes { get; set; }
 
-    public bool? FollowUpRequired { get; set; }
+    public bool? followUpRequired { get; set; }
 
-    public DateTime? NextFollowUpDate { get; set; }
+    public DateTime? nextFollowUpDate { get; set; }
 
-    public bool? ViewedCarPhysically { get; set; }
+    public bool? viewedCarPhysically { get; set; }
 
-    public bool? TookTestDrive { get; set; }
+    public bool? tookTestDrive { get; set; }
 
-    public bool? MadeOffer { get; set; }
+    public bool? madeOffer { get; set; }
 
-    public decimal? OfferedPrice { get; set; }
+    public decimal? offeredPrice { get; set; }
 
-    public bool? PurchasedCar { get; set; }
+    public bool? purchasedCar { get; set; }
 
-    public DateOnly? PurchaseDate { get; set; }
+    public DateOnly? purchaseDate { get; set; }
 
-    public decimal? FinalPurchasePrice { get; set; }
+    public decimal? finalPurchasePrice { get; set; }
 
-    public virtual CarListings Listing { get; set; }
+    public virtual CarListings listing { get; set; }
 }

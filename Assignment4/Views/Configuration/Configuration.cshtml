@@ -1,213 +1,495 @@
-﻿@{
-    ViewData["Title"] = "Manage Car Brands";
-}
+﻿<div class="container-fluid mt-3">
 
-<div class="container-fluid mt-4">
-    <h2>Car Brands Management</h2>
+    <ul class="nav nav-tabs" id="carTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="brand-tab" data-bs-toggle="tab" data-bs-target="#brandTab" type="button" role="tab" aria-controls="brandTab" aria-selected="true">Car Brands</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="model-tab" data-bs-toggle="tab" data-bs-target="#modelTab" type="button" role="tab" aria-controls="modelTab" aria-selected="false">Car Models</button>
+        </li>
+    </ul>
 
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <input type="text" id="txtSearch" class="form-control" placeholder="Search brands..." />
+    <div class="tab-content mt-3" id="carTabContent">
+
+        <!-- Brand Tab -->
+        <div class="tab-pane fade show active" id="brandTab" role="tabpanel" aria-labelledby="brand-tab">
+            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearCarBrandModalFields()" data-bs-toggle="modal" data-bs-target="#carBrandModal">
+                Add Car Brand
+            </button>
+
+            <table id="CarBrandTable" class="dataTables_wrapper table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sl No</th>
+                        <th>Brand Name</th>
+                        <th>Country of Origin</th>
+                        <th>Website</th>
+                        <th>Luxury Brand</th>
+                        <th>Active</th>
+                        <th>Notes</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data loaded dynamically -->
+                </tbody>
+            </table>
         </div>
-        <div class="col-md-8 d-flex justify-content-end">
-            <button id="btnAddNew" class="btn btn-success">Add New Brand</button>
+
+        <!-- Model Tab -->
+        <div class="tab-pane fade" id="modelTab" role="tabpanel" aria-labelledby="model-tab">
+            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearCarModelModalFields()" data-bs-toggle="modal" data-bs-target="#carModelModal">
+                Add Car Model
+            </button>
+
+            <table id="CarModelTable" class="dataTables_wrapper table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sl No</th>
+                        <th>Brand Name</th>
+                        <th>Model Name</th>
+                        <th>Launch Year</th>
+                        <th>Discontinued Year</th>
+                        <th>Generation</th>
+                        <th>Body Type</th>
+                        <th>Active</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data loaded dynamically -->
+                </tbody>
+            </table>
         </div>
+
     </div>
-
-    <table class="table table-bordered table-striped" id="tblCarBrands">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Country</th>
-                <th>Website</th>
-                <th>Luxury</th>
-                <th>Active</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
 </div>
 
-<!-- Modal for Add/Edit Brand -->
-<div class="modal fade" id="brandModal" tabindex="-1" aria-labelledby="brandModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form id="brandForm" class="modal-content">
+<!-- Car Brand Modal -->
+<div class="modal fade" id="carBrandModal" tabindex="-1" aria-labelledby="carBrandModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="brandModalLabel">Add/Edit Brand</h5>
+                <h5 class="modal-title">Add / Edit Car Brand</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="brandId" />
-
-                <div class="mb-3">
-                    <label for="brandName" class="form-label">Brand Name</label>
-                    <input type="text" id="brandName" class="form-control" maxlength="60" required />
-                </div>
-
-                <div class="mb-3">
-                    <label for="brandCountry" class="form-label">Country of Origin</label>
-                    <input type="text" id="brandCountry" class="form-control" maxlength="50" />
-                </div>
-
-                <div class="mb-3">
-                    <label for="brandWebsite" class="form-label">Brand Website</label>
-                    <input type="url" id="brandWebsite" class="form-control" maxlength="200" />
-                </div>
-
-                <div class="form-check mb-3">
-                    <input type="checkbox" id="isLuxuryBrand" class="form-check-input" />
-                    <label for="isLuxuryBrand" class="form-check-label">Is Luxury Brand</label>
-                </div>
-
-                <div class="form-check mb-3">
-                    <input type="checkbox" id="isActiveBrand" class="form-check-input" checked />
-                    <label for="isActiveBrand" class="form-check-label">Is Active Brand</label>
-                </div>
-
-                <div class="mb-3">
-                    <label for="brandNotes" class="form-label">Notes</label>
-                    <textarea id="brandNotes" class="form-control" rows="3" maxlength="500"></textarea>
-                </div>
+                <form id="carBrandForm">
+                    <input type="hidden" id="selectedCarBrandID" />
+                    <div class="mb-3">
+                        <label for="brandNameInput" class="form-label">Brand Name</label>
+                        <input type="text" class="form-control requiredfield_CarBrand" id="brandNameInput" onkeyup="CheckNameAlreadyExist(this, 'CarBrandTable', 'brandNameMessage', 'btnCarBrandSave')" required />
+                        <span id="brandNameMessage"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="brandCountryInput" class="form-label">Country of Origin</label>
+                        <input type="text" class="form-control" id="brandCountryInput" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="brandWebsiteInput" class="form-label">Website</label>
+                        <input type="url" class="form-control" id="brandWebsiteInput" />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isLuxuryBrandInput" />
+                        <label class="form-check-label" for="isLuxuryBrandInput">Is Luxury Brand</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isActiveBrandInput" checked />
+                        <label class="form-check-label" for="isActiveBrandInput">Is Active Brand</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="brandNotesInput" class="form-label">Notes</label>
+                        <textarea rows="3" class="form-control" id="brandNotesInput"></textarea>
+                    </div>
+                </form>
             </div>
-
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Save Brand</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" id="btnCarBrandSave" onclick="saveCarBrand()" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<!-- jQuery and Bootstrap JS (use your versions) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Car Model Modal -->
+<div class="modal fade" id="carModelModal" tabindex="-1" aria-labelledby="carModelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add / Edit Car Model</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="carModelForm">
+                    <input type="hidden" id="selectedCarModelID" />
+                    <div class="mb-3">
+                        <label for="modelBrandDropdown" class="form-label">Brand</label>
+                        <select class="form-select requiredfield_CarModel" id="modelBrandDropdown" required>
+                            <option value="">Select Brand</option>
+                            <!-- Brands populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modelNameInput" class="form-label">Model Name</label>
+                        <input type="text" class="form-control requiredfield_CarModel" id="modelNameInput" onkeyup="CheckNameAlreadyExistModel(this, 'CarModelTable', 'modelNameMessage', 'btnCarModelSave')" required />
+                        <span id="modelNameMessage"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modelLaunchYearInput" class="form-label">Launch Year</label>
+                        <input type="number" class="form-control" id="modelLaunchYearInput" min="1900" max="2099" step="1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="modelDiscontinuedYearInput" class="form-label">Discontinued Year</label>
+                        <input type="number" class="form-control" id="modelDiscontinuedYearInput" min="1900" max="2099" step="1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="modelGenerationInput" class="form-label">Generation</label>
+                        <input type="text" class="form-control" id="modelGenerationInput" placeholder="e.g. Gen 1, Facelift, Gen 2" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="modelBodyTypeInput" class="form-label">Body Type</label>
+                        <input type="text" class="form-control" id="modelBodyTypeInput" placeholder="e.g. Sedan, Hatchback, SUV" />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isActiveModelInput" checked />
+                        <label class="form-check-label" for="isActiveModelInput">Is Active Model</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modelDescriptionInput" class="form-label">Description</label>
+                        <textarea rows="3" class="form-control" id="modelDescriptionInput"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="btnCarModelSave" onclick="saveCarModel()" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    $(function () {
-        var brandModal = new bootstrap.Modal($('#brandModal')[0]);
+    $(document).ready(function () {
 
-        function loadBrands(search = '') {
-            $.ajax({
-                url: '/CarBrands/GetAll',
-                type: 'GET',
-                data: { search: search },
-                success: function (data) {
-                    var tbody = $('#tblCarBrands tbody').empty();
-                    if (!data || data.length === 0) {
-                        tbody.append('<tr><td colspan="6" class="text-center">No brands found</td></tr>');
-                        return;
-                    }
-                    $.each(data, function (i, brand) {
-                        tbody.append(`<tr>
-                            <td>${brand.brandName}</td>
-                            <td>${brand.brandCountryOfOrigin || ''}</td>
-                            <td><a href="${brand.brandWebsite}" target="_blank">${brand.brandWebsite}</a></td>
-                            <td>${brand.isLuxuryBrand ? '✅' : '❌'}</td>
-                            <td>${brand.isActiveBrand ? '✅' : '❌'}</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning btn-edit" data-id="${brand.brandId}">Edit</button>
-                                <button class="btn btn-sm btn-danger btn-delete" data-id="${brand.brandId}">Delete</button>
-                            </td>
-                        </tr>`);
-                    });
-                },
-                error: function () {
-                    alert('Failed to load brands.');
-                }
-            });
-        }
+      // CAR BRAND EVENTS
+      $('#CarBrandTable').on('click', '.btn-edit', function () {
+        var fullData = JSON.parse($(this).attr('data-full-data'));
+        editCarBrand(fullData);
+      });
 
-        loadBrands();
+      $('#CarBrandTable').on('click', '.btn-delete', function () {
+        var id = JSON.parse($(this).attr('data-id'));
+        DeleteWarning(deleteCarBrand, id);
+      });
 
-        $('#txtSearch').on('input', function () {
-            loadBrands($(this).val());
-        });
+      // CAR MODEL EVENTS
+      $('#CarModelTable').on('click', '.btn-edit', function () {
+        var fullData = JSON.parse($(this).attr('data-full-data'));
+        editCarModel(fullData);
+      });
 
-        $('#btnAddNew').click(function () {
-            clearForm();
-            $('#brandModalLabel').text('Add New Brand');
-            brandModal.show();
-        });
+      $('#CarModelTable').on('click', '.btn-delete', function () {
+        var id = JSON.parse($(this).attr('data-id'));
+        DeleteWarning(deleteCarModel, id);
+      });
 
-        function clearForm() {
-            $('#brandId').val('');
-            $('#brandName').val('');
-            $('#brandCountry').val('');
-            $('#brandWebsite').val('');
-            $('#isLuxuryBrand').prop('checked', false);
-            $('#isActiveBrand').prop('checked', true);
-            $('#brandNotes').val('');
-        }
-
-        $('#brandForm').submit(function (e) {
-            e.preventDefault();
-
-            var brandData = {
-                brandId: $('#brandId').val(),
-                brandName: $('#brandName').val().trim(),
-                brandCountryOfOrigin: $('#brandCountry').val().trim(),
-                brandWebsite: $('#brandWebsite').val().trim(),
-                isLuxuryBrand: $('#isLuxuryBrand').prop('checked'),
-                isActiveBrand: $('#isActiveBrand').prop('checked'),
-                brandNotes: $('#brandNotes').val().trim()
-            };
-
-            var url = brandData.brandId ? '/CarBrands/Update' : '/CarBrands/Create';
-
-            $.ajax({
-                url: url,
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(brandData),
-                success: function (res) {
-                    alert(res.message || 'Operation successful');
-                    brandModal.hide();
-                    loadBrands();
-                },
-                error: function (xhr) {
-                    alert('Error: ' + xhr.responseText);
-                }
-            });
-        });
-
-        $('#tblCarBrands').on('click', '.btn-edit', function () {
-            var id = $(this).data('id');
-            $.ajax({
-                url: '/CarBrands/GetById?id=' + id,
-                type: 'GET',
-                success: function (brand) {
-                    $('#brandId').val(brand.brandId);
-                    $('#brandName').val(brand.brandName);
-                    $('#brandCountry').val(brand.brandCountryOfOrigin);
-                    $('#brandWebsite').val(brand.brandWebsite);
-                    $('#isLuxuryBrand').prop('checked', brand.isLuxuryBrand);
-                    $('#isActiveBrand').prop('checked', brand.isActiveBrand);
-                    $('#brandNotes').val(brand.brandNotes);
-                    $('#brandModalLabel').text('Edit Brand');
-                    brandModal.show();
-                },
-                error: function () {
-                    alert('Failed to load brand data.');
-                }
-            });
-        });
-
-        $('#tblCarBrands').on('click', '.btn-delete', function () {
-            if (!confirm('Are you sure you want to delete this brand?')) return;
-
-            var id = $(this).data('id');
-            $.ajax({
-                url: '/CarBrands/Delete?id=' + id,
-                type: 'DELETE',
-                success: function (res) {
-                    alert(res.message || 'Deleted successfully');
-                    loadBrands();
-                },
-                error: function (xhr) {
-                    alert('Delete failed: ' + xhr.responseText);
-                }
-            });
-        });
+      // Load data & dropdowns on page load
+      populateBrandDropdown();
+      getCarBrands();
+      getCarModels();
     });
+
+    // ----- CAR BRAND FUNCTIONS -----
+    function ClearCarBrandModalFields() {
+      $('#selectedCarBrandID').val('');
+      $('#brandNameInput').val('');
+      $('#brandCountryInput').val('');
+      $('#brandWebsiteInput').val('');
+      $('#isLuxuryBrandInput').prop('checked', false);
+      $('#isActiveBrandInput').prop('checked', true);
+      $('#brandNotesInput').val('');
+      $('#brandNameMessage').text('');
+      $('#btnCarBrandSave').prop('disabled', false);
+      $('#carBrandModal').modal('toggle');
+    }
+
+    function saveCarBrand() {
+      if (CheckEmptyFields('CarBrand')) {
+        var brandData = {
+          BrandId: $('#selectedCarBrandID').val() || 0,
+          BrandName: $('#brandNameInput').val().trim(),
+          BrandCountryOfOrigin: $('#brandCountryInput').val().trim(),
+          BrandWebsite: $('#brandWebsiteInput').val().trim(),
+          IsLuxuryBrand: $('#isLuxuryBrandInput').is(':checked'),
+          IsActiveBrand: $('#isActiveBrandInput').is(':checked'),
+          BrandNotes: $('#brandNotesInput').val().trim()
+        };
+
+        $.ajax({
+          url: '/Configuration/AddOrEditCarBrand',
+          type: 'POST',
+          data: brandData,
+          success: function (response) {
+            if (response) {
+              msgPopup('success', 'Car Brand saved successfully');
+              $('#carBrandModal').modal('hide');
+              getCarBrands();
+              populateBrandDropdown(); // refresh brand dropdown for models
+            } else {
+              alert('Failed to save Car Brand.');
+            }
+          },
+          error: function (xhr, status, error) {
+            alert('An error occurred: ' + error);
+          }
+        });
+      }
+    }
+
+    function getCarBrands() {
+      var table = InitializeDatatableWithSlNo('CarBrandTable', 'CarBrands');
+      $.ajax({
+        url: '/Configuration/GetCarBrands',
+        type: 'GET',
+        success: function (response) {
+          table.clear();
+          response.forEach(function (brand) {
+            table.row.add([
+              '',
+              brand.brandName,
+              brand.brandCountryOfOrigin,
+              brand.brandWebsite,
+              brand.isLuxuryBrand ? 'Yes' : 'No',
+              brand.isActiveBrand ? 'Yes' : 'No',
+              brand.brandNotes,
+              '<div class="contentCenter">' +
+              '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(brand) + '\'></i>' +
+              '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(brand.brandId) + '\'></i>' +
+              '</div>'
+            ]).draw();
+          });
+        },
+        error: function (xhr, status, error) {
+          alert('An error occurred: ' + error);
+        }
+      });
+    }
+
+    function editCarBrand(data) {
+      $('#selectedCarBrandID').val(data.brandId);
+      $('#brandNameInput').val(data.brandName);
+      $('#brandCountryInput').val(data.brandCountryOfOrigin);
+      $('#brandWebsiteInput').val(data.brandWebsite);
+      $('#isLuxuryBrandInput').prop('checked', data.isLuxuryBrand);
+      $('#isActiveBrandInput').prop('checked', data.isActiveBrand);
+      $('#brandNotesInput').val(data.brandNotes);
+      $('#brandNameMessage').text('');
+      $('#btnCarBrandSave').prop('disabled', false);
+      $('#carBrandModal').modal('show');
+    }
+
+    function deleteCarBrand(id) {
+      $.ajax({
+        url: '/Configuration/DeleteCarBrand',
+        type: 'POST',
+        data: { id: id },
+        success: function (response) {
+          if (response) {
+            msgPopup('success', 'Car Brand deleted successfully');
+          } else {
+            msgPopup('error', response.toString());
+          }
+          getCarBrands();
+          populateBrandDropdown(); // refresh brand dropdown after deletion
+        },
+        error: function (xhr, status, error) {
+          alert('An error occurred: ' + error);
+        }
+      });
+    }
+
+
+    // ----- CAR MODEL FUNCTIONS -----
+    function ClearCarModelModalFields() {
+      $('#selectedCarModelID').val('');
+      $('#modelBrandDropdown').val('');
+      $('#modelNameInput').val('');
+      $('#modelLaunchYearInput').val('');
+      $('#modelDiscontinuedYearInput').val('');
+      $('#modelGenerationInput').val('');
+      $('#modelBodyTypeInput').val('');
+      $('#isActiveModelInput').prop('checked', true);
+      $('#modelDescriptionInput').val('');
+      $('#modelNameMessage').text('');
+      $('#btnCarModelSave').prop('disabled', false);
+      $('#carModelModal').modal('toggle');
+    }
+
+    function populateBrandDropdown() {
+      $.ajax({
+        url: '/Configuration/GetCarBrands',
+        type: 'GET',
+        success: function (brands) {
+          var dropdown = $('#modelBrandDropdown');
+          dropdown.empty();
+          dropdown.append('<option value="">Select Brand</option>');
+          brands.forEach(function (brand) {
+            dropdown.append(`<option value="${brand.brandId}">${brand.brandName}</option>`);
+          });
+        },
+        error: function () {
+          alert('Failed to load brands');
+        }
+      });
+    }
+
+    function saveCarModel() {
+      if (CheckEmptyFields('CarModel')) {
+        var modelData = {
+          ModelId: $('#selectedCarModelID').val() || 0,
+          BrandId: $('#modelBrandDropdown').val(),
+          ModelName: $('#modelNameInput').val().trim(),
+          ModelLaunchYear: $('#modelLaunchYearInput').val(),
+          ModelDiscontinuedYear: $('#modelDiscontinuedYearInput').val(),
+          ModelGeneration: $('#modelGenerationInput').val().trim(),
+          ModelBodyType: $('#modelBodyTypeInput').val().trim(),
+          IsActiveModel: $('#isActiveModelInput').is(':checked'),
+          ModelDescription: $('#modelDescriptionInput').val().trim()
+        };
+
+        $.ajax({
+          url: '/Configuration/AddOrEditCarModel',
+          type: 'POST',
+          data: modelData,
+          success: function (response) {
+            if (response) {
+              msgPopup('success', 'Car Model saved successfully');
+              $('#carModelModal').modal('hide');
+              getCarModels();
+            } else {
+              alert('Failed to save Car Model.');
+            }
+          },
+          error: function (xhr, status, error) {
+            alert('An error occurred: ' + error);
+          }
+        });
+      }
+    }
+
+    function getCarModels() {
+      var table = InitializeDatatableWithSlNo('CarModelTable', 'CarModels');
+      $.ajax({
+        url: '/Configuration/GetCarModels',
+        type: 'GET',
+        success: function (response) {
+          table.clear();
+          response.forEach(function (model) {
+            table.row.add([
+              '',
+              model.brandName,
+              model.modelName,
+              model.modelLaunchYear || '',
+              model.modelDiscontinuedYear || '',
+              model.modelGeneration || '',
+              model.modelBodyType || '',
+              model.isActiveModel ? 'Yes' : 'No',
+              model.modelDescription || '',
+              '<div class="contentCenter">' +
+              '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(model) + '\'></i>' +
+              '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(model.modelId) + '\'></i>' +
+              '</div>'
+            ]).draw();
+          });
+        },
+        error: function (xhr, status, error) {
+          alert('An error occurred: ' + error);
+        }
+      });
+    }
+
+    function editCarModel(data) {
+      $('#selectedCarModelID').val(data.modelId);
+      $('#modelBrandDropdown').val(data.brandId);
+      $('#modelNameInput').val(data.modelName);
+      $('#modelLaunchYearInput').val(data.modelLaunchYear);
+      $('#modelDiscontinuedYearInput').val(data.modelDiscontinuedYear);
+      $('#modelGenerationInput').val(data.modelGeneration);
+      $('#modelBodyTypeInput').val(data.modelBodyType);
+      $('#isActiveModelInput').prop('checked', data.isActiveModel);
+      $('#modelDescriptionInput').val(data.modelDescription);
+      $('#modelNameMessage').text('');
+      $('#btnCarModelSave').prop('disabled', false);
+      $('#carModelModal').modal('show');
+    }
+
+    function deleteCarModel(id) {
+      $.ajax({
+        url: '/Configuration/DeleteCarModel',
+        type: 'POST',
+        data: { id: id },
+        success: function (response) {
+          if (response) {
+            msgPopup('success', 'Car Model deleted successfully');
+          } else {
+            msgPopup('error', response.toString());
+          }
+          getCarModels();
+        },
+        error: function (xhr, status, error) {
+          alert('An error occurred: ' + error);
+        }
+      });
+    }
+
+
+    // VALIDATIONS
+
+    function CheckNameAlreadyExist(input, tblId, messageTextId, buttonId) {
+      const enteredName = input.value.trim().toLowerCase();
+      const table = $('#' + tblId).DataTable();
+      const nameExists = table
+        .column(1)
+        .data()
+        .toArray()
+        .some(name => name.trim().toLowerCase() === enteredName);
+      if (nameExists) {
+        $('#' + messageTextId).text('Name already exists!').css('color', 'red');
+        $('#' + buttonId).prop('disabled', true);
+      } else {
+        $('#' + messageTextId).text('');
+        $('#' + buttonId).prop('disabled', false);
+      }
+    }
+
+    function CheckNameAlreadyExistModel(input, tblId, messageTextId, buttonId) {
+      const enteredName = input.value.trim().toLowerCase();
+      const table = $('#' + tblId).DataTable();
+      const nameExists = table
+        .column(2)
+        .data()
+        .toArray()
+        .some(name => name.trim().toLowerCase() === enteredName);
+      if (nameExists) {
+        $('#' + messageTextId).text('Model name already exists!').css('color', 'red');
+        $('#' + buttonId).prop('disabled', true);
+      } else {
+        $('#' + messageTextId).text('');
+        $('#' + buttonId).prop('disabled', false);
+      }
+    }
+
+    function CheckEmptyFields(prefix) {
+      let valid = true;
+      $('.requiredfield_' + prefix).each(function () {
+        if ($(this).val() === '') {
+          $(this).css('border', '1px solid red');
+          valid = false;
+        } else {
+          $(this).css('border', '');
+        }
+      });
+      return valid;
+    }
 </script>

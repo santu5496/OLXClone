@@ -1,5 +1,5 @@
 ﻿{
-   "CodeGenerationMode": 3,
+   "CodeGenerationMode": 4,
    "ContextClassName": "Assignment4Context",
    "ContextNamespace": null,
    "FilterSchemas": false,
@@ -15,67 +15,87 @@
    "T4TemplatePath": null,
    "Tables": [
       {
-         "Name": "[dbo].[BakedCookedLogs]",
+         "Name": "[dbo].[BusinessAnalytics]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Billing]",
+         "Name": "[dbo].[CarBrands]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[BillOrderItems]",
+         "Name": "[dbo].[CarColors]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Category]",
+         "Name": "[dbo].[CarConditionLevels]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Customers]",
+         "Name": "[dbo].[CarFeaturesList]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Inventory]",
+         "Name": "[dbo].[CarImages]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[InventoryItems]",
+         "Name": "[dbo].[CarListingFeatures]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ItemsUsedForGoods]",
+         "Name": "[dbo].[CarListings]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[MasterBranch]",
+         "Name": "[dbo].[CarListingViews]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Orders]",
+         "Name": "[dbo].[CarModels]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[PurchaseDetails]",
+         "Name": "[dbo].[CarVariants]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[RawMaterialLogs]",
+         "Name": "[dbo].[CustomerInquiries]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Recipe]",
+         "Name": "[dbo].[EngineSpecifications]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ReturnItems]",
+         "Name": "[dbo].[FuelTypes]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ReturnManagement]",
+         "Name": "[dbo].[GeographicCities]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Suppliers]",
+         "Name": "[dbo].[GeographicStates]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[InsuranceProviders]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RTOCodes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[SystemConfiguration]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TransmissionTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VehicleCategories]",
          "ObjectType": 0
       }
    ],
@@ -84,6 +104,7 @@
    "UseAsyncStoredProcedureCalls": true,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
+   "UseDatabaseNamesForRoutines": true,
    "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
@@ -91,6 +112,7 @@
    "UseHandleBars": false,
    "UseHierarchyId": false,
    "UseInflector": true,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
    "UseNoDefaultConstructor": false,
@@ -102,5 +124,6 @@
    "UseSchemaFolders": false,
    "UseSchemaNamespaces": false,
    "UseSpatial": false,
-   "UseT4": false
+   "UseT4": false,
+   "UseT4Split": false
 }

@@ -7,21 +7,21 @@ namespace DbOperation.Models;
 
 public partial class TransmissionTypes
 {
-    public int TransmissionId { get; set; }
+    public int transmissionId { get; set; }
 
-    public string TransmissionName { get; set; }
+    public string transmissionName { get; set; }
 
-    public string TransmissionFullName { get; set; }
+    public string transmissionFullName { get; set; }
 
-    public string TransmissionDescription { get; set; }
+    public string transmissionDescription { get; set; }
 
-    public string EaseOfDriving { get; set; }
+    public string easeOfDriving { get; set; }
 
-    public string FuelEfficiencyImpact { get; set; }
+    public string fuelEfficiencyImpact { get; set; }
 
-    public string MaintenanceCost { get; set; }
+    public string maintenanceCost { get; set; }
 
-    public bool? IsActiveTranmission { get; set; }
+    public bool? isActiveTransmission { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

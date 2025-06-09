@@ -7,25 +7,25 @@ namespace DbOperation.Models;
 
 public partial class RTOCodes
 {
-    public int RTOId { get; set; }
+    public int rtoId { get; set; }
 
-    public string RTOCode { get; set; }
+    public string rtoCode { get; set; }
 
-    public string RTOName { get; set; }
+    public string rtoName { get; set; }
 
-    public int StateId { get; set; }
+    public int stateId { get; set; }
 
-    public int? CityId { get; set; }
+    public int? cityId { get; set; }
 
-    public string RTOAddress { get; set; }
+    public string rtoAddress { get; set; }
 
-    public string RTOContactNumber { get; set; }
+    public string rtoContactNumber { get; set; }
 
-    public bool? IsActiveRTO { get; set; }
+    public bool? isActiveRTO { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 
-    public virtual GeographicCities City { get; set; }
+    public virtual GeographicCities city { get; set; }
 
-    public virtual GeographicStates State { get; set; }
+    public virtual GeographicStates state { get; set; }
 }

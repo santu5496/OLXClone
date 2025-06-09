@@ -7,29 +7,29 @@ namespace DbOperation.Models;
 
 public partial class CarFeaturesList
 {
-    public int FeatureId { get; set; }
+    public int featureId { get; set; }
 
-    public string FeatureName { get; set; }
+    public string featureName { get; set; }
 
-    public string FeatureDisplayName { get; set; }
+    public string featureDisplayName { get; set; }
 
-    public string FeatureCategory { get; set; }
+    public string featureCategory { get; set; }
 
-    public string FeatureSubCategory { get; set; }
+    public string featureSubCategory { get; set; }
 
-    public string FeatureDescription { get; set; }
+    public string featureDescription { get; set; }
 
-    public string FeatureImportanceLevel { get; set; }
+    public string featureImportanceLevel { get; set; }
 
-    public string TypicalFoundIn { get; set; }
+    public string typicalFoundIn { get; set; }
 
-    public bool? AffectsResaleValue { get; set; }
+    public bool? affectsResaleValue { get; set; }
 
-    public bool? IsStandardFeature { get; set; }
+    public bool? isStandardFeature { get; set; }
 
-    public bool? IsActiveFeature { get; set; }
+    public bool? isActiveFeature { get; set; }
 
-    public string FeatureIcon { get; set; }
+    public string featureIcon { get; set; }
 
     public virtual ICollection<CarListingFeatures> CarListingFeatures { get; set; } = new List<CarListingFeatures>();
 }

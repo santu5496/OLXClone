@@ -7,25 +7,25 @@ namespace DbOperation.Models;
 
 public partial class SystemConfiguration
 {
-    public int ConfigId { get; set; }
+    public int configId { get; set; }
 
-    public string ConfigCategory { get; set; }
+    public string configCategory { get; set; }
 
-    public string ConfigKey { get; set; }
+    public string configKey { get; set; }
 
-    public string ConfigValue { get; set; }
+    public string configValue { get; set; }
 
-    public string ConfigDescription { get; set; }
+    public string configDescription { get; set; }
 
-    public string ConfigDataType { get; set; }
+    public string configDataType { get; set; }
 
-    public bool? IsUserEditable { get; set; }
+    public bool? isUserEditable { get; set; }
 
-    public bool? RequiresRestart { get; set; }
+    public bool? requiresRestart { get; set; }
 
-    public DateTime? CreatedDate { get; set; }
+    public DateTime? createdDate { get; set; }
 
-    public DateTime? ModifiedDate { get; set; }
+    public DateTime? modifiedDate { get; set; }
 
-    public string ModifiedByUserId { get; set; }
+    public string modifiedByUserId { get; set; }
 }

@@ -7,33 +7,33 @@ namespace DbOperation.Models;
 
 public partial class CarImages
 {
-    public int ImageId { get; set; }
+    public int imageId { get; set; }
 
-    public int ListingId { get; set; }
+    public int listingId { get; set; }
 
-    public string ImageFileName { get; set; }
+    public string imageFileName { get; set; }
 
-    public string ImageFilePath { get; set; }
+    public string imageFilePath { get; set; }
 
-    public long? ImageFileSize { get; set; }
+    public long? imageFileSize { get; set; }
 
-    public string ImageType { get; set; }
+    public string imageType { get; set; }
 
-    public string ImageCategory { get; set; }
+    public string imageCategory { get; set; }
 
-    public string ImageDescription { get; set; }
+    public string imageDescription { get; set; }
 
-    public bool? IsPrimaryImage { get; set; }
+    public bool? isPrimaryImage { get; set; }
 
-    public bool? IsWatermarked { get; set; }
+    public bool? isWatermarked { get; set; }
 
-    public int? ImageSortOrder { get; set; }
+    public int? imageSortOrder { get; set; }
 
-    public DateTime? ImageUploadDate { get; set; }
+    public DateTime? imageUploadDate { get; set; }
 
-    public string ImageQuality { get; set; }
+    public string imageQuality { get; set; }
 
-    public bool? IsActiveImage { get; set; }
+    public bool? isActiveImage { get; set; }
 
-    public virtual CarListings Listing { get; set; }
+    public virtual CarListings listing { get; set; }
 }

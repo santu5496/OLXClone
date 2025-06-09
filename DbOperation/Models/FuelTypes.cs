@@ -7,23 +7,23 @@ namespace DbOperation.Models;
 
 public partial class FuelTypes
 {
-    public int FuelTypeId { get; set; }
+    public int fuelTypeId { get; set; }
 
-    public string FuelTypeName { get; set; }
+    public string fuelTypeName { get; set; }
 
-    public string FuelTypeDescription { get; set; }
+    public string fuelTypeDescription { get; set; }
 
-    public bool? IsEcoFriendly { get; set; }
+    public bool? isEcoFriendly { get; set; }
 
-    public decimal? TypicalFuelPrice { get; set; }
+    public decimal? typicalFuelPrice { get; set; }
 
-    public string FuelEfficiencyRating { get; set; }
+    public string fuelEfficiencyRating { get; set; }
 
-    public string MaintenanceCostLevel { get; set; }
+    public string maintenanceCostLevel { get; set; }
 
-    public string AvailabilityLevel { get; set; }
+    public string availabilityLevel { get; set; }
 
-    public bool? IsActiveFuelType { get; set; }
+    public bool? isActiveFuelType { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

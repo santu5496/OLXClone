@@ -23,86 +23,86 @@ namespace Assignment4.Controllers
         }
 
 
-        public IActionResult GetInventoryItems()
-        {
-            try
-            {
-                return Json(_returnService.GetInventoryItems());
-            }
-            catch (Exception ex)
-            {
-                return Json(ex.Message);
-            }
-        }
+        //public IActionResult GetInventoryItems()
+        //{
+        //    try
+        //    {
+        //        return Json(_returnService.GetInventoryItems());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(ex.Message);
+        //    }
+        //}
 
-        public bool AddOrEditReturn(ReturnManagement returnData, List<ReturnItems> returnItems)
-        {
-            try
-            {
-                if (returnData.returnId == null || returnData.returnId == 0)
-                {
+        //public bool AddOrEditReturn(ReturnManagement returnData, List<ReturnItems> returnItems)
+        //{
+        //    try
+        //    {
+        //        if (returnData.returnId == null || returnData.returnId == 0)
+        //        {
                    
-                    bool result = _returnService.AddReturn(returnData, returnItems);
-                    return result;
-                }
-                else
-                {
+        //            bool result = _returnService.AddReturn(returnData, returnItems);
+        //            return result;
+        //        }
+        //        else
+        //        {
                     
-                    bool result = _returnService.UpdateReturn(returnData,returnItems);
-                    return result;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //            bool result = _returnService.UpdateReturn(returnData,returnItems);
+        //            return result;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
 
 
       
 
         
-        public bool DeleteReturn(int returnId)
-        {
-            try
-            {
-                bool result = _returnService.DeleteReturn(returnId);
-                return result;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //public bool DeleteReturn(int returnId)
+        //{
+        //    try
+        //    {
+        //        bool result = _returnService.DeleteReturn(returnId);
+        //        return result;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
        
-        public IActionResult GetReturns()
-        {
-            try
-            {
+        //public IActionResult GetReturns()
+        //{
+        //    try
+        //    {
                
-                var returns = _returnService.GetReturns();
-                return Json(returns);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { error = ex.Message });
-            }
-        }
+        //        var returns = _returnService.GetReturns();
+        //        return Json(returns);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { error = ex.Message });
+        //    }
+        //}
 
      
-        public IActionResult GetReturnItemsById(int returnId)
-        {
-            try
-            {
-                var returnData = _returnService.GetReturnItemsWithItemNameWithID(returnId);
-                return Json(returnData);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { error = ex.Message });
-            }
-        }
+        //public IActionResult GetReturnItemsById(int returnId)
+        //{
+        //    try
+        //    {
+        //        var returnData = _returnService.GetReturnItemsWithItemNameWithID(returnId);
+        //        return Json(returnData);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { error = ex.Message });
+        //    }
+        //}
     }
 }

@@ -7,21 +7,21 @@ namespace DbOperation.Models;
 
 public partial class VehicleCategories
 {
-    public int CategoryId { get; set; }
+    public int categoryId { get; set; }
 
-    public string CategoryName { get; set; }
+    public string categoryName { get; set; }
 
-    public string CategoryDescription { get; set; }
+    public string categoryDescription { get; set; }
 
-    public string CategoryIcon { get; set; }
+    public string categoryIcon { get; set; }
 
-    public string TypicalSeatingCapacity { get; set; }
+    public string typicalSeatingCapacity { get; set; }
 
-    public string TypicalPriceRange { get; set; }
+    public string typicalPriceRange { get; set; }
 
-    public int? PopularityRank { get; set; }
+    public int? popularityRank { get; set; }
 
-    public bool? IsActiveCategory { get; set; }
+    public bool? isActiveCategory { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

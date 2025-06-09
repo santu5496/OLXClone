@@ -29,9 +29,6 @@ namespace DbOperation.ViewModels
 
         public string sUser { get; set; }
 
-        public virtual ICollection<Billing> Billing { get; set; } = new List<Billing>();
-
-        public virtual Customers fkCustomer { get; set; }
        
 
         // Adding a property for OrderItems

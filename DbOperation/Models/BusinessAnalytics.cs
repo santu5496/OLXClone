@@ -7,21 +7,21 @@ namespace DbOperation.Models;
 
 public partial class BusinessAnalytics
 {
-    public int AnalyticsId { get; set; }
+    public int analyticsId { get; set; }
 
-    public DateOnly AnalyticsDate { get; set; }
+    public DateOnly analyticsDate { get; set; }
 
-    public string MetricName { get; set; }
+    public string metricName { get; set; }
 
-    public string MetricCategory { get; set; }
+    public string metricCategory { get; set; }
 
-    public decimal? MetricValue { get; set; }
+    public decimal? metricValue { get; set; }
 
-    public string MetricUnit { get; set; }
+    public string metricUnit { get; set; }
 
-    public int? RelatedListingId { get; set; }
+    public int? relatedListingId { get; set; }
 
-    public DateTime? CalculatedDate { get; set; }
+    public DateTime? calculatedDate { get; set; }
 
-    public virtual CarListings RelatedListing { get; set; }
+    public virtual CarListings relatedListing { get; set; }
 }

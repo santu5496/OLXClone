@@ -7,29 +7,29 @@ namespace DbOperation.Models;
 
 public partial class CarListingViews
 {
-    public int ViewId { get; set; }
+    public int viewId { get; set; }
 
-    public int ListingId { get; set; }
+    public int listingId { get; set; }
 
-    public DateTime? ViewDate { get; set; }
+    public DateTime? viewDate { get; set; }
 
-    public string ViewerIPAddress { get; set; }
+    public string viewerIPAddress { get; set; }
 
-    public string ViewerUserAgent { get; set; }
+    public string viewerUserAgent { get; set; }
 
-    public string ViewerLocation { get; set; }
+    public string viewerLocation { get; set; }
 
-    public string ReferrerSource { get; set; }
+    public string referrerSource { get; set; }
 
-    public int? TimeSpentInSeconds { get; set; }
+    public int? timeSpentInSeconds { get; set; }
 
-    public int? PagesViewed { get; set; }
+    public int? pagesViewed { get; set; }
 
-    public int? ImagesViewed { get; set; }
+    public int? imagesViewed { get; set; }
 
-    public bool? ContactDetailsViewed { get; set; }
+    public bool? contactDetailsViewed { get; set; }
 
-    public bool? PhoneNumberRevealed { get; set; }
+    public bool? phoneNumberRevealed { get; set; }
 
-    public virtual CarListings Listing { get; set; }
+    public virtual CarListings listing { get; set; }
 }

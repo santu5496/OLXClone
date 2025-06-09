@@ -7,227 +7,225 @@ namespace DbOperation.Models;
 
 public partial class CarListings
 {
-    public int ListingId { get; set; }
+    public int listingId { get; set; }
 
-    public string ListingTitle { get; set; }
+    public string listingTitle { get; set; }
 
-    public int BrandId { get; set; }
+    public int brandId { get; set; }
 
-    public int ModelId { get; set; }
+    public int modelId { get; set; }
 
-    public int? VariantId { get; set; }
+    public int? variantId { get; set; }
 
-    public int? CategoryId { get; set; }
+    public int? categoryId { get; set; }
 
-    public int ManufacturingYear { get; set; }
+    public int manufacturingYear { get; set; }
 
-    public int? ManufacturingMonth { get; set; }
+    public int? manufacturingMonth { get; set; }
 
-    public int RegistrationYear { get; set; }
+    public int registrationYear { get; set; }
 
-    public int? RegistrationMonth { get; set; }
+    public int? registrationMonth { get; set; }
 
-    public int? VehicleAge { get; set; }
+    public int? vehicleAge { get; set; }
 
-    public int? EngineCapacityInCC { get; set; }
+    public int? engineCapacityInCC { get; set; }
 
-    public decimal? EngineCapacityInLiters { get; set; }
+    public decimal? engineCapacityInLiters { get; set; }
 
-    public int? EnginePowerInBHP { get; set; }
+    public int? enginePowerInBHP { get; set; }
 
-    public decimal? EnginePowerInKW { get; set; }
+    public decimal? enginePowerInKW { get; set; }
 
-    public int? EngineTorqueInNm { get; set; }
+    public int? engineTorqueInNm { get; set; }
 
-    public int? EngineSpecId { get; set; }
+    public int? engineSpecId { get; set; }
 
-    public int FuelTypeId { get; set; }
+    public int fuelTypeId { get; set; }
 
-    public int TransmissionId { get; set; }
+    public int transmissionId { get; set; }
 
-    public int? NumberOfGears { get; set; }
+    public int? numberOfGears { get; set; }
 
-    public int? ColorId { get; set; }
+    public int? colorId { get; set; }
 
-    public int? NumberOfDoors { get; set; }
+    public int? numberOfDoors { get; set; }
 
-    public int? SeatingCapacity { get; set; }
+    public int? seatingCapacity { get; set; }
 
-    public int? BootSpaceInLiters { get; set; }
+    public int? bootSpaceInLiters { get; set; }
 
-    public int? KerbWeightInKG { get; set; }
+    public int? kerbWeightInKG { get; set; }
 
-    public int? GroundClearanceInMM { get; set; }
+    public int? groundClearanceInMM { get; set; }
 
-    public int? TotalPreviousOwners { get; set; }
+    public int? totalPreviousOwners { get; set; }
 
-    public int? CurrentOwnershipDuration { get; set; }
+    public int? currentOwnershipDuration { get; set; }
 
-    public int KilometersOnOdometer { get; set; }
+    public int kilometersOnOdometer { get; set; }
 
-    public int? AverageMonthlyKilometers { get; set; }
+    public int? averageMonthlyKilometers { get; set; }
 
-    public decimal? MileageInCityKMPL { get; set; }
+    public decimal? mileageInCityKMPL { get; set; }
 
-    public decimal? MileageOnHighwayKMPL { get; set; }
+    public decimal? mileageOnHighwayKMPL { get; set; }
 
-    public decimal? CombinedMileageKMPL { get; set; }
+    public decimal? combinedMileageKMPL { get; set; }
 
-    public int? OverallConditionId { get; set; }
+    public int? overallConditionId { get; set; }
 
-    public int? ExteriorConditionRating { get; set; }
+    public int? exteriorConditionRating { get; set; }
 
-    public int? InteriorConditionRating { get; set; }
+    public int? interiorConditionRating { get; set; }
 
-    public int? EngineConditionRating { get; set; }
+    public int? engineConditionRating { get; set; }
 
-    public int? TyreConditionRating { get; set; }
+    public int? tyreConditionRating { get; set; }
 
-    public bool? HasAccidentHistory { get; set; }
+    public bool? hasAccidentHistory { get; set; }
 
-    public string AccidentSeverityLevel { get; set; }
+    public string accidentSeverityLevel { get; set; }
 
-    public bool? IsFloodAffected { get; set; }
+    public bool? isFloodAffected { get; set; }
 
-    public bool? HasElectricalIssues { get; set; }
+    public bool? hasElectricalIssues { get; set; }
 
-    public bool? HasMechanicalIssues { get; set; }
+    public bool? hasMechanicalIssues { get; set; }
 
-    public bool? RequiresImmediateRepairs { get; set; }
+    public bool? requiresImmediateRepairs { get; set; }
 
-    public decimal? EstimatedRepairCost { get; set; }
+    public decimal? estimatedRepairCost { get; set; }
 
-    public decimal? OriginalPurchasePrice { get; set; }
+    public decimal? originalPurchasePrice { get; set; }
 
-    public decimal? CurrentMarketPrice { get; set; }
+    public decimal? currentMarketPrice { get; set; }
 
-    public decimal SellingPriceAsked { get; set; }
+    public decimal sellingPriceAsked { get; set; }
 
-    public decimal? MinimumAcceptablePrice { get; set; }
+    public decimal? minimumAcceptablePrice { get; set; }
 
-    public bool? IsPriceNegotiable { get; set; }
+    public bool? isPriceNegotiable { get; set; }
 
-    public bool? PriceIncludesTransfer { get; set; }
+    public bool? priceIncludesTransfer { get; set; }
 
-    public DateOnly? PriceValidUntilDate { get; set; }
+    public DateOnly? priceValidUntilDate { get; set; }
 
-    public string RegistrationNumber { get; set; }
+    public string registrationNumber { get; set; }
 
-    public int? RTOId { get; set; }
+    public int? rtoId { get; set; }
 
-    public string ChassisNumber { get; set; }
+    public string chassisNumber { get; set; }
 
-    public string EngineNumber { get; set; }
+    public string engineNumber { get; set; }
 
-    public int? InsuranceProviderId { get; set; }
+    public int? insuranceProviderId { get; set; }
 
-    public string InsuranceType { get; set; }
+    public string insuranceType { get; set; }
 
-    public string InsurancePolicyNumber { get; set; }
+    public string insurancePolicyNumber { get; set; }
 
-    public DateOnly? InsuranceExpiryDate { get; set; }
+    public DateOnly? insuranceExpiryDate { get; set; }
 
-    public bool? InsuranceClaimHistory { get; set; }
+    public bool? insuranceClaimHistory { get; set; }
 
-    public int? NumberOfInsuranceClaims { get; set; }
+    public int? numberOfInsuranceClaims { get; set; }
 
-    public string PollutionCertificateNumber { get; set; }
+    public string pollutionCertificateNumber { get; set; }
 
-    public DateOnly? PollutionCertificateExpiryDate { get; set; }
+    public DateOnly? pollutionCertificateExpiryDate { get; set; }
 
-    public DateOnly? FitnesssCertificateExpiryDate { get; set; }
+    public DateOnly? fitnessCertificateExpiryDate { get; set; }
 
-    public DateOnly? RoadTaxPaidUntilDate { get; set; }
+    public DateOnly? roadTaxPaidUntilDate { get; set; }
 
-    public DateOnly? LastServiceDate { get; set; }
+    public DateOnly? lastServiceDate { get; set; }
 
-    public int? LastServiceKilometers { get; set; }
+    public int? lastServiceKilometers { get; set; }
 
-    public int? NextServiceDueKilometers { get; set; }
+    public int? nextServiceDueKilometers { get; set; }
 
-    public bool? HasCompleteServiceHistory { get; set; }
+    public bool? hasCompleteServiceHistory { get; set; }
 
-    public bool? ServicedAtAuthorizedCenter { get; set; }
+    public bool? servicedAtAuthorizedCenter { get; set; }
 
-    public int StateId { get; set; }
+    public int stateId { get; set; }
 
-    public int CityId { get; set; }
+    public int cityId { get; set; }
 
-    public string AreaOrLocality { get; set; }
+    public string areaOrLocality { get; set; }
 
-    public string PinCode { get; set; }
+    public string pinCode { get; set; }
 
-    public string ExactAddress { get; set; }
+    public string exactAddress { get; set; }
 
-    public string SellerType { get; set; }
+    public string sellerType { get; set; }
 
-    public string SellerName { get; set; }
+    public string sellerName { get; set; }
 
-    public string SellerPrimaryPhone { get; set; }
+    public string sellerPrimaryPhone { get; set; }
 
-    public string SellerSecondaryPhone { get; set; }
+    public string sellerSecondaryPhone { get; set; }
 
-    public string SellerEmailAddress { get; set; }
+    public string sellerEmailAddress { get; set; }
 
-    public string SellerWhatsAppNumber { get; set; }
+    public string sellerWhatsAppNumber { get; set; }
 
-    public string PreferredContactMethod { get; set; }
+    public string preferredContactMethod { get; set; }
 
-    public string AvailableForContactDays { get; set; }
+    public string availableForContactDays { get; set; }
 
-    public string AvailableForContactHours { get; set; }
+    public string availableForContactHours { get; set; }
 
-    public string DetailedDescription { get; set; }
+    public string detailedDescription { get; set; }
 
-    public string SellingReason { get; set; }
+    public string sellingReason { get; set; }
 
-    public string SpecialHighlights { get; set; }
+    public string specialHighlights { get; set; }
 
-    public string KnownIssuesOrProblems { get; set; }
+    public string knownIssuesOrProblems { get; set; }
 
-    public bool? AvailableForPhysicalInspection { get; set; }
+    public bool? availableForPhysicalInspection { get; set; }
 
-    public bool? AvailableForTestDrive { get; set; }
+    public bool? availableForTestDrive { get; set; }
 
-    public string PreferredViewingLocation { get; set; }
+    public string preferredViewingLocation { get; set; }
 
-    public string ViewingInstructions { get; set; }
+    public string viewingInstructions { get; set; }
 
-    public string ListingStatus { get; set; }
+    public string listingStatus { get; set; }
 
-    public bool? IsPromotedListing { get; set; }
+    public bool? isPromotedListing { get; set; }
 
-    public bool? IsFeaturedListing { get; set; }
+    public bool? isFeaturedListing { get; set; }
 
-    public bool? IsUrgentSale { get; set; }
+    public bool? isUrgentSale { get; set; }
 
-    public bool? IsVerifiedListing { get; set; }
+    public bool? isVerifiedListing { get; set; }
 
-    public DateTime? ListingCreatedDate { get; set; }
+    public DateTime? listingCreatedDate { get; set; }
 
-    public DateTime? ListingExpiryDate { get; set; }
+    public DateTime? listingExpiryDate { get; set; }
 
-    public DateTime? ListingLastModifiedDate { get; set; }
+    public DateTime? listingLastModifiedDate { get; set; }
 
-    public int? TotalViews { get; set; }
+    public int? totalViews { get; set; }
 
-    public int? TotalInquiries { get; set; }
+    public int? totalInquiries { get; set; }
 
-    public int? TotalPhoneCalls { get; set; }
+    public int? totalPhoneCalls { get; set; }
 
-    public int? TotalTestDrives { get; set; }
+    public int? totalTestDrives { get; set; }
 
-    public int? FavoriteCount { get; set; }
+    public int? favoriteCount { get; set; }
 
-    public string CreatedByUserId { get; set; }
+    public string createdByUserId { get; set; }
 
-    public string ModifiedByUserId { get; set; }
+    public string modifiedByUserId { get; set; }
 
-    public string CreatedFromIPAddress { get; set; }
+    public string createdFromIPAddress { get; set; }
 
-    public string ListingSource { get; set; }
-
-    public virtual CarBrands Brand { get; set; }
+    public string listingSource { get; set; }
 
     public virtual ICollection<BusinessAnalytics> BusinessAnalytics { get; set; } = new List<BusinessAnalytics>();
 
@@ -237,29 +235,31 @@ public partial class CarListings
 
     public virtual ICollection<CarListingViews> CarListingViews { get; set; } = new List<CarListingViews>();
 
-    public virtual VehicleCategories Category { get; set; }
-
-    public virtual GeographicCities City { get; set; }
-
-    public virtual CarColors Color { get; set; }
-
     public virtual ICollection<CustomerInquiries> CustomerInquiries { get; set; } = new List<CustomerInquiries>();
 
-    public virtual EngineSpecifications EngineSpec { get; set; }
+    public virtual CarBrands brand { get; set; }
 
-    public virtual FuelTypes FuelType { get; set; }
+    public virtual VehicleCategories category { get; set; }
 
-    public virtual InsuranceProviders InsuranceProvider { get; set; }
+    public virtual GeographicCities city { get; set; }
 
-    public virtual CarModels Model { get; set; }
+    public virtual CarColors color { get; set; }
 
-    public virtual CarConditionLevels OverallCondition { get; set; }
+    public virtual EngineSpecifications engineSpec { get; set; }
 
-    public virtual RTOCodes RTO { get; set; }
+    public virtual FuelTypes fuelType { get; set; }
 
-    public virtual GeographicStates State { get; set; }
+    public virtual InsuranceProviders insuranceProvider { get; set; }
 
-    public virtual TransmissionTypes Transmission { get; set; }
+    public virtual CarModels model { get; set; }
 
-    public virtual CarVariants Variant { get; set; }
+    public virtual CarConditionLevels overallCondition { get; set; }
+
+    public virtual RTOCodes rto { get; set; }
+
+    public virtual GeographicStates state { get; set; }
+
+    public virtual TransmissionTypes transmission { get; set; }
+
+    public virtual CarVariants variant { get; set; }
 }

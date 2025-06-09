@@ -7,23 +7,23 @@ namespace DbOperation.Models;
 
 public partial class CarConditionLevels
 {
-    public int ConditionId { get; set; }
+    public int conditionId { get; set; }
 
-    public string ConditionName { get; set; }
+    public string conditionName { get; set; }
 
-    public string ConditionDescription { get; set; }
+    public string conditionDescription { get; set; }
 
-    public int? ConditionPercentage { get; set; }
+    public int? conditionPercentage { get; set; }
 
-    public decimal? ExpectedPriceReduction { get; set; }
+    public decimal? expectedPriceReduction { get; set; }
 
-    public string TypicalIssues { get; set; }
+    public string typicalIssues { get; set; }
 
-    public string RecommendedFor { get; set; }
+    public string recommendedFor { get; set; }
 
-    public int? ConditionSortOrder { get; set; }
+    public int? conditionSortOrder { get; set; }
 
-    public bool? IsActiveCondition { get; set; }
+    public bool? isActiveCondition { get; set; }
 
     public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }
