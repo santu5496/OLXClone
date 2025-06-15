@@ -39,14 +39,14 @@ namespace DbOperation.Implementation
         }
 
         // Update Car Color
-        public CarColors UpdateCarColor(CarColors color)
+        public bool UpdateCarColor(CarColors color)
         {
             try
             {
                 using var _context = new Assignment4Context(_dbConn);
 
                 var existing = _context.CarColors.FirstOrDefault(c => c.colorId == color.colorId);
-                if (existing == null) return null;
+                if (existing == null) return true;
 
                 existing.colorName = color.colorName;
                 existing.colorDisplayName = color.colorDisplayName;
@@ -60,11 +60,11 @@ namespace DbOperation.Implementation
                 existing.isActiveColor = color.isActiveColor;
                 _context.CarColors.Update(color);
                 _context.SaveChanges();
-                return existing;
+                return true;
             }
             catch (Exception)
             {
-                return null;
+                return true;
             }
         }
 
@@ -117,7 +117,7 @@ namespace DbOperation.Implementation
 
 
         // Add Car Condition Level
-        public CarConditionLevels AddCarCondition(CarConditionLevels condition)
+        public bool AddCarCondition(CarConditionLevels condition)
         {
             try
             {
@@ -126,22 +126,22 @@ namespace DbOperation.Implementation
                     condition.isActiveCondition = true;
                 context.CarConditionLevels.Add(condition);
                 context.SaveChanges();
-                return condition;
+                return true;
             }
             catch (Exception)
             {
-                return null;
+                return false;
             }
         }
 
         // Update Car Condition Level
-        public CarConditionLevels UpdateCarCondition(CarConditionLevels condition)
+        public bool UpdateCarCondition(CarConditionLevels condition)
         {
             try
             {
                 using var context = new Assignment4Context(_dbConn);
                 var existing = context.CarConditionLevels.FirstOrDefault(c => c.conditionId == condition.conditionId);
-                if (existing == null) return null;
+                if (existing == null) return true;
 
                 existing.conditionName = condition.conditionName;
                 existing.conditionDescription = condition.conditionDescription;
@@ -154,11 +154,11 @@ namespace DbOperation.Implementation
                 context.CarConditionLevels.Update(existing);
                 context.SaveChanges();
                
-                return existing;
+                return true;
             }
             catch (Exception ex)
             {
-                return null;
+                return true;
             }
         }
 
@@ -217,7 +217,7 @@ namespace DbOperation.Implementation
 
 
         // Add Geographic State
-        public GeographicStates AddState(GeographicStates state)
+        public bool AddState(GeographicStates state)
         {
             try
             {
@@ -229,23 +229,23 @@ namespace DbOperation.Implementation
 
                 context.GeographicStates.Add(state);
                 context.SaveChanges();
-                return state;
+                return true;
             }
             catch (Exception)
             {
-                return null;
+                return true;
             }
         }
 
-        // Update Geographic State
-        public GeographicStates UpdateState(GeographicStates state)
+        public bool UpdateState(GeographicStates state)
         {
             try
             {
                 using var context = new Assignment4Context(_dbConn);
                 var existing = context.GeographicStates.FirstOrDefault(s => s.stateId == state.stateId);
-                if (existing == null) return null;
+                if (existing == null) return true;
 
+                // Update properties
                 existing.stateName = state.stateName;
                 existing.stateCode = state.stateCode;
                 existing.stateRegion = state.stateRegion;
@@ -253,16 +253,18 @@ namespace DbOperation.Implementation
                 existing.statePinCodePrefix = state.statePinCodePrefix;
                 existing.popularForCars = state.popularForCars;
                 existing.isActiveState = state.isActiveState;
-                context.GeographicStates.Update(state);
+                context.GeographicStates.Update(existing);
 
+                // Save changes — EF will track and update the existing entity
                 context.SaveChanges();
-                return existing;
+                return true;
             }
             catch (Exception)
             {
-                return null;
+                return true;
             }
         }
+
 
         // Delete Geographic State
         public bool DeleteState(int id)
@@ -389,24 +391,71 @@ namespace DbOperation.Implementation
             }
         }
 
+
+
+        public class CityDto
+        {
+            public int cityId { get; set; }
+            public string cityName { get; set; }
+            public string stateName { get; set; }
+            public bool? isActiveCity { get; set; }
+
+           
+
+            public int stateId { get; set; }
+
+      
+
+            public string cityType { get; set; }
+
+            public int? cityPopulation { get; set; }
+
+            public bool? hasGoodCarMarket { get; set; }
+
+            public string typicalCarDemand { get; set; }
+
+       
+            public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
+
+            public virtual ICollection<RTOCodes> RTOCodes { get; set; } = new List<RTOCodes>();
+
+            public virtual GeographicStates state { get; set; }
+        }
+
+
         // Get All Cities
-        public List<GeographicCities> GetAllCities()
+        public List<CityDto> GetAllCities()
         {
             try
             {
                 using var context = new Assignment4Context(_dbConn);
+
                 var cities = context.GeographicCities
-                    .Include(c => c.state) // Include state information
-                    .Where(c => c.isActiveCity == true)
+                    .Include(c => c.state)
                     .OrderBy(c => c.cityName)
+                    .Select(c => new CityDto
+                    {
+                        cityId = c.cityId,
+                        cityName = c.cityName,
+                        stateId = c.stateId,
+                        stateName = c.state.stateName,
+                        cityType = c.cityType,
+                        cityPopulation = c.cityPopulation,
+                        hasGoodCarMarket = c.hasGoodCarMarket,
+                        typicalCarDemand = c.typicalCarDemand,
+                        isActiveCity = c.isActiveCity
+                    })
                     .ToList();
+
                 return cities;
             }
             catch (Exception)
             {
-                return null;
+                return new List<CityDto>();
             }
         }
+
+
 
         // Get Cities by State
         public List<GeographicCities> GetCitiesByState(int stateId)

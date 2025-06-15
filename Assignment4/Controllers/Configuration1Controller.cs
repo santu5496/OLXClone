@@ -2,6 +2,7 @@ using DbOperation.Interface;
 using DbOperation.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using ZXing;
 
 namespace Assignment4.Controllers
 {
@@ -40,11 +41,20 @@ namespace Assignment4.Controllers
         {
             try
             {
-                var result = model.colorId == 0
-                    ? _dbConn.AddCarColor(model)
-                    : _dbConn.UpdateCarColor(model);
+                if(model.colorId==0)
+                {
+                  var result = _dbConn.AddCarColor(model);
+                    return Json(result != null ? new { success = true, data = result } : new { success = false });
+                }
+                else
+                {
+                               var result=        _dbConn.UpdateCarColor(model);
+                    return Json(result ? new { success = true } : new { success = false });
+                }
 
-                return Json(result != null ? new { success = true, data = result } : new { success = false });
+
+
+               
             }
             catch (Exception ex)
             {
@@ -134,11 +144,17 @@ namespace Assignment4.Controllers
         {
             try
             {
-                var result = model.stateId == 0
-                    ? _dbConn.AddState(model)
-                    : _dbConn.UpdateState(model);
-
-                return Json(result != null ? new { success = true, data = result } : new { success = false });
+                if(model.stateId==0)
+                {
+                    bool a=_dbConn.AddState(model);
+                    return Json(new { success = a });
+                }
+                else
+                {
+                    var result = _dbConn.UpdateState(model);
+                    return Json(new { success = result });
+                    
+                }
             }
             catch (Exception ex)
             {
@@ -167,7 +183,9 @@ namespace Assignment4.Controllers
         {
             try
             {
-                return Json(_dbConn.GetAllCities());
+                var data = _dbConn.GetAllCities();
+                return Json(data);
+           
             }
             catch (Exception ex)
             {

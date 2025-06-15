@@ -1,5 +1,6 @@
 ﻿using DbOperation.Models;
 using System.Collections.Generic;
+using static DbOperation.Implementation.ConfigurationService1;
 
 namespace DbOperation.Interface
 {
@@ -8,25 +9,25 @@ namespace DbOperation.Interface
         // Car Colors
         List<CarColors> GetAllColours();
         CarColors AddCarColor(CarColors color);
-        CarColors UpdateCarColor(CarColors color);
+        bool UpdateCarColor(CarColors color);
         bool DeleteCarColor(int id);
 
         // Car Condition Levels
         List<CarConditionLevels> GetAllCarConditions();
         CarConditionLevels GetCarConditionById(int id);
-        CarConditionLevels AddCarCondition(CarConditionLevels condition);
-        CarConditionLevels UpdateCarCondition(CarConditionLevels condition);
+        bool AddCarCondition(CarConditionLevels condition);
+        bool UpdateCarCondition(CarConditionLevels condition);
         bool DeleteCarCondition(int id);
 
         // Geographic States
         List<GeographicStates> GetAllStates();
         GeographicStates GetStateById(int id);
-        GeographicStates AddState(GeographicStates state);
-        GeographicStates UpdateState(GeographicStates state);
+        bool AddState(GeographicStates state);
+        bool UpdateState(GeographicStates state);
         bool DeleteState(int id);
 
         // Geographic Cities
-        List<GeographicCities> GetAllCities();
+        List<CityDto> GetAllCities();
         List<GeographicCities> GetCitiesByState(int stateId);
         GeographicCities GetCityById(int id);
         GeographicCities AddCity(GeographicCities city);

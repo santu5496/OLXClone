@@ -34,6 +34,13 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="state-tab" data-bs-toggle="tab" data-bs-target="#stateTab" type="button" role="tab" aria-controls="stateTab" aria-selected="false">States</button>
         </li>
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="city-tab" data-bs-toggle="tab" data-bs-target="#cityTab" type="button" role="tab" aria-controls="cityTab" aria-selected="false">Cities</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="engine-tab" data-bs-toggle="tab" data-bs-target="#engineTab" type="button" role="tab" aria-controls="engineTab" aria-selected="false">Engine Specs</button>
+        </li>
     </ul>
 
     <div class="tab-content mt-3" id="configTabContent">
@@ -84,31 +91,59 @@
                 <tbody></tbody>
             </table>
         </div>
+        <div class="tab-pane fade" id="stateTab" role="tabpanel" aria-labelledby="state-tab">
+            <button type="button" class="customBtn mt-2 mb-2" onclick="clearStateModalFields()" data-bs-toggle="modal" data-bs-target="#stateModal">Add State</button>
+            <table id="StateTable" class="dataTables_wrapper table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sl No</th>
+                        <th>State Name</th>
+                        <th>State Code</th>
+                        <th>Region</th>
+                        <th>Country</th>
+                        <th>Pin Code Prefix</th>
+                        <th>Popular For Cars</th>
+                        <th>Active</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody></tbody>
+            </table>
+        </div>
+        <!-- CITIES TAB -->
+        <div class="tab-pane fade" id="cityTab" role="tabpanel" aria-labelledby="city-tab">
+            <button type="button" class="customBtn mt-2 mb-2" onclick="clearCityModalFields(), loadStatesDropdown()" data-bs-toggle="modal" data-bs-target="#cityModal">Add City</button>
+            <table id="CityTable" class="dataTables_wrapper table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sl No</th>
+                        <th>City Name</th>
+                        <th>State</th>
+                        <th>City Type</th>
+                        <th>Population</th>
+                        <th>Good Car Market</th>
+                        <th>Car Demand</th>
+                        <th>Active</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+       
 
 
     </div>
+
+  
     <!-- STATES TAB -->
-    <div class="tab-pane fade" id="stateTab" role="tabpanel" aria-labelledby="state-tab">
-        <button type="button" class="customBtn mt-2 mb-2" onclick="clearStateModalFields()" data-bs-toggle="modal" data-bs-target="#stateModal">Add State</button>
-        <table id="StateTable" class="dataTables_wrapper table-bordered">
-            <thead>
-                <tr>
-                    <th>Sl No</th>
-                    <th>State Name</th>
-                    <th>State Code</th>
-                    <th>Region</th>
-                    <th>Country</th>
-                    <th>Pin Code Prefix</th>
-                    <th>Popular For Cars</th>
-                    <th>Active</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+   
 
-            <tbody></tbody>
-        </table>
-    </div>
 </div>
+
+
 
 <!-- MODALS START HERE -->
 <!-- Car Color Modal -->
@@ -237,7 +272,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="selectedStateID" />
+                    <input type="number"  id="selectedStateID" />
                     <div class="mb-3">
                         <label for="stateNameInput" class="form-label">State Name</label>
                         <input type="text" class="form-control requiredfield_State" id="stateNameInput" required />
@@ -276,6 +311,68 @@
     </div>
 </div>
 
+<!-- City Modal -->
+<div class="modal fade" id="cityModal" tabindex="-1" aria-labelledby="cityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="cityForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add / Edit City</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="selectedCityID" />
+                    <div class="mb-3">
+                        <label for="cityNameInput" class="form-label">City Name</label>
+                        <input type="text" class="form-control requiredfield_City" id="cityNameInput" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="stateIdInput" class="form-label">State</label>
+                        <select class="form-control requiredfield_City" id="stateIdInput" required>
+                            <option value="">Select State</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cityTypeInput" class="form-label">City Type</label>
+                        <select class="form-control" id="cityTypeInput">
+                            <option value="">Select Type</option>
+                            <option value="Metro">Metro</option>
+                            <option value="Tier 1">Tier 1</option>
+                            <option value="Tier 2">Tier 2</option>
+                            <option value="Tier 3">Tier 3</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cityPopulationInput" class="form-label">Population</label>
+                        <input type="number" class="form-control" id="cityPopulationInput" />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="hasGoodCarMarketInput" checked />
+                        <label class="form-check-label" for="hasGoodCarMarketInput">Has Good Car Market</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="typicalCarDemandInput" class="form-label">Typical Car Demand</label>
+                        <select class="form-control" id="typicalCarDemandInput">
+                            <option value="">Select Demand</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isActiveCityInput" checked />
+                        <label class="form-check-label" for="isActiveCityInput">Is Active</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCitySave" class="btn btn-primary" onclick="saveCity()">Save</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('cityModal')">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -283,7 +380,7 @@
     $(document).ready(function () {
         // -------------------- Cities --------------------
 
-
+        getCities();
         // ----- Car Color Events -----
         $('#CarColorTable').on('click', '.btn-edit', function () {
             var data = JSON.parse($(this).attr('data-full-data'));
@@ -344,7 +441,20 @@
         });
 
         getStates();
+         // -------------------- Cities --------------------
+        $('#CityTable').on('click', '.btn-edit', function () {
+            var data = JSON.parse($(this).attr('data-full-data'));
+            editCity(data);
+        });
 
+        $('#CityTable').on('click', '.btn-delete', function () {
+            var id = JSON.parse($(this).attr('data-id'));
+            DeleteWarning(deleteCity, id);
+        });
+
+    
+
+        getCities();
     });
 
 
@@ -361,7 +471,7 @@
                 // Check if response is valid and has data
                 if (response && Array.isArray(response)) {
                     response.forEach(function (item) {
-                        debugger
+                        
 
                         // EXACTLY 11 elements to match your 11 table columns
                         table.row.add([
@@ -525,7 +635,7 @@
      // ----- Car Condition Functions -----
     function getCarConditions() {
         var table = InitializeDatatableWithSlNo('CarConditionTable', 'CarConditions');
-        debugger
+        
         $.ajax({
         url: '/Configuration1/GetCarConditions',
          type: 'GET',
@@ -577,7 +687,7 @@
             conditionSortOrder: parseInt($('#conditionSortOrderInput').val()) || null,
             isActiveCondition: $('#isActiveConditionInput').is(':checked')
         };
-        debugger
+        
 
         $.ajax({
             url: '/Configuration1/AddOrEditCarCondition',
@@ -660,19 +770,26 @@
     }
 
 
-    function editState(data) {
-        debugger
+       function editState(data) {
+        ;
         $('#selectedStateID').val(data.stateId);
-        $('#stateNameInput').val(data.stateName);
-        $('#stateAbbreviationInput').val(data.stateAbbreviation);
-        $('#isActiveStateInput').prop('checked', data.isActiveState);
+        $('#stateNameInput').val(data.stateName || '');
+        $('#stateCodeInput').val(data.stateCode || '');
+        $('#stateRegionInput').val(data.stateRegion || '');
+        $('#countryNameInput').val(data.countryName || '');
+        $('#statePinCodePrefixInput').val(data.statePinCodePrefix || '');
+        $('#popularForCarsInput').prop('checked', data.popularForCars === true);
+        $('#isActiveStateInput').prop('checked', data.isActiveState === true);
+
         $('#btnStateSave').prop('disabled', false);
         $('#stateModal').modal('show');
     }
 
       function saveState() {
-          debugger
-        var stateId = $('#selectedStateId').val() || 0;
+          
+          var stateId = $('#selectedStateID').val(); // ✅ correct
+
+        //var stateId = $('#selectedStateId').val();
         var stateName = $('#stateNameInput').val() ? $('#stateNameInput').val().trim() : '';
         var stateCode = $('#stateCodeInput').val() ? $('#stateCodeInput').val().trim() : '';
         var stateRegion = $('#stateRegionInput').val() ? $('#stateRegionInput').val().trim() : '';
@@ -688,7 +805,7 @@
         }
 
         var stateData = {
-            stateId: parseInt(stateId),
+            stateId: stateId,
             stateName: stateName,
             stateCode: stateCode,
             stateRegion: stateRegion,
@@ -697,6 +814,7 @@
             popularForCars: popularForCars,
             isActiveState: isActiveState
         };
+        
 
         $.ajax({
             url: '/Configuration1/AddOrEditState',
@@ -740,8 +858,123 @@
         // Remove validation error classes if present
         $('.requiredfield_State').removeClass('is-invalid');
     }
+    // ----- City Functions -----
+      function getCities() {
+        debugger;
+        var table = InitializeDatatableWithSlNo('CityTable', 'Cities');
+        $.ajax({
+            url: '/Configuration1/GetAllCities',
+            type: 'GET',
+            success: function (response) {
+                table.clear();
+                response.forEach(function (item) {
+                    table.row.add([
+                        '',
+                        item.cityName || '',
+                        item.stateName || '',
+                        item.cityType || '',
+                        item.cityPopulation || '',
+                        item.hasGoodCarMarket ? 'Yes' : 'No',
+                        item.typicalCarDemand || '',
+                        item.isActiveCity ? 'Yes' : 'No',
+                        '<div class="contentCenter">' +
+                            '<i class="fa fa-edit btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red" data-id=\'' + item.cityId + '\'></i>' +
+                        '</div>'
+                    ]);
+                });
+
+                table.draw(); // ✅ Move outside the loop
+            },
+            error: function (xhr, status, error) {
+                console.error('Error loading Cities: ' + error);
+            }
+        });
+    }
+
+    function editCity(data) {
+        $('#selectedCityID').val(data.cityId);
+        $('#cityNameInput').val(data.cityName);
+        $('#cityStateDropdown').val(data.stateId);
+        $('#isActiveCityInput').prop('checked', data.isActiveCity);
+        $('#cityModal').modal('show');
+    }
+
+     function saveCity() {
+        var data = {
+            cityId: $('#selectedCityID').val() || 0,
+            cityName: $('#cityNameInput').val()?.trim() || '',
+            stateId: $('#stateIdInput').val() || 0,
+            cityType: $('#cityTypeInput').val() || '',
+            cityPopulation: $('#cityPopulationInput').val() || null,
+            hasGoodCarMarket: $('#hasGoodCarMarketInput').is(':checked'),
+            typicalCarDemand: $('#typicalCarDemandInput').val() || '',
+            isActiveCity: $('#isActiveCityInput').is(':checked')
+        };
+
+        if (!data.cityName || data.stateId == 0) {
+            $('.requiredfield_City').each(function () {
+                if (!$(this).val()) $(this).addClass('is-invalid');
+            });
+            return;
+        }
+
+        $.ajax({
+            url: '/Configuration1/AddOrEditCity',
+            type: 'POST',
+            data: data,
+            success: function (res) {
+                if (res.success || res.cityId || res.cityName) {
+                    $('#cityModal').modal('hide');
+                    msgPopup('success', 'City saved successfully');
+                    getCities();
+                } else {
+                    alert('Failed to save city');
+                }
+            },
+            error: function () {
+                alert('Error saving city');
+            }
+        });
+    }
 
 
+    function deleteCity(id) {
+        $.ajax({
+            url: '/Configuration1/DeleteCity',
+            type: 'POST',
+            data: { id: id },
+            success: function (res) {
+                msgPopup('success', 'City deleted');
+                getCities();
+            },
+            error: function () {
+                alert('Error deleting city');
+            }
+        });
+    }
 
 
+        function clearCityModalFields() {
+        $('#selectedCityID').val('');
+        $('#cityNameInput').val('');
+        $('#stateIdInput').val('');
+        $('#cityTypeInput').val('');
+        $('#cityPopulationInput').val('');
+        $('#hasGoodCarMarketInput').prop('checked', false);
+        $('#typicalCarDemandInput').val('');
+        $('#isActiveCityInput').prop('checked', true);
+
+        // Clear validation styles
+        $('.requiredfield_City').removeClass('is-invalid');
+    }
+
+        function loadStatesDropdown() {
+        $.get('/Configuration1/GetAllStates', function (states) {
+            $('#stateIdInput').html('<option value="">Select State</option>');
+            states.forEach(function (state) {
+                $('#stateIdInput').append(`<option value="${state.stateId}">${state.stateName}</option>`);
+            });
+        });
+    }
 </script>
