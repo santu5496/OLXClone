@@ -1,7 +1,8 @@
-using System;
 using DbOperation.Interface;
 using DbOperation.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Assignment4.Controllers
 {
@@ -156,13 +157,25 @@ namespace Assignment4.Controllers
         }
 
         // Get all Car Brands for dropdown (optional helper method)
-        [HttpGet]
-        public IActionResult GetAllCarBrands()
+      
+        #region Car Variant CRUD
+
+        [HttpPost]
+        public IActionResult AddOrEditCarVariant(CarVariants variant)
         {
             try
             {
-                var brands = _dbConn.GetCarBrands(null);
-                return Json(brands);
+                bool result;
+                if (variant.variantId == 0)
+                {
+                    variant.variantCreatedDate = DateTime.Now;
+                    result = _dbConn.AddCarVariant(variant);
+                }
+                else
+                {
+                    result = _dbConn.UpdateCarVariant(variant);
+                }
+                return Json(new { success = result });
             }
             catch (Exception ex)
             {
@@ -170,12 +183,259 @@ namespace Assignment4.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult GetCarVariants(string? search)
+        {
+            try
+            {
+                var variants = _dbConn.GetCarVariants(search);
+                return Json(variants);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
 
+        [HttpGet]
+        public IActionResult GetCarVariantById(int id)
+        {
+            try
+            {
+                var variant = _dbConn.GetCarVariantById(id);
+                if (variant == null)
+                    return Json(new { success = false, error = "Variant not found" });
 
+                return Json(variant);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
 
+        [HttpPost]
+        public IActionResult DeleteCarVariant(int id)
+        {
+            try
+            {
+                var deleted = _dbConn.DeleteCarVariant(id);
+                return Json(new { success = deleted });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
 
+        [HttpGet]
+        [HttpGet]
+        public IActionResult GetCarModelsByBrand(int brandId)
+        {
+            try
+            {
+                var models = _dbConn.GetCarModelsByBrand(brandId);
+                return Json(models);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
 
+        #endregion
 
+        #region VehicleCategories CRUD
+
+        [HttpGet]
+        public IActionResult GetVehicleCategories(string? search)
+        {
+            try
+            {
+                var list = _dbConn.GetVehicleCategories(search);
+                return Json(list);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetVehicleCategoryById(int id)
+        {
+            try
+            {
+                var category = _dbConn.GetVehicleCategoryById(id);
+                if (category == null)
+                    return Json(new { success = false, error = "Category not found" });
+                return Json(category);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddOrEditVehicleCategory(VehicleCategories category)
+        {
+            try
+            {
+                bool result;
+                if (category.categoryId == 0)
+                    result = _dbConn.AddVehicleCategory(category);
+                else
+                    result = _dbConn.UpdateVehicleCategory(category);
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteVehicleCategory(int id)
+        {
+            try
+            {
+                var result = _dbConn.DeleteVehicleCategory(id);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        #endregion
+        [HttpGet]
+        public IActionResult GetFuelTypes(string? search)
+        {
+            try
+            {
+                var list = _dbConn.GetFuelTypes(search);
+                return Json(list);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetFuelTypeById(int id)
+        {
+            try
+            {
+                var item = _dbConn.GetFuelTypeById(id);
+                return Json(item);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddOrEditFuelType(FuelTypes fuelType)
+        {
+            try
+            {
+                if (fuelType.fuelTypeId == 0)
+                {
+                    var added = _dbConn.AddFuelType(fuelType);
+                    return Json(added);
+                }
+                else
+                {
+                    var updated = _dbConn.UpdateFuelType(fuelType);
+                    return Json(updated);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteFuelType(int id)
+        {
+            try
+            {
+                var deleted = _dbConn.DeleteFuelType(id);
+                return Json(deleted);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
+
+        public IActionResult GetTransmissionTypes(string? search)
+        {
+            try
+            {
+                var result = _dbConn.GetTransmissionTypes(search);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
+
+        public IActionResult GetTransmissionTypeById(int id)
+        {
+            try
+            {
+                var transmission = _dbConn.GetTransmissionTypeById(id);
+                return Json(transmission);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddOrEditTransmissionType(TransmissionTypes transmission)
+        {
+            try
+            {
+                if (transmission.transmissionId == 0)
+                {
+                    var added = _dbConn.AddTransmissionType(transmission);
+                    return Json(added);
+                }
+                else
+                {
+                    var updated = _dbConn.UpdateTransmissionType(transmission);
+                    return Json(updated);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteTransmissionType(int id)
+        {
+            try
+            {
+                var deleted = _dbConn.DeleteTransmissionType(id);
+                return Json(deleted);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
 
     }
 }

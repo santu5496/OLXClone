@@ -8,11 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddSingleton<IConfigurationService, ConfigurationService>(provider =>
 {
     return new ConfigurationService(builder.Configuration.GetConnectionString("Assignment4"));
 });
 
+builder.Services.AddSingleton<IConfigurationService1, ConfigurationService1>(provider =>
+{
+    return new ConfigurationService1(builder.Configuration.GetConnectionString("Assignment4"));
+});
 
 //builder.Services.AddSingleton<IInventoryMaterialLog, InventoryMaterialLogService>(provider =>
 //{

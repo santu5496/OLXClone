@@ -1,0 +1,747 @@
+﻿<style>
+    .customBtn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+    }
+
+        .customBtn:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+    .contentCenter {
+        text-align: center;
+    }
+
+    .is-invalid {
+        border-color: #dc3545;
+    }
+</style>
+
+
+<div class="container-fluid mt-3">
+    <ul class="nav nav-tabs" id="configTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="color-tab" data-bs-toggle="tab" data-bs-target="#colorTab" type="button" role="tab" aria-controls="colorTab" aria-selected="true">Car Colors</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="condition-tab" data-bs-toggle="tab" data-bs-target="#conditionTab" type="button" role="tab" aria-controls="conditionTab" aria-selected="false">Car Conditions</button>
+        </li>
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="state-tab" data-bs-toggle="tab" data-bs-target="#stateTab" type="button" role="tab" aria-controls="stateTab" aria-selected="false">States</button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3" id="configTabContent">
+
+        <!-- CAR COLORS TAB -->
+        <div class="tab-pane fade show active" id="colorTab" role="tabpanel" aria-labelledby="color-tab">
+            <button type="button" class="customBtn mt-2 mb-2" onclick="clearCarColorModalFields()" data-bs-toggle="modal" data-bs-target="#carColorModal">Add Car Color</button>
+            <table id="CarColorTable" class="dataTables_wrapper table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sl No</th> <!-- Add this line -->
+
+                        <th>Color Name</th>
+                        <th>Display Name</th>
+                        <th>Hex Code</th>
+                        <th>Color Family</th>
+                        <th>Metallic Paint</th>
+                        <th>Pearl Paint</th>
+                        <th>Solid Paint</th>
+                        <th>Popularity Rank</th>
+                        <th>Resale Value Impact</th>
+                        <th>Active</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- CAR CONDITIONS TAB -->
+        <div class="tab-pane fade" id="conditionTab" role="tabpanel" aria-labelledby="condition-tab">
+            <button type="button" class="customBtn mt-2 mb-2" onclick="clearCarConditionModalFields()" data-bs-toggle="modal" data-bs-target="#carConditionModal">Add Car Condition</button>
+            <table id="CarConditionTable" class="dataTables_wrapper table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sl No</th>
+                        <th>Condition Name</th>
+                        <th>Description</th>
+                        <th>Percentage</th>
+                        <th>Price Reduction</th>
+                        <th>Typical Issues</th>
+                        <th>Recommended For</th>
+                        <th>Sort Order</th>
+                        <th>Active</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+
+    </div>
+    <!-- STATES TAB -->
+    <div class="tab-pane fade" id="stateTab" role="tabpanel" aria-labelledby="state-tab">
+        <button type="button" class="customBtn mt-2 mb-2" onclick="clearStateModalFields()" data-bs-toggle="modal" data-bs-target="#stateModal">Add State</button>
+        <table id="StateTable" class="dataTables_wrapper table-bordered">
+            <thead>
+                <tr>
+                    <th>Sl No</th>
+                    <th>State Name</th>
+                    <th>State Code</th>
+                    <th>Region</th>
+                    <th>Country</th>
+                    <th>Pin Code Prefix</th>
+                    <th>Popular For Cars</th>
+                    <th>Active</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODALS START HERE -->
+<!-- Car Color Modal -->
+<div class="modal fade" id="carColorModal" tabindex="-1" aria-labelledby="carColorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="carColorForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add / Edit Car Color</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="selectedCarColorID" />
+                    <div class="mb-3">
+                        <label for="colorNameInput" class="form-label">Color Name</label>
+                        <input type="text" class="form-control requiredfield_CarColor" id="colorNameInput" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="colorDisplayNameInput" class="form-label">Display Name</label>
+                        <input type="text" class="form-control" id="colorDisplayNameInput" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="colorHexCodeInput" class="form-label">Hex Code</label>
+                        <input type="text" class="form-control" id="colorHexCodeInput" placeholder="#FFFFFF" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="colorFamilyInput" class="form-label">Color Family</label>
+                        <input type="text" class="form-control" id="colorFamilyInput" />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isMetallicPaintInput" />
+                        <label class="form-check-label" for="isMetallicPaintInput">Metallic Paint</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isPearlPaintInput" />
+                        <label class="form-check-label" for="isPearlPaintInput">Pearl Paint</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isSolidPaintInput" checked />
+                        <label class="form-check-label" for="isSolidPaintInput">Solid Paint</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="popularityRankInput" class="form-label">Popularity Rank</label>
+                        <input type="number" class="form-control" id="popularityRankInput" min="1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="resaleValueImpactInput" class="form-label">Resale Value Impact</label>
+                        <input type="text" class="form-control" id="resaleValueImpactInput" placeholder="Positive / Neutral / Negative" />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isActiveColorInput" checked />
+                        <label class="form-check-label" for="isActiveColorInput">Is Active</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCarColorSave" class="btn btn-primary" onclick="saveCarColor()">Save</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('carColorModal')">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Car Condition Modal -->
+<div class="modal fade" id="carConditionModal" tabindex="-1" aria-labelledby="carConditionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="carConditionForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add / Edit Car Condition</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="selectedCarConditionID" />
+                    <div class="mb-3">
+                        <label for="conditionNameInput" class="form-label">Condition Name</label>
+                        <input type="text" class="form-control requiredfield_CarCondition" id="conditionNameInput" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="conditionDescriptionInput" class="form-label">Description</label>
+                        <textarea class="form-control" id="conditionDescriptionInput" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="conditionPercentageInput" class="form-label">Condition Percentage</label>
+                        <input type="number" class="form-control" id="conditionPercentageInput" min="0" max="100" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="expectedPriceReductionInput" class="form-label">Expected Price Reduction (%)</label>
+                        <input type="number" class="form-control" id="expectedPriceReductionInput" step="0.1" min="0" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="typicalIssuesInput" class="form-label">Typical Issues</label>
+                        <textarea class="form-control" id="typicalIssuesInput" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recommendedForInput" class="form-label">Recommended For</label>
+                        <input type="text" class="form-control" id="recommendedForInput" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="conditionSortOrderInput" class="form-label">Sort Order</label>
+                        <input type="number" class="form-control" id="conditionSortOrderInput" min="1" />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isActiveConditionInput" checked />
+                        <label class="form-check-label" for="isActiveConditionInput">Is Active</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCarConditionSave" class="btn btn-primary" onclick="saveCarCondition()">Save</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('carConditionModal')">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- State Modal -->
+<div class="modal fade" id="stateModal" tabindex="-1" aria-labelledby="stateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="stateForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add / Edit State</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="selectedStateID" />
+                    <div class="mb-3">
+                        <label for="stateNameInput" class="form-label">State Name</label>
+                        <input type="text" class="form-control requiredfield_State" id="stateNameInput" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="stateCodeInput" class="form-label">State Code</label>
+                        <input type="text" class="form-control" id="stateCodeInput" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="stateRegionInput" class="form-label">Region</label>
+                        <input type="text" class="form-control" id="stateRegionInput" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="countryNameInput" class="form-label">Country Name</label>
+                        <input type="text" class="form-control" id="countryNameInput" value="India" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="statePinCodePrefixInput" class="form-label">Pin Code Prefix</label>
+                        <input type="text" class="form-control" id="statePinCodePrefixInput" />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="popularForCarsInput" checked />
+                        <label class="form-check-label" for="popularForCarsInput">Popular For Cars</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isActiveStateInput" checked />
+                        <label class="form-check-label" for="isActiveStateInput">Is Active</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnStateSave" class="btn btn-primary" onclick="saveState()">Save</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('stateModal')">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        // -------------------- Cities --------------------
+
+
+        // ----- Car Color Events -----
+        $('#CarColorTable').on('click', '.btn-edit', function () {
+            var data = JSON.parse($(this).attr('data-full-data'));
+            editCarColor(data);
+        });
+
+        $('#CarColorTable').on('click', '.btn-delete', function () {
+            var id = JSON.parse($(this).attr('data-id'));
+            DeleteWarning(deleteCarColor, id);
+        });
+
+        $('#carColor-tab').on('shown.bs.tab', function () {
+            getCarColors();
+        });
+
+
+        // ----- Car Condition Events -----
+        $('#CarConditionTable').on('click', '.btn-edit', function () {
+            var data = JSON.parse($(this).attr('data-full-data'));
+            editCarCondition(data);
+        });
+
+        $('#CarConditionTable').on('click', '.btn-delete', function () {
+            var id = JSON.parse($(this).attr('data-id'));
+            DeleteWarning(deleteCarCondition, id);
+        });
+
+        $('#carCondition-tab').on('shown.bs.tab', function () {
+            getCarConditions();
+        });
+
+        getCarColors();
+        getCarConditions();
+
+
+
+
+        $('#btnCarColorSave').on('click', function () {
+            saveCarColor();
+        });
+
+
+
+
+        // ----- State Events -----
+        $('#StateTable').on('click', '.btn-edit', function () {
+            var data = JSON.parse($(this).attr('data-full-data'));
+            editState(data);
+        });
+
+        $('#StateTable').on('click', '.btn-delete', function () {
+            var id = JSON.parse($(this).attr('data-id'));
+            DeleteWarning(deleteState, id);
+        });
+
+        $('#state-tab').on('shown.bs.tab', function () {
+            getStates();
+        });
+
+        getStates();
+
+    });
+
+
+
+     function getCarColors() {
+        var table = InitializeDatatableWithSlNo('CarColorTable', 'CarColors');
+
+        $.ajax({
+            url: '/Configuration1/GetCarColors',
+            type: 'GET',
+            success: function (response) {
+                table.clear();
+
+                // Check if response is valid and has data
+                if (response && Array.isArray(response)) {
+                    response.forEach(function (item) {
+                        debugger
+
+                        // EXACTLY 11 elements to match your 11 table columns
+                        table.row.add([
+                             '', // This is for Sl No, DataTables will auto-fill
+
+                            item.colorName || '', // Column 1: Color Name
+                            item.colorDisplayName || '', // Column 2: Display Name
+                            item.colorHexCode || '', // Column 3: Hex Code
+                            item.colorFamily || '', // Column 4: Color Family
+                            item.isMetallicPaint ? 'Yes' : 'No', // Column 5: Metallic Paint
+                            item.isPearlPaint ? 'Yes' : 'No', // Column 6: Pearl Paint
+                            item.isSolidPaint ? 'Yes' : 'No', // Column 7: Solid Paint
+                            item.popularityRank !== null && item.popularityRank !== undefined ? item.popularityRank : '', // Column 8: Popularity Rank
+                            item.resaleValueImpact || '', // Column 9: Resale Value Impact
+                            item.isActiveColor ? 'Yes' : 'No', // Column 10: Active
+                            // Column 11: Action
+                            '<div class="contentCenter">' +
+                                '<i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' +
+                                JSON.stringify(item).replace(/'/g, '&apos;') + '\'></i>' +
+                                '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id="' +
+                                (item.colorId || '') + '"></i>' +
+                            '</div>'
+                        ]);
+                    });
+                }
+
+                // Draw the table after all rows are added
+                table.draw();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error loading Car Colors:', error);
+                alert('Error loading Car Colors: ' + (xhr.responseJSON?.error || error));
+            }
+        });
+    }
+  
+    function debugCarColorTable() {
+        console.log('=== CarColorTable Debug Info ===');
+        var headerCount = $('#CarColorTable thead th').length;
+        console.log('Number of columns:', headerCount);
+
+        var headers = $('#CarColorTable thead th').map(function(index) {
+            return 'Column ' + index + ': ' + $(this).text();
+        }).get();
+
+        console.log('Column headers:', headers);
+
+        if ($.fn.DataTable.isDataTable('#CarColorTable')) {
+            console.log('DataTable is initialized');
+        } else {
+            console.log('DataTable is NOT initialized');
+        }
+    }
+
+    // Clear modal fields function
+    function clearCarColorModalFields() {
+        $('#selectedCarColorID').val('');
+        $('#colorNameInput').val('');
+        $('#colorDisplayNameInput').val('');
+        $('#colorHexCodeInput').val('');
+        $('#colorFamilyInput').val('');
+        $('#isMetallicPaintInput').prop('checked', false);
+        $('#isPearlPaintInput').prop('checked', false);
+        $('#isSolidPaintInput').prop('checked', true);
+        $('#popularityRankInput').val('');
+        $('#resaleValueImpactInput').val('');
+        $('#isActiveColorInput').prop('checked', true);
+
+        // Remove validation classes
+        $('.requiredfield_CarColor').removeClass('is-invalid');
+    }
+
+    // Close modal function
+    function closeModal(modalId) {
+        $('#' + modalId).modal('hide');
+    }
+
+    function editCarColor(data) {
+        $('#selectedCarColorID').val(data.colorId);
+        $('#colorNameInput').val(data.colorName);
+        $('#colorDisplayNameInput').val(data.colorDisplayName);
+        $('#colorHexCodeInput').val(data.colorHexCode);
+        $('#colorFamilyInput').val(data.colorFamily);
+        $('#isMetallicPaintInput').prop('checked', data.isMetallicPaint);
+        $('#isPearlPaintInput').prop('checked', data.isPearlPaint);
+        $('#isSolidPaintInput').prop('checked', data.isSolidPaint);
+        $('#popularityRankInput').val(data.popularityRank);
+        $('#resaleValueImpactInput').val(data.resaleValueImpact);
+        $('#isActiveColorInput').prop('checked', data.isActiveColor);
+        $('#btnCarColorSave').prop('disabled', false);
+        $('#carColorModal').modal('show');
+    }
+
+    function saveCarColor() {
+        // Validate required fields
+        var isValid = true;
+
+        if (!$('#colorNameInput').val().trim()) {
+            $('#colorNameInput').addClass('is-invalid');
+            isValid = false;
+        } else {
+            $('#colorNameInput').removeClass('is-invalid');
+        }
+
+        if (!isValid) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        var data = {
+            ColorId: $('#selectedCarColorID').val() || 0,
+            ColorName: $('#colorNameInput').val().trim(),
+            ColorDisplayName: $('#colorDisplayNameInput').val().trim(),
+            ColorHexCode: $('#colorHexCodeInput').val().trim(),
+            ColorFamily: $('#colorFamilyInput').val().trim(),
+            IsMetallicPaint: $('#isMetallicPaintInput').is(':checked'),
+            IsPearlPaint: $('#isPearlPaintInput').is(':checked'),
+            IsSolidPaint: $('#isSolidPaintInput').is(':checked'),
+            PopularityRank: $('#popularityRankInput').val() || null,
+            ResaleValueImpact: $('#resaleValueImpactInput').val().trim(),
+            IsActiveColor: $('#isActiveColorInput').is(':checked')
+        };
+
+        $.ajax({
+            url: '/Configuration1/AddOrEditCarColor',
+            type: 'POST',
+            data: data,
+            success: function (res) {
+                if (res.success) {
+                    $('#carColorModal').modal('hide');
+                    msgPopup('success', 'Car Color saved successfully');
+                    getCarColors();
+                } else {
+                    alert('Failed to save Car Color');
+                }
+            },
+            error: function () {
+                alert('Error saving Car Color');
+            }
+        });
+    }
+
+    function deleteCarColor(id) {
+        $.ajax({
+            url: '/Configuration1/DeleteCarColor',
+            type: 'POST',
+            data: { id: id },
+            success: function () {
+                msgPopup('success', 'Car Color deleted successfully');
+                getCarColors();
+            },
+            error: function () {
+                alert('Error deleting Car Color');
+            }
+        });
+    }
+
+
+
+
+     // ----- Car Condition Functions -----
+    function getCarConditions() {
+        var table = InitializeDatatableWithSlNo('CarConditionTable', 'CarConditions');
+        debugger
+        $.ajax({
+        url: '/Configuration1/GetCarConditions',
+         type: 'GET',
+            success: function (response) {
+                table.clear();
+                response.forEach(function (item) {
+                    table.row.add([
+        '', // Sl No - handled by InitializeDatatableWithSlNo
+        item.conditionName || '',
+        item.conditionDescription || '',
+        item.conditionPercentage != null ? item.conditionPercentage + '%' : '',
+        item.expectedPriceReduction != null ? item.expectedPriceReduction + '%' : '',
+        item.typicalIssues || '',
+        item.recommendedFor || '',
+        item.conditionSortOrder != null ? item.conditionSortOrder : '',
+        item.isActiveCondition ? 'Yes' : 'No',
+        '<div class="contentCenter">' +
+            '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item).replace(/'/g, '&apos;') + '\'></i>' +
+            '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + item.conditionId + '\'></i>' +
+        '</div>'
+    ]).draw();
+
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error loading Car Conditions: ' + error);
+            }
+        });
+    }
+
+    function editCarCondition(data) {
+        $('#selectedCarConditionID').val(data.conditionId);
+        $('#conditionNameInput').val(data.conditionName);
+        $('#conditionDescriptionInput').val(data.conditionDescription);
+        $('#isActiveConditionInput').prop('checked', data.isActiveCondition);
+        $('#btnCarConditionSave').prop('disabled', false);
+        $('#carConditionModal').modal('show');
+    }
+
+     function saveCarCondition() {
+        var data = {
+            conditionId: parseInt($('#selectedCarConditionID').val()) || 0,
+            conditionName: $('#conditionNameInput').val()?.trim() || '',
+            conditionDescription: $('#conditionDescriptionInput').val()?.trim() || '',
+            conditionPercentage: parseInt($('#conditionPercentageInput').val()) || null,
+            expectedPriceReduction: parseFloat($('#expectedPriceReductionInput').val()) || null,
+            typicalIssues: $('#typicalIssuesInput').val()?.trim() || '',
+            recommendedFor: $('#recommendedForInput').val()?.trim() || '',
+            conditionSortOrder: parseInt($('#conditionSortOrderInput').val()) || null,
+            isActiveCondition: $('#isActiveConditionInput').is(':checked')
+        };
+        debugger
+
+        $.ajax({
+            url: '/Configuration1/AddOrEditCarCondition',
+            type: 'POST',
+            data: data,
+            success: function (res) {
+                if (res.success || res.conditionId || res.conditionName) { // support both typed/untyped responses
+                    $('#carConditionModal').modal('hide');
+                    msgPopup('success', 'Car Condition saved successfully');
+                    getCarConditions();
+                } else {
+                    alert('Failed to save Car Condition');
+                }
+            },
+            error: function () {
+                alert('Error saving Car Condition');
+            }
+        });
+    }
+
+
+    function deleteCarCondition(id) {
+        $.ajax({
+            url: '/Configuration1/DeleteCarCondition',
+            type: 'POST',
+            data: { id: id },
+            success: function () {
+                msgPopup('success', 'Car Condition deleted successfully');
+                getCarConditions();
+            },
+            error: function () {
+                alert('Error deleting Car Condition');
+            }
+        });
+    }
+
+    function clearCarConditionModalFields() {
+        $('#selectedCarConditionID').val('');
+        $('#conditionNameInput').val('');
+        $('#conditionDescriptionInput').val('');
+        $('#conditionPercentageInput').val('');
+        $('#expectedPriceReductionInput').val('');
+        $('#typicalIssuesInput').val('');
+        $('#recommendedForInput').val('');
+        $('#conditionSortOrderInput').val('');
+        $('#isActiveConditionInput').prop('checked', true);
+
+        // Remove any validation errors (if present)
+        $('.requiredfield_CarCondition').removeClass('is-invalid');
+    }
+
+    function getStates() {
+        var table = InitializeDatatableWithSlNo('StateTable', 'States');
+        $.ajax({
+            url: '/Configuration1/GetAllStates',
+            type: 'GET',
+            success: function (response) {
+                table.clear();
+                response.forEach(function (item) {
+                    table.row.add([
+                        '', // Sl No
+                        item.stateName || '',
+                        item.stateCode || '',
+                        item.stateRegion || '',
+                        item.countryName || '',
+                        item.statePinCodePrefix || '',
+                        item.popularForCars ? 'Yes' : 'No',
+                        item.isActiveState ? 'Yes' : 'No',
+                        '<div class="contentCenter">' +
+                        '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item).replace(/'/g, '&apos;') + '\'></i>' +
+                        '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + item.stateId + '\'></i>' +
+                        '</div>'
+                    ]).draw();
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error loading States: ' + error);
+            }
+        });
+    }
+
+
+    function editState(data) {
+        debugger
+        $('#selectedStateID').val(data.stateId);
+        $('#stateNameInput').val(data.stateName);
+        $('#stateAbbreviationInput').val(data.stateAbbreviation);
+        $('#isActiveStateInput').prop('checked', data.isActiveState);
+        $('#btnStateSave').prop('disabled', false);
+        $('#stateModal').modal('show');
+    }
+
+      function saveState() {
+          debugger
+        var stateId = $('#selectedStateId').val() || 0;
+        var stateName = $('#stateNameInput').val() ? $('#stateNameInput').val().trim() : '';
+        var stateCode = $('#stateCodeInput').val() ? $('#stateCodeInput').val().trim() : '';
+        var stateRegion = $('#stateRegionInput').val() ? $('#stateRegionInput').val().trim() : '';
+        var countryName = $('#countryNameInput').val() ? $('#countryNameInput').val().trim() : '';
+        var pinCodePrefix = $('#statePinCodePrefixInput').val() ? $('#statePinCodePrefixInput').val().trim() : '';
+        var popularForCars = $('#popularForCarsInput').is(':checked');
+        var isActiveState = $('#isActiveStateInput').is(':checked');
+
+        // Now proceed with validation or AJAX
+        if (stateName === '') {
+            $('#stateNameInput').addClass('is-invalid');
+            return;
+        }
+
+        var stateData = {
+            stateId: parseInt(stateId),
+            stateName: stateName,
+            stateCode: stateCode,
+            stateRegion: stateRegion,
+            countryName: countryName,
+            statePinCodePrefix: pinCodePrefix,
+            popularForCars: popularForCars,
+            isActiveState: isActiveState
+        };
+
+        $.ajax({
+            url: '/Configuration1/AddOrEditState',
+            type: 'POST',
+            data: stateData,
+            success: function (response) {
+                $('#stateModal').modal('hide');
+                getStates();
+            },
+            error: function () {
+                alert('Error saving state');
+            }
+        });
+    }
+
+
+    function deleteState(id) {
+        $.ajax({
+            url: '/Configuration1/DeleteState',
+            type: 'POST',
+            data: { id: id },
+            success: function () {
+                msgPopup('success', 'State deleted successfully');
+                getStates();
+            },
+            error: function () {
+                alert('Error deleting State');
+            }
+        });
+    }
+        function clearStateModalFields() {
+        $('#selectedStateId').val('');
+        $('#stateNameInput').val('');
+        $('#stateCodeInput').val('');
+        $('#stateRegionInput').val('');
+        $('#countryNameInput').val('');
+        $('#statePinCodePrefixInput').val('');
+        $('#popularForCarsInput').prop('checked', false);
+        $('#isActiveStateInput').prop('checked', true);
+
+        // Remove validation error classes if present
+        $('.requiredfield_State').removeClass('is-invalid');
+    }
+
+
+
+
+</script>
