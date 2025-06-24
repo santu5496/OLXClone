@@ -1,1052 +1,832 @@
-﻿<div class="container-fluid mt-3">
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Configuration</title>
 
-    <ul class="nav nav-tabs" id="carTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="brand-tab" data-bs-toggle="tab" data-bs-target="#brandTab" type="button" role="tab" aria-controls="brandTab" aria-selected="true">Car Brands</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="model-tab" data-bs-toggle="tab" data-bs-target="#modelTab" type="button" role="tab" aria-controls="modelTab" aria-selected="false">Car Models</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="variant-tab" data-bs-toggle="tab" data-bs-target="#variantTab" type="button" role="tab" aria-controls="variantTab" aria-selected="false">Car Variants</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="category-tab" data-bs-toggle="tab" data-bs-target="#categoryTab" type="button" role="tab" aria-controls="categoryTab" aria-selected="false">Vehicle Categories</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="fuelType-tab" data-bs-toggle="tab" data-bs-target="#fuelTypeTab" type="button" role="tab" aria-controls="fuelTypeTab" aria-selected="false">Fuel Types</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="transmission-tab" data-bs-toggle="tab" data-bs-target="#transmissionTab" type="button" role="tab" aria-controls="transmissionTab" aria-selected="false">Transmission Types</button>
-        </li>
-    </ul>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <div class="tab-content mt-3" id="carTabContent">
+    <style>
+        .text-center {
+            text-align: center !important;
+        }
 
-        <!-- Brand Tab -->
-        <div class="tab-pane fade show active" id="brandTab" role="tabpanel" aria-labelledby="brand-tab">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearCarBrandModalFields()" data-bs-toggle="modal" data-bs-target="#carBrandModal">
-                Add Car Brand
-            </button>
+        .me-2 {
+            margin-right: 0.5rem !important;
+        }
 
-            <table id="CarBrandTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Brand Name</th>
-                        <th>Country of Origin</th>
-                        <th>Website</th>
-                        <th>Luxury Brand</th>
-                        <th>Active</th>
-                        <th>Notes</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data loaded dynamically -->
-                </tbody>
-            </table>
-        </div>
+        .btn-edit, .btn-delete {
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
 
-        <!-- Model Tab -->
-        <div class="tab-pane fade" id="modelTab" role="tabpanel" aria-labelledby="model-tab">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearCarModelModalFields()" data-bs-toggle="modal" data-bs-target="#carModelModal">
-                Add Car Model
-            </button>
+            .btn-edit:hover {
+                color: #28a745 !important;
+                transform: scale(1.1);
+            }
 
-            <table id="CarModelTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Brand Name</th>
-                        <th>Model Name</th>
-                        <th>Launch Year</th>
-                        <th>Discontinued Year</th>
-                        <th>Generation</th>
-                        <th>Body Type</th>
-                        <th>Active</th>
-                        <th>Description</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data loaded dynamically -->
-                </tbody>
-            </table>
-        </div>
+            .btn-delete:hover {
+                color: #dc3545 !important;
+                transform: scale(1.1);
+            }
 
-        <!-- Variant Tab -->
-        <div class="tab-pane fade" id="variantTab" role="tabpanel" aria-labelledby="variant-tab">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="clearCarVariantModalFields()" data-bs-toggle="modal" data-bs-target="#carVariantModal">
-                Add Car Variant
-            </button>
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
 
-            <table id="CarVariantTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Brand Name</th>
-                        <th>Model Name</th>
-                        <th>Variant Name</th>
-                        <th>Trim Level</th>
-                        <th>Launch Price</th>
-                        <th>Current Price</th>
-                        <th>Active</th>
-                        <th>Features</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data loaded dynamically -->
-                </tbody>
-            </table>
-        </div>
-        <div class="tab-pane fade" id="categoryTab" role="tabpanel" aria-labelledby="category-tab">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="clearVehicleCategoryModalFields()" data-bs-toggle="modal" data-bs-target="#vehicleCategoryModal">
-                Add Vehicle Category
-            </button>
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
 
-            <table id="VehicleCategoryTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Category Name</th>
-                        <th>Description</th>
-                        <th>Seating Capacity</th>
-                        <th>Price Range</th>
-                        <th>Popularity Rank</th>
-                        <th>Active</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
 
-        <div class="tab-pane fade" id="fuelTypeTab" role="tabpanel" aria-labelledby="fuelType-tab">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="clearFuelTypeModalFields()" data-bs-toggle="modal" data-bs-target="#fuelTypeModal">
-                Add Fuel Type
-            </button>
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
 
-            <table id="FuelTypeTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Fuel Type Name</th>
-                        <th>Description</th>
-                        <th>Eco Friendly</th>
-                        <th>Typical Fuel Price</th>
-                        <th>Fuel Efficiency</th>
-                        <th>Maintenance Cost</th>
-                        <th>Availability</th>
-                        <th>Active</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+        .nav-tabs .nav-link:hover {
+            border-color: #007bff;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
 
-        <div class="tab-pane fade" id="transmissionTab" role="tabpanel" aria-labelledby="transmission-tab">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="clearTransmissionModalFields()" data-bs-toggle="modal" data-bs-target="#transmissionModal">
-                Add Transmission Type
-            </button>
+    <div class="container-fluid mt-3">
+        <ul class="nav nav-tabs" id="carTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="brand-tab" data-bs-toggle="tab" data-bs-target="#brandTab" type="button" role="tab">Car Brands</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="model-tab" data-bs-toggle="tab" data-bs-target="#modelTab" type="button" role="tab">Car Models</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="variant-tab" data-bs-toggle="tab" data-bs-target="#variantTab" type="button" role="tab">Car Variants</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="category-tab" data-bs-toggle="tab" data-bs-target="#categoryTab" type="button" role="tab">Vehicle Categories</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="fuelType-tab" data-bs-toggle="tab" data-bs-target="#fuelTypeTab" type="button" role="tab">Fuel Types</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="transmission-tab" data-bs-toggle="tab" data-bs-target="#transmissionTab" type="button" role="tab">Transmission Types</button>
+            </li>
+        </ul>
 
-            <table id="TransmissionTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Name</th>
-                        <th>Full Name</th>
-                        <th>Description</th>
-                        <th>Ease of Driving</th>
-                        <th>Fuel Efficiency Impact</th>
-                        <th>Maintenance Cost</th>
-                        <th>Active</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Transmission Type Modal -->
-   
-
-
-    </div>
-<div class="modal fade" id="transmissionModal" tabindex="-1" aria-labelledby="transmissionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add / Edit Transmission Type</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="tab-content mt-3" id="carTabContent">
+            <!-- Brand Tab -->
+            <div class="tab-pane fade show active" id="brandTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="ClearCarBrandModalFields()">Add Car Brand</button>
+                <table id="CarBrandTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Brand Name</th><th>Country</th><th>Website</th><th>Luxury</th><th>Active</th><th>Notes</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
             </div>
-            <div class="modal-body">
-                <form id="transmissionForm">
-                    <input type="hidden" id="selectedTransmissionID" />
-                    <div class="mb-3">
-                        <label for="transmissionNameInput" class="form-label">Transmission Name</label>
-                        <input type="text" class="form-control requiredfield_Transmission" id="transmissionNameInput" required onkeyup="checkTransmissionNameExists(this)" />
-                        <span id="transmissionNameMessage"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="transmissionFullNameInput" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="transmissionFullNameInput" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="transmissionDescriptionInput" class="form-label">Description</label>
-                        <textarea rows="3" class="form-control" id="transmissionDescriptionInput"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="easeOfDrivingInput" class="form-label">Ease of Driving</label>
-                        <input type="text" class="form-control" id="easeOfDrivingInput" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="fuelEfficiencyImpactInput" class="form-label">Fuel Efficiency Impact</label>
-                        <input type="text" class="form-control" id="fuelEfficiencyImpactInput" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="maintenanceCostInput" class="form-label">Maintenance Cost</label>
-                        <input type="text" class="form-control" id="maintenanceCostInput" />
-                    </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" id="isActiveTransmissionInput" checked />
-                        <label class="form-check-label" for="isActiveTransmissionInput">Is Active</label>
-                    </div>
-                </form>
+
+            <!-- Model Tab -->
+            <div class="tab-pane fade" id="modelTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="ClearCarModelModalFields()">Add Car Model</button>
+                <table id="CarModelTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Brand</th><th>Model Name</th><th>Launch Year</th><th>Discontinued</th><th>Generation</th><th>Body Type</th><th>Active</th><th>Description</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
             </div>
-            <div class="modal-footer">
-                <button type="submit" id="btnTransmissionSave" onclick="saveTransmissionType()" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+            <!-- Variant Tab -->
+            <div class="tab-pane fade" id="variantTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearCarVariantModalFields()">Add Car Variant</button>
+                <table id="CarVariantTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Brand</th><th>Model</th><th>Variant</th><th>Trim</th><th>Launch Price</th><th>Current Price</th><th>Active</th><th>Features</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Category Tab -->
+            <div class="tab-pane fade" id="categoryTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearVehicleCategoryModalFields()">Add Vehicle Category</button>
+                <table id="VehicleCategoryTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Category</th><th>Description</th><th>Seating</th><th>Price Range</th><th>Popularity</th><th>Active</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Fuel Type Tab -->
+            <div class="tab-pane fade" id="fuelTypeTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearFuelTypeModalFields()">Add Fuel Type</button>
+                <table id="FuelTypeTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Fuel Type</th><th>Description</th><th>Eco Friendly</th><th>Price</th><th>Efficiency</th><th>Maintenance</th><th>Availability</th><th>Active</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Transmission Tab -->
+            <div class="tab-pane fade" id="transmissionTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearTransmissionModalFields()">Add Transmission Type</button>
+                <table id="TransmissionTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Name</th><th>Full Name</th><th>Description</th><th>Ease of Driving</th><th>Fuel Impact</th><th>Maintenance</th><th>Active</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
-    </div>
-</div>
-    <!-- Car Brand Modal -->
-    <div class="modal fade" id="carBrandModal" tabindex="-1" aria-labelledby="carBrandModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add / Edit Car Brand</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="carBrandForm">
+
+        <!-- Modals -->
+        <!-- Car Brand Modal -->
+        <div class="modal fade" id="carBrandModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add / Edit Car Brand</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
                         <input type="hidden" id="selectedCarBrandID" />
                         <div class="mb-3">
-                            <label for="brandNameInput" class="form-label">Brand Name</label>
-                            <input type="text" class="form-control requiredfield_CarBrand" id="brandNameInput" onkeyup="CheckNameAlreadyExist(this, 'CarBrandTable', 'brandNameMessage', 'btnCarBrandSave')" required />
+                            <label class="form-label">Brand Name</label>
+                            <input type="text" class="form-control requiredfield_CarBrand" id="brandNameInput" onkeyup="CheckNameAlreadyExist(this, 'CarBrandTable', 'brandNameMessage', 'btnCarBrandSave')" />
                             <span id="brandNameMessage"></span>
                         </div>
                         <div class="mb-3">
-                            <label for="brandCountryInput" class="form-label">Country of Origin</label>
+                            <label class="form-label">Country of Origin</label>
                             <input type="text" class="form-control" id="brandCountryInput" />
                         </div>
                         <div class="mb-3">
-                            <label for="brandWebsiteInput" class="form-label">Website</label>
+                            <label class="form-label">Website</label>
                             <input type="url" class="form-control" id="brandWebsiteInput" />
                         </div>
                         <div class="form-check mb-3">
                             <input type="checkbox" class="form-check-input" id="isLuxuryBrandInput" />
-                            <label class="form-check-label" for="isLuxuryBrandInput">Is Luxury Brand</label>
+                            <label class="form-check-label">Is Luxury Brand</label>
                         </div>
                         <div class="form-check mb-3">
                             <input type="checkbox" class="form-check-input" id="isActiveBrandInput" checked />
-                            <label class="form-check-label" for="isActiveBrandInput">Is Active Brand</label>
+                            <label class="form-check-label">Is Active</label>
                         </div>
                         <div class="mb-3">
-                            <label for="brandNotesInput" class="form-label">Notes</label>
-                            <textarea rows="3" class="form-control" id="brandNotesInput"></textarea>
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" id="brandNotesInput" rows="3"></textarea>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" id="btnCarBrandSave" onclick="saveCarBrand()" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnCarBrandSave" onclick="saveCarBrand()" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Car Model Modal -->
-    <div class="modal fade" id="carModelModal" tabindex="-1" aria-labelledby="carModelModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add / Edit Car Model</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="carModelForm">
+        <!-- Car Model Modal -->
+        <div class="modal fade" id="carModelModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add / Edit Car Model</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
                         <input type="hidden" id="selectedCarModelID" />
                         <div class="mb-3">
-                            <label for="modelBrandDropdown" class="form-label">Brand</label>
-                            <select class="form-select requiredfield_CarModel" id="modelBrandDropdown" required>
+                            <label class="form-label">Brand</label>
+                            <select class="form-select requiredfield_CarModel" id="modelBrandDropdown">
                                 <option value="">Select Brand</option>
-                                <!-- Brands populated dynamically -->
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="modelNameInput" class="form-label">Model Name</label>
-                            <input type="text" class="form-control requiredfield_CarModel" id="modelNameInput" onkeyup="CheckNameAlreadyExistModel(this, 'CarModelTable', 'modelNameMessage', 'btnCarModelSave')" required />
+                            <label class="form-label">Model Name</label>
+                            <input type="text" class="form-control requiredfield_CarModel" id="modelNameInput" onkeyup="CheckNameAlreadyExistModel(this, 'CarModelTable', 'modelNameMessage', 'btnCarModelSave')" />
                             <span id="modelNameMessage"></span>
                         </div>
                         <div class="mb-3">
-                            <label for="modelLaunchYearInput" class="form-label">Launch Year</label>
-                            <input type="number" class="form-control" id="modelLaunchYearInput" min="1900" max="2099" step="1" />
+                            <label class="form-label">Launch Year</label>
+                            <input type="number" class="form-control" id="modelLaunchYearInput" min="1900" max="2099" />
                         </div>
                         <div class="mb-3">
-                            <label for="modelDiscontinuedYearInput" class="form-label">Discontinued Year</label>
-                            <input type="number" class="form-control" id="modelDiscontinuedYearInput" min="1900" max="2099" step="1" />
+                            <label class="form-label">Discontinued Year</label>
+                            <input type="number" class="form-control" id="modelDiscontinuedYearInput" min="1900" max="2099" />
                         </div>
                         <div class="mb-3">
-                            <label for="modelGenerationInput" class="form-label">Generation</label>
-                            <input type="text" class="form-control" id="modelGenerationInput" placeholder="e.g. Gen 1, Facelift, Gen 2" />
+                            <label class="form-label">Generation</label>
+                            <input type="text" class="form-control" id="modelGenerationInput" />
                         </div>
                         <div class="mb-3">
-                            <label for="modelBodyTypeInput" class="form-label">Body Type</label>
-                            <input type="text" class="form-control" id="modelBodyTypeInput" placeholder="e.g. Sedan, Hatchback, SUV" />
+                            <label class="form-label">Body Type</label>
+                            <input type="text" class="form-control" id="modelBodyTypeInput" />
                         </div>
                         <div class="form-check mb-3">
                             <input type="checkbox" class="form-check-input" id="isActiveModelInput" checked />
-                            <label class="form-check-label" for="isActiveModelInput">Is Active Model</label>
+                            <label class="form-check-label">Is Active</label>
                         </div>
                         <div class="mb-3">
-                            <label for="modelDescriptionInput" class="form-label">Description</label>
-                            <textarea rows="3" class="form-control" id="modelDescriptionInput"></textarea>
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="modelDescriptionInput" rows="3"></textarea>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" id="btnCarModelSave" onclick="saveCarModel()" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnCarModelSave" onclick="saveCarModel()" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-
-    <!-- Car Variant Modal -->
-    <div class="modal fade" id="carVariantModal" tabindex="-1" aria-labelledby="carVariantModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="carVariantModalLabel">Add / Edit Car Variant</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="carVariantForm">
+        <!-- Car Variant Modal -->
+        <div class="modal fade" id="carVariantModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add / Edit Car Variant</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
                         <input type="hidden" id="selectedCarVariantID" />
                         <div class="mb-3">
-                            <label for="variantBrandDropdown" class="form-label">Brand</label>
-                            <select class="form-select requiredfield_CarVariant" id="variantBrandDropdown" required>
+                            <label class="form-label">Brand</label>
+                            <select class="form-select requiredfield_CarVariant" id="variantBrandDropdown">
                                 <option value="">Select Brand</option>
-                                <!-- Brands populated dynamically -->
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="variantModelDropdown" class="form-label">Model</label>
-                            <select class="form-select requiredfield_CarVariant" id="variantModelDropdown" required>
+                            <label class="form-label">Model</label>
+                            <select class="form-select requiredfield_CarVariant" id="variantModelDropdown">
                                 <option value="">Select Model</option>
-                                <!-- Models populated dynamically based on selected Brand -->
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="variantNameInput" class="form-label">Variant Name</label>
-                            <input type="text" class="form-control requiredfield_CarVariant" id="variantNameInput" required />
+                            <label class="form-label">Variant Name</label>
+                            <input type="text" class="form-control requiredfield_CarVariant" id="variantNameInput" />
                         </div>
                         <div class="mb-3">
-                            <label for="variantTrimLevelInput" class="form-label">Trim Level</label>
+                            <label class="form-label">Trim Level</label>
                             <input type="text" class="form-control" id="variantTrimLevelInput" />
                         </div>
                         <div class="mb-3">
-                            <label for="variantLaunchPriceInput" class="form-label">Launch Price</label>
-                            <input type="number" class="form-control" id="variantLaunchPriceInput" min="0" step="0.01" />
+                            <label class="form-label">Launch Price</label>
+                            <input type="number" class="form-control" id="variantLaunchPriceInput" step="0.01" />
                         </div>
                         <div class="mb-3">
-                            <label for="variantCurrentPriceInput" class="form-label">Current Price</label>
-                            <input type="number" class="form-control" id="variantCurrentPriceInput" min="0" step="0.01" />
+                            <label class="form-label">Current Price</label>
+                            <input type="number" class="form-control" id="variantCurrentPriceInput" step="0.01" />
                         </div>
                         <div class="form-check mb-3">
                             <input type="checkbox" class="form-check-input" id="isActiveVariantInput" checked />
-                            <label class="form-check-label" for="isActiveVariantInput">Is Active Variant</label>
+                            <label class="form-check-label">Is Active</label>
                         </div>
                         <div class="mb-3">
-                            <label for="variantFeaturesInput" class="form-label">Features</label>
-                            <textarea rows="3" class="form-control" id="variantFeaturesInput"></textarea>
+                            <label class="form-label">Features</label>
+                            <textarea class="form-control" id="variantFeaturesInput" rows="3"></textarea>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" id="btnCarVariantSave" onclick="saveCarVariant()" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnCarVariantSave" onclick="saveCarVariant()" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="vehicleCategoryModal" tabindex="-1" aria-labelledby="vehicleCategoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add / Edit Vehicle Category</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="vehicleCategoryForm">
+
+        <!-- Vehicle Category Modal -->
+        <div class="modal fade" id="vehicleCategoryModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add / Edit Vehicle Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
                         <input type="hidden" id="selectedVehicleCategoryID" />
                         <div class="mb-3">
-                            <label for="categoryNameInput" class="form-label">Category Name</label>
-                            <input type="text" class="form-control requiredfield_VehicleCategory" id="categoryNameInput" required />
+                            <label class="form-label">Category Name</label>
+                            <input type="text" class="form-control requiredfield_VehicleCategory" id="categoryNameInput" />
                         </div>
                         <div class="mb-3">
-                            <label for="categoryDescriptionInput" class="form-label">Description</label>
+                            <label class="form-label">Description</label>
                             <textarea class="form-control" id="categoryDescriptionInput" rows="3"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="typicalSeatingCapacityInput" class="form-label">Typical Seating Capacity</label>
-                            <input type="text" class="form-control" id="typicalSeatingCapacityInput" placeholder="e.g. 4-5" />
+                            <label class="form-label">Typical Seating Capacity</label>
+                            <input type="text" class="form-control" id="typicalSeatingCapacityInput" />
                         </div>
                         <div class="mb-3">
-                            <label for="typicalPriceRangeInput" class="form-label">Typical Price Range</label>
-                            <input type="text" class="form-control" id="typicalPriceRangeInput" placeholder="e.g. Under 10L" />
+                            <label class="form-label">Typical Price Range</label>
+                            <input type="text" class="form-control" id="typicalPriceRangeInput" />
                         </div>
                         <div class="mb-3">
-                            <label for="popularityRankInput" class="form-label">Popularity Rank</label>
+                            <label class="form-label">Popularity Rank</label>
                             <input type="number" class="form-control" id="popularityRankInput" min="1" />
                         </div>
                         <div class="form-check mb-3">
                             <input type="checkbox" class="form-check-input" id="isActiveCategoryInput" checked />
-                            <label class="form-check-label" for="isActiveCategoryInput">Is Active</label>
+                            <label class="form-check-label">Is Active</label>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" id="btnVehicleCategorySave" onclick="saveVehicleCategory()" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnVehicleCategorySave" onclick="saveVehicleCategory()" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="fuelTypeModal" tabindex="-1" aria-labelledby="fuelTypeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add / Edit Fuel Type</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="fuelTypeForm">
+
+        <!-- Fuel Type Modal -->
+        <div class="modal fade" id="fuelTypeModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add / Edit Fuel Type</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
                         <input type="hidden" id="selectedFuelTypeID" />
                         <div class="mb-3">
-                            <label for="fuelTypeNameInput" class="form-label">Fuel Type Name</label>
-                            <input type="text" class="form-control requiredfield_FuelType" id="fuelTypeNameInput" required onkeyup="checkFuelTypeNameExists(this)" />
+                            <label class="form-label">Fuel Type Name</label>
+                            <input type="text" class="form-control requiredfield_FuelType" id="fuelTypeNameInput" onkeyup="checkFuelTypeNameExists(this)" />
                             <span id="fuelTypeNameMessage"></span>
                         </div>
                         <div class="mb-3">
-                            <label for="fuelTypeDescriptionInput" class="form-label">Description</label>
+                            <label class="form-label">Description</label>
                             <textarea class="form-control" id="fuelTypeDescriptionInput" rows="3"></textarea>
                         </div>
                         <div class="form-check mb-3">
                             <input type="checkbox" class="form-check-input" id="isEcoFriendlyInput" />
-                            <label class="form-check-label" for="isEcoFriendlyInput">Is Eco Friendly</label>
+                            <label class="form-check-label">Is Eco Friendly</label>
                         </div>
                         <div class="mb-3">
-                            <label for="typicalFuelPriceInput" class="form-label">Typical Fuel Price</label>
-                            <input type="number" step="0.01" min="0" class="form-control" id="typicalFuelPriceInput" />
+                            <label class="form-label">Typical Fuel Price</label>
+                            <input type="number" class="form-control" id="typicalFuelPriceInput" step="0.01" />
                         </div>
                         <div class="mb-3">
-                            <label for="fuelEfficiencyRatingInput" class="form-label">Fuel Efficiency Rating</label>
+                            <label class="form-label">Fuel Efficiency Rating</label>
                             <input type="text" class="form-control" id="fuelEfficiencyRatingInput" />
                         </div>
                         <div class="mb-3">
-                            <label for="maintenanceCostLevelInput" class="form-label">Maintenance Cost Level</label>
+                            <label class="form-label">Maintenance Cost Level</label>
                             <input type="text" class="form-control" id="maintenanceCostLevelInput" />
                         </div>
                         <div class="mb-3">
-                            <label for="availabilityLevelInput" class="form-label">Availability Level</label>
+                            <label class="form-label">Availability Level</label>
                             <input type="text" class="form-control" id="availabilityLevelInput" />
                         </div>
                         <div class="form-check mb-3">
                             <input type="checkbox" class="form-check-input" id="isActiveFuelTypeInput" checked />
-                            <label class="form-check-label" for="isActiveFuelTypeInput">Is Active</label>
+                            <label class="form-check-label">Is Active</label>
                         </div>
-                    </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnFuelTypeSave" onclick="saveFuelType()" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" id="btnFuelTypeSave" onclick="saveFuelType()" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+        <!-- Transmission Modal -->
+        <div class="modal fade" id="transmissionModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add / Edit Transmission Type</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="selectedTransmissionId" />
+                        <div class="mb-3">
+                            <label class="form-label">Transmission Name</label>
+                            <input type="text" class="form-control requiredfield_Transmission" id="transmissionNameInput" onkeyup="checkTransmissionNameExists(this)" />
+                            <span id="transmissionNameMessage"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="transmissionFullNameInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="transmissionDescriptionInput" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ease of Driving</label>
+                            <input type="text" class="form-control" id="easeOfDrivingInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fuel Efficiency Impact</label>
+                            <input type="text" class="form-control" id="fuelEfficiencyImpactInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Maintenance Cost</label>
+                            <input type="text" class="form-control" id="maintenanceCostInput" />
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="isActiveTransmissionInput" checked />
+                            <label class="form-check-label">Is Active</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnTransmissionSave" onclick="saveTransmissionType()" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/bootstrap.bundle.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
+        // Helper functions
+        function msgPopup(type, message) { alert(message); }
+        function DeleteWarning(deleteFunction, id) { if (confirm('Are you sure?')) deleteFunction(id); }
+
+        // Initialize DataTable with Serial Numbers
+        function InitializeDatatableWithSlNo(tableId, tableName) {
+            if ($.fn.DataTable.isDataTable('#' + tableId)) $('#' + tableId).DataTable().destroy();
+            var table = $('#' + tableId).DataTable({
+                responsive: true, lengthChange: false, autoWidth: false, searching: true, ordering: true,
+                info: true, paging: true, pageLength: 10,
+                columnDefs: [{ targets: 0, data: null, defaultContent: "", orderable: false, searchable: false, className: "text-center", width: "50px" }],
+                order: [[1, 'asc']],
+                drawCallback: function(settings) {
+                    var api = this.api(), start = api.page.info().start;
+                    api.column(0, {page: 'current'}).nodes().each(function(cell, i) { cell.innerHTML = start + i + 1; });
+                }
+            });
+            return table;
+        }
+
         $(document).ready(function () {
+            // Event handlers
+            $('#TransmissionTable').on('click', '.btn-edit', function () { editTransmission(JSON.parse($(this).attr('data-full-data'))); });
+            $('#TransmissionTable').on('click', '.btn-delete', function () { DeleteWarning(deleteTransmissionType, JSON.parse($(this).attr('data-id'))); });
+            $('#CarBrandTable').on('click', '.btn-edit', function () { editCarBrand(JSON.parse($(this).attr('data-full-data'))); });
+            $('#CarBrandTable').on('click', '.btn-delete', function () { DeleteWarning(deleteCarBrand, JSON.parse($(this).attr('data-id'))); });
+            $('#CarModelTable').on('click', '.btn-edit', function () { editCarModel(JSON.parse($(this).attr('data-full-data'))); });
+            $('#CarModelTable').on('click', '.btn-delete', function () { DeleteWarning(deleteCarModel, JSON.parse($(this).attr('data-id'))); });
+            $('#CarVariantTable').on('click', '.btn-edit', function () { editCarVariant(JSON.parse($(this).attr('data-full-data'))); });
+            $('#CarVariantTable').on('click', '.btn-delete', function () { DeleteWarning(deleteCarVariant, JSON.parse($(this).attr('data-id'))); });
+            $('#VehicleCategoryTable').on('click', '.btn-edit', function() { editVehicleCategory(JSON.parse($(this).attr('data-full-data'))); });
+            $('#VehicleCategoryTable').on('click', '.btn-delete', function() { DeleteWarning(deleteVehicleCategory, JSON.parse($(this).attr('data-id'))); });
+            $('#FuelTypeTable').on('click', '.btn-edit', function () { editFuelType(JSON.parse($(this).attr('data-full-data'))); });
+            $('#FuelTypeTable').on('click', '.btn-delete', function () { DeleteWarning(deleteFuelType, JSON.parse($(this).attr('data-id'))); });
+            $('#variantBrandDropdown').on('change', loadModelsByBrand);
+            $('#transmission-tab').on('shown.bs.tab', getTransmissionTypes);
 
-                $('#TransmissionTable').on('click', '.btn-edit', function () {
-        var data = JSON.parse($(this).attr('data-full-data'));
-        editTransmission(data); // Use correct function name
-    });
-
-    $('#TransmissionTable').on('click', '.btn-delete', function () {
-        var id = JSON.parse($(this).attr('data-id'));
-        DeleteWarning(deleteTransmissionType, id); // Use correct delete function name
-    });
-
-   
-
-        // Load transmission types on page load
-        getTransmissionTypes();
-          // CAR BRAND EVENTS
-          $('#CarBrandTable').on('click', '.btn-edit', function () {
-            var fullData = JSON.parse($(this).attr('data-full-data'));
-            editCarBrand(fullData);
-          });
-
-          $('#CarBrandTable').on('click', '.btn-delete', function () {
-            var id = JSON.parse($(this).attr('data-id'));
-            DeleteWarning(deleteCarBrand, id);
-          });
-
-          // CAR MODEL EVENTS
-          $('#CarModelTable').on('click', '.btn-edit', function () {
-            var fullData = JSON.parse($(this).attr('data-full-data'));
-            editCarModel(fullData);
-          });
-
-          $('#CarModelTable').on('click', '.btn-delete', function () {
-            var id = JSON.parse($(this).attr('data-id'));
-            DeleteWarning(deleteCarModel, id);
-          });
-
-              // Edit & Delete for Car Variants
-        $('#CarVariantTable').on('click', '.btn-edit', function () {
-          var fullData = JSON.parse($(this).attr('data-full-data'));
-          editCarVariant(fullData);
+            // Initial loads
+            populateVariantBrandDropdown();
+            populateBrandDropdown();
+            getCarBrands();
+            getCarModels();
+            getCarVariants();
+            getVehicleCategories();
+            getFuelTypes();
+            getTransmissionTypes();
         });
 
-        $('#CarVariantTable').on('click', '.btn-delete', function () {
-          var id = JSON.parse($(this).attr('data-id'));
-          DeleteWarning(deleteCarVariant, id);
-        });
-
-        // On Brand dropdown change in Variant modal, load related models
-        $('#variantBrandDropdown').on('change', function () {
-          loadModelsByBrand();
-        });
-               // Load transmission types when tab is clicked or page loads
-        $('#transmission-tab').on('shown.bs.tab', function() {
-          getTransmissionTypes();
-        });
-
-        // INITIAL LOADS
-        populateVariantBrandDropdown();
-        getCarVariants(); getTransmissionTypes();
-
-         getVehicleCategories();
-
-        // Table edit and delete events
-        $('#VehicleCategoryTable').on('click', '.btn-edit', function() {
-            var data = JSON.parse($(this).attr('data-full-data'));
-            editVehicleCategory(data);
-        });
-
-        $('#VehicleCategoryTable').on('click', '.btn-delete', function() {
-            var id = JSON.parse($(this).attr('data-id'));
-            DeleteWarning(deleteVehicleCategory, id);
-        });
-        // When Brand dropdown changes, load filtered models for variants
-        $('#variantBrandDropdown').on('change', function () {
-          loadModelsByBrand();
-        });
-
-
-
-        // FuelType Table edit/delete events
-        $('#FuelTypeTable').on('click', '.btn-edit', function () {
-            var data = JSON.parse($(this).attr('data-full-data'));
-            editFuelType(data);
-        });
-
-        $('#FuelTypeTable').on('click', '.btn-delete', function () {
-            var id = JSON.parse($(this).attr('data-id'));
-            DeleteWarning(deleteFuelType, id);
-        });
-
-          // Load data & dropdowns on page load
-          populateBrandDropdown();
-          getCarBrands();
-          getCarModels();
-           getFuelTypes();
-
-
-
-        });
-
-        // ----- CAR BRAND FUNCTIONS -----
+        // CAR BRAND FUNCTIONS
         function ClearCarBrandModalFields() {
-          $('#selectedCarBrandID').val('');
-          $('#brandNameInput').val('');
-          $('#brandCountryInput').val('');
-          $('#brandWebsiteInput').val('');
-          $('#isLuxuryBrandInput').prop('checked', false);
-          $('#isActiveBrandInput').prop('checked', true);
-          $('#brandNotesInput').val('');
-          $('#brandNameMessage').text('');
-          $('#btnCarBrandSave').prop('disabled', false);
-          $('#carBrandModal').modal('toggle');
+            $('#selectedCarBrandID').val('');
+            $('#brandNameInput').val('');
+            $('#brandCountryInput').val('');
+            $('#brandWebsiteInput').val('');
+            $('#isLuxuryBrandInput').prop('checked', false);
+            $('#isActiveBrandInput').prop('checked', true);
+            $('#brandNotesInput').val('');
+            $('#brandNameMessage').text('');
+            $('#btnCarBrandSave').prop('disabled', false);
+            $('#carBrandModal').modal('show');
         }
 
         function saveCarBrand() {
-          if (CheckEmptyFields('CarBrand')) {
-            var brandData = {
-              BrandId: $('#selectedCarBrandID').val() || 0,
-              BrandName: $('#brandNameInput').val().trim(),
-              BrandCountryOfOrigin: $('#brandCountryInput').val().trim(),
-              BrandWebsite: $('#brandWebsiteInput').val().trim(),
-              IsLuxuryBrand: $('#isLuxuryBrandInput').is(':checked'),
-              IsActiveBrand: $('#isActiveBrandInput').is(':checked'),
-              BrandNotes: $('#brandNotesInput').val().trim()
-            };
-
-            $.ajax({
-              url: '/Configuration/AddOrEditCarBrand',
-              type: 'POST',
-              data: brandData,
-              success: function (response) {
-                if (response) {
-                  msgPopup('success', 'Car Brand saved successfully');
-                  $('#carBrandModal').modal('hide');
-                  getCarBrands();
-                  populateBrandDropdown(); // refresh brand dropdown for models
-                } else {
-                  alert('Failed to save Car Brand.');
-                }
-              },
-              error: function (xhr, status, error) {
-                alert('An error occurred: ' + error);
-              }
-            });
-          }
+            if (CheckEmptyFields('CarBrand')) {
+                var brandData = {
+                    BrandId: $('#selectedCarBrandID').val() || 0,
+                    BrandName: $('#brandNameInput').val().trim(),
+                    BrandCountryOfOrigin: $('#brandCountryInput').val().trim(),
+                    BrandWebsite: $('#brandWebsiteInput').val().trim(),
+                    IsLuxuryBrand: $('#isLuxuryBrandInput').is(':checked'),
+                    IsActiveBrand: $('#isActiveBrandInput').is(':checked'),
+                    BrandNotes: $('#brandNotesInput').val().trim()
+                };
+                $.ajax({
+                    url: '/Configuration/AddOrEditCarBrand',
+                    type: 'POST',
+                    data: brandData,
+                    success: function (response) {
+                        if (response) {
+                            msgPopup('success', 'Car Brand saved successfully');
+                            $('#carBrandModal').modal('hide');
+                            getCarBrands();
+                            populateBrandDropdown();
+                            populateVariantBrandDropdown();
+                        } else alert('Failed to save Car Brand.');
+                    },
+                    error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+                });
+            }
         }
 
         function getCarBrands() {
-          var table = InitializeDatatableWithSlNo('CarBrandTable', 'CarBrands');
-          $.ajax({
-            url: '/Configuration/GetCarBrands',
-            type: 'GET',
-            success: function (response) {
-              table.clear();
-              response.forEach(function (brand) {
-                table.row.add([
-                  '',
-                  brand.brandName,
-                  brand.brandCountryOfOrigin,
-                  brand.brandWebsite,
-                  brand.isLuxuryBrand ? 'Yes' : 'No',
-                  brand.isActiveBrand ? 'Yes' : 'No',
-                  brand.brandNotes,
-                  '<div class="contentCenter">' +
-                  '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(brand) + '\'></i>' +
-                  '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(brand.brandId) + '\'></i>' +
-                  '</div>'
-                ]).draw();
-              });
-            },
-            error: function (xhr, status, error) {
-              alert('An error occurred: ' + error);
-            }
-          });
+            var table = InitializeDatatableWithSlNo('CarBrandTable', 'CarBrands');
+            $.ajax({
+                url: '/Configuration/GetCarBrands',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (brand) {
+                        table.row.add([
+                            '', brand.brandName, brand.brandCountryOfOrigin, brand.brandWebsite,
+                            brand.isLuxuryBrand ? 'Yes' : 'No', brand.isActiveBrand ? 'Yes' : 'No', brand.brandNotes,
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(brand) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(brand.brandId) + '\'></i></div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
         }
 
         function editCarBrand(data) {
-          $('#selectedCarBrandID').val(data.brandId);
-          $('#brandNameInput').val(data.brandName);
-          $('#brandCountryInput').val(data.brandCountryOfOrigin);
-          $('#brandWebsiteInput').val(data.brandWebsite);
-          $('#isLuxuryBrandInput').prop('checked', data.isLuxuryBrand);
-          $('#isActiveBrandInput').prop('checked', data.isActiveBrand);
-          $('#brandNotesInput').val(data.brandNotes);
-          $('#brandNameMessage').text('');
-          $('#btnCarBrandSave').prop('disabled', false);
-          $('#carBrandModal').modal('show');
+            $('#selectedCarBrandID').val(data.brandId);
+            $('#brandNameInput').val(data.brandName);
+            $('#brandCountryInput').val(data.brandCountryOfOrigin);
+            $('#brandWebsiteInput').val(data.brandWebsite);
+            $('#isLuxuryBrandInput').prop('checked', data.isLuxuryBrand);
+            $('#isActiveBrandInput').prop('checked', data.isActiveBrand);
+            $('#brandNotesInput').val(data.brandNotes);
+            $('#brandNameMessage').text('');
+            $('#btnCarBrandSave').prop('disabled', false);
+            $('#carBrandModal').modal('show');
         }
 
         function deleteCarBrand(id) {
-          $.ajax({
-            url: '/Configuration/DeleteCarBrand',
-            type: 'POST',
-            data: { id: id },
-            success: function (response) {
-              if (response) {
-                msgPopup('success', 'Car Brand deleted successfully');
-              } else {
-                msgPopup('error', response.toString());
-              }
-              getCarBrands();
-              populateBrandDropdown(); // refresh brand dropdown after deletion
-            },
-            error: function (xhr, status, error) {
-              alert('An error occurred: ' + error);
-            }
-          });
+            $.ajax({
+                url: '/Configuration/DeleteCarBrand',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response) msgPopup('success', 'Car Brand deleted successfully');
+                    else msgPopup('error', response.toString());
+                    getCarBrands();
+                    populateBrandDropdown();
+                    populateVariantBrandDropdown();
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
         }
 
-
-        // ----- CAR MODEL FUNCTIONS -----
+        // CAR MODEL FUNCTIONS
         function ClearCarModelModalFields() {
-          $('#selectedCarModelID').val('');
-          $('#modelBrandDropdown').val('');
-          $('#modelNameInput').val('');
-          $('#modelLaunchYearInput').val('');
-          $('#modelDiscontinuedYearInput').val('');
-          $('#modelGenerationInput').val('');
-          $('#modelBodyTypeInput').val('');
-          $('#isActiveModelInput').prop('checked', true);
-          $('#modelDescriptionInput').val('');
-          $('#modelNameMessage').text('');
-          $('#btnCarModelSave').prop('disabled', false);
-          $('#carModelModal').modal('toggle');
+            $('#selectedCarModelID').val('');
+            $('#modelBrandDropdown').val('');
+            $('#modelNameInput').val('');
+            $('#modelLaunchYearInput').val('');
+            $('#modelDiscontinuedYearInput').val('');
+            $('#modelGenerationInput').val('');
+            $('#modelBodyTypeInput').val('');
+            $('#isActiveModelInput').prop('checked', true);
+            $('#modelDescriptionInput').val('');
+            $('#modelNameMessage').text('');
+            $('#btnCarModelSave').prop('disabled', false);
+            $('#carModelModal').modal('show');
         }
 
         function populateBrandDropdown() {
-          $.ajax({
-            url: '/Configuration/GetCarBrands',
-            type: 'GET',
-            success: function (brands) {
-              var dropdown = $('#modelBrandDropdown');
-              dropdown.empty();
-              dropdown.append('<option value="">Select Brand</option>');
-              brands.forEach(function (brand) {
-                dropdown.append(`<option value="${brand.brandId}">${brand.brandName}</option>`);
-              });
-            },
-            error: function () {
-              alert('Failed to load brands');
-            }
-          });
+            $.ajax({
+                url: '/Configuration/GetCarBrands',
+                type: 'GET',
+                success: function (brands) {
+                    var dropdown = $('#modelBrandDropdown');
+                    dropdown.empty().append('<option value="">Select Brand</option>');
+                    brands.forEach(function (brand) {
+                        dropdown.append(`<option value="${brand.brandId}">${brand.brandName}</option>`);
+                    });
+                },
+                error: function () { alert('Failed to load brands'); }
+            });
         }
 
         function saveCarModel() {
-          if (CheckEmptyFields('CarModel')) {
-            var modelData = {
-              ModelId: $('#selectedCarModelID').val() || 0,
-              BrandId: $('#modelBrandDropdown').val(),
-              ModelName: $('#modelNameInput').val().trim(),
-              ModelLaunchYear: $('#modelLaunchYearInput').val(),
-              ModelDiscontinuedYear: $('#modelDiscontinuedYearInput').val(),
-              ModelGeneration: $('#modelGenerationInput').val().trim(),
-              ModelBodyType: $('#modelBodyTypeInput').val().trim(),
-              IsActiveModel: $('#isActiveModelInput').is(':checked'),
-              ModelDescription: $('#modelDescriptionInput').val().trim()
-            };
-
-            $.ajax({
-              url: '/Configuration/AddOrEditCarModel',
-              type: 'POST',
-              data: modelData,
-              success: function (response) {
-                if (response) {
-                  msgPopup('success', 'Car Model saved successfully');
-                  $('#carModelModal').modal('hide');
-                  getCarModels();
-                } else {
-                  alert('Failed to save Car Model.');
-                }
-              },
-              error: function (xhr, status, error) {
-                alert('An error occurred: ' + error);
-              }
-            });
-          }
+            if (CheckEmptyFields('CarModel')) {
+                var modelData = {
+                    ModelId: $('#selectedCarModelID').val() || 0,
+                    BrandId: $('#modelBrandDropdown').val(),
+                    ModelName: $('#modelNameInput').val().trim(),
+                    ModelLaunchYear: $('#modelLaunchYearInput').val(),
+                    ModelDiscontinuedYear: $('#modelDiscontinuedYearInput').val(),
+                    ModelGeneration: $('#modelGenerationInput').val().trim(),
+                    ModelBodyType: $('#modelBodyTypeInput').val().trim(),
+                    IsActiveModel: $('#isActiveModelInput').is(':checked'),
+                    ModelDescription: $('#modelDescriptionInput').val().trim()
+                };
+                $.ajax({
+                    url: '/Configuration/AddOrEditCarModel',
+                    type: 'POST',
+                    data: modelData,
+                    success: function (response) {
+                        if (response) {
+                            msgPopup('success', 'Car Model saved successfully');
+                            $('#carModelModal').modal('hide');
+                            getCarModels();
+                        } else alert('Failed to save Car Model.');
+                    },
+                    error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+                });
+            }
         }
 
         function getCarModels() {
-          var table = InitializeDatatableWithSlNo('CarModelTable', 'CarModels');
-          $.ajax({
-            url: '/Configuration/GetCarModels',
-            type: 'GET',
-            success: function (response) {
-              table.clear();
-              debugger
-              response.forEach(function (model) {
-                table.row.add([
-                  '',
-                  model.brandName,
-                  model.modelName,
-                  model.modelLaunchYear || '',
-                  model.modelDiscontinuedYear || '',
-                  model.modelGeneration || '',
-                  model.modelBodyType || '',
-                  model.isActiveModel ? 'Yes' : 'No',
-                  model.modelDescription || '',
-                  '<div class="contentCenter">' +
-                  '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(model) + '\'></i>' +
-                  '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(model.modelId) + '\'></i>' +
-                  '</div>'
-                ]).draw();
-              });
-            },
-            error: function (xhr, status, error) {
-              alert('An error occurred: ' + error);
-            }
-          });
+            var table = InitializeDatatableWithSlNo('CarModelTable', 'CarModels');
+            $.ajax({
+                url: '/Configuration/GetCarModels',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (model) {
+                        table.row.add([
+                            '', model.brandName, model.modelName, model.modelLaunchYear || '', model.modelDiscontinuedYear || '',
+                            model.modelGeneration || '', model.modelBodyType || '', model.isActiveModel ? 'Yes' : 'No', model.modelDescription || '',
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(model) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(model.modelId) + '\'></i></div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
         }
 
         function editCarModel(data) {
-          $('#selectedCarModelID').val(data.modelId);
-          $('#modelBrandDropdown').val(data.brandId);
-          $('#modelNameInput').val(data.modelName);
-          $('#modelLaunchYearInput').val(data.modelLaunchYear);
-          $('#modelDiscontinuedYearInput').val(data.modelDiscontinuedYear);
-          $('#modelGenerationInput').val(data.modelGeneration);
-          $('#modelBodyTypeInput').val(data.modelBodyType);
-          $('#isActiveModelInput').prop('checked', data.isActiveModel);
-          $('#modelDescriptionInput').val(data.modelDescription);
-          $('#modelNameMessage').text('');
-          $('#btnCarModelSave').prop('disabled', false);
-          $('#carModelModal').modal('show');
+            $('#selectedCarModelID').val(data.modelId);
+            $('#modelBrandDropdown').val(data.brandId);
+            $('#modelNameInput').val(data.modelName);
+            $('#modelLaunchYearInput').val(data.modelLaunchYear);
+            $('#modelDiscontinuedYearInput').val(data.modelDiscontinuedYear);
+            $('#modelGenerationInput').val(data.modelGeneration);
+            $('#modelBodyTypeInput').val(data.modelBodyType);
+            $('#isActiveModelInput').prop('checked', data.isActiveModel);
+            $('#modelDescriptionInput').val(data.modelDescription);
+            $('#modelNameMessage').text('');
+            $('#btnCarModelSave').prop('disabled', false);
+            $('#carModelModal').modal('show');
         }
 
         function deleteCarModel(id) {
-          $.ajax({
-            url: '/Configuration/DeleteCarModel',
-            type: 'POST',
-            data: { id: id },
-            success: function (response) {
-              if (response) {
-                msgPopup('success', 'Car Model deleted successfully');
-              } else {
-                msgPopup('error', response.toString());
-              }
-              getCarModels();
-            },
-            error: function (xhr, status, error) {
-              alert('An error occurred: ' + error);
-            }
-          });
-        }
-
-
-        // VALIDATIONS
-
-        function CheckNameAlreadyExist(input, tblId, messageTextId, buttonId) {
-          const enteredName = input.value.trim().toLowerCase();
-          const table = $('#' + tblId).DataTable();
-          const nameExists = table
-            .column(1)
-            .data()
-            .toArray()
-            .some(name => name.trim().toLowerCase() === enteredName);
-          if (nameExists) {
-            $('#' + messageTextId).text('Name already exists!').css('color', 'red');
-            $('#' + buttonId).prop('disabled', true);
-          } else {
-            $('#' + messageTextId).text('');
-            $('#' + buttonId).prop('disabled', false);
-          }
-        }
-
-        function CheckNameAlreadyExistModel(input, tblId, messageTextId, buttonId) {
-          const enteredName = input.value.trim().toLowerCase();
-          const table = $('#' + tblId).DataTable();
-          const nameExists = table
-            .column(2)
-            .data()
-            .toArray()
-            .some(name => name.trim().toLowerCase() === enteredName);
-          if (nameExists) {
-            $('#' + messageTextId).text('Model name already exists!').css('color', 'red');
-            $('#' + buttonId).prop('disabled', true);
-          } else {
-            $('#' + messageTextId).text('');
-            $('#' + buttonId).prop('disabled', false);
-          }
-        }
-
-        function CheckEmptyFields(prefix) {
-          let valid = true;
-          $('.requiredfield_' + prefix).each(function () {
-            if ($(this).val() === '') {
-              $(this).css('border', '1px solid red');
-              valid = false;
-            } else {
-              $(this).css('border', '');
-            }
-          });
-          return valid;
-        }
-
-
-
-            // --- CLEAR VARIANT FORM & SHOW MODAL ---
-        function clearCarVariantModalFields() {
-          $('#selectedCarVariantID').val('');
-          $('#variantBrandDropdown').val('');
-          $('#variantModelDropdown').empty().append('<option value="">Select Model</option>');
-          $('#variantNameInput').val('');
-          $('#variantTrimLevelInput').val('');
-          $('#variantLaunchPriceInput').val('');
-          $('#variantCurrentPriceInput').val('');
-          $('#isActiveVariantInput').prop('checked', true);
-          $('#variantFeaturesInput').val('');
-          $('#btnCarVariantSave').prop('disabled', false);
-          $('#carVariantModal').modal('toggle');
-        }
-
-        // --- POPULATE BRAND DROPDOWN IN VARIANT MODAL ---
-        function populateVariantBrandDropdown() {
-          $.ajax({
-            url: '/Configuration/GetCarBrands',
-            type: 'GET',
-            success: function (brands) {
-              var dropdown = $('#variantBrandDropdown');
-              dropdown.empty();
-              dropdown.append('<option value="">Select Brand</option>');
-              brands.forEach(function (brand) {
-                dropdown.append(`<option value="${brand.brandId}">${brand.brandName}</option>`);
-              });
-            },
-            error: function () {
-              alert('Failed to load brands');
-            }
-          });
-        }
-
-        // --- LOAD MODELS BY SELECTED BRAND FOR VARIANT MODAL ---
-        function loadModelsByBrand() {
-          var brandId = $('#variantBrandDropdown').val();
-          var dropdown = $('#variantModelDropdown');
-          dropdown.empty();
-          dropdown.append('<option value="">Select Model</option>');
-
-          if (!brandId) return;
-
-          $.ajax({
-            url: '/Configuration/GetCarModelsByBrand', // Implement this in backend
-            type: 'GET',
-            data: { brandId: brandId },
-            success: function (models) {
-              models.forEach(function (model) {
-                dropdown.append(`<option value="${model.modelId}">${model.modelName}</option>`);
-              });
-            },
-            error: function () {
-              alert('Failed to load models');
-            }
-          });
-        }
-
-        // --- SAVE (ADD OR EDIT) CAR VARIANT ---
-        function saveCarVariant() {
-          if (CheckEmptyFields('CarVariant')) {
-            var variantData = {
-              VariantId: $('#selectedCarVariantID').val() || 0,
-              ModelId: $('#variantModelDropdown').val(),
-              VariantName: $('#variantNameInput').val().trim(),
-              VariantTrimLevel: $('#variantTrimLevelInput').val().trim(),
-              VariantLaunchPrice: $('#variantLaunchPriceInput').val(),
-              VariantCurrentPrice: $('#variantCurrentPriceInput').val(),
-              IsActiveVariant: $('#isActiveVariantInput').is(':checked'),
-              VariantFeatures: $('#variantFeaturesInput').val().trim()
-            };
-
             $.ajax({
-              url: '/Configuration/AddOrEditCarVariant',
-              type: 'POST',
-              data: variantData,
-              success: function (response) {
-                if (response) {
-                  msgPopup('success', 'Car Variant saved successfully');
-                  $('#carVariantModal').modal('hide');
-                  getCarVariants();
-                } else {
-                  alert('Failed to save Car Variant.');
-                }
-              },
-              error: function (xhr, status, error) {
-                alert('An error occurred: ' + error);
-              }
+                url: '/Configuration/DeleteCarModel',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response) msgPopup('success', 'Car Model deleted successfully');
+                    else msgPopup('error', response.toString());
+                    getCarModels();
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
             });
-          }
         }
 
-        // --- FETCH AND POPULATE VARIANT TABLE ---
+        // CAR VARIANT FUNCTIONS
+        function clearCarVariantModalFields() {
+            $('#selectedCarVariantID').val('');
+            $('#variantBrandDropdown').val('');
+            $('#variantModelDropdown').empty().append('<option value="">Select Model</option>');
+            $('#variantNameInput').val('');
+            $('#variantTrimLevelInput').val('');
+            $('#variantLaunchPriceInput').val('');
+            $('#variantCurrentPriceInput').val('');
+            $('#isActiveVariantInput').prop('checked', true);
+            $('#variantFeaturesInput').val('');
+            $('#btnCarVariantSave').prop('disabled', false);
+            $('#carVariantModal').modal('show');
+        }
+
+        function populateVariantBrandDropdown() {
+            $.ajax({
+                url: '/Configuration/GetCarBrands',
+                type: 'GET',
+                success: function (brands) {
+                    var dropdown = $('#variantBrandDropdown');
+                    dropdown.empty().append('<option value="">Select Brand</option>');
+                    brands.forEach(function (brand) {
+                        dropdown.append(`<option value="${brand.brandId}">${brand.brandName}</option>`);
+                    });
+                },
+                error: function () { alert('Failed to load brands'); }
+            });
+        }
+
+        function loadModelsByBrand() {
+            var brandId = $('#variantBrandDropdown').val();
+            var dropdown = $('#variantModelDropdown');
+            dropdown.empty().append('<option value="">Select Model</option>');
+            if (!brandId) return;
+            $.ajax({
+                url: '/Configuration/GetCarModelsByBrand',
+                type: 'GET',
+                data: { brandId: brandId },
+                success: function (models) {
+                    models.forEach(function (model) {
+                        dropdown.append(`<option value="${model.modelId}">${model.modelName}</option>`);
+                    });
+                },
+                error: function () { alert('Failed to load models'); }
+            });
+        }
+
+        function saveCarVariant() {
+            if (CheckEmptyFields('CarVariant')) {
+                var variantData = {
+                    VariantId: $('#selectedCarVariantID').val() || 0,
+                    ModelId: $('#variantModelDropdown').val(),
+                    VariantName: $('#variantNameInput').val().trim(),
+                    VariantTrimLevel: $('#variantTrimLevelInput').val().trim(),
+                    VariantLaunchPrice: $('#variantLaunchPriceInput').val(),
+                    VariantCurrentPrice: $('#variantCurrentPriceInput').val(),
+                    IsActiveVariant: $('#isActiveVariantInput').is(':checked'),
+                    VariantFeatures: $('#variantFeaturesInput').val().trim()
+                };
+                $.ajax({
+                    url: '/Configuration/AddOrEditCarVariant',
+                    type: 'POST',
+                    data: variantData,
+                    success: function (response) {
+                        if (response) {
+                            msgPopup('success', 'Car Variant saved successfully');
+                            $('#carVariantModal').modal('hide');
+                            getCarVariants();
+                        } else alert('Failed to save Car Variant.');
+                    },
+                    error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+                });
+            }
+        }
+
         function getCarVariants() {
-          var table = InitializeDatatableWithSlNo('CarVariantTable', 'CarVariants');
-          $.ajax({
-            url: '/Configuration/GetCarVariants',
-            type: 'GET',
-            success: function (response) {
-              table.clear();
-              response.forEach(function (variant) {
-                table.row.add([
-                  '',
-                  variant.brandName,
-                  variant.modelName,
-                  variant.variantName,
-                  variant.variantTrimLevel || '',
-                  variant.variantLaunchPrice || '',
-                  variant.variantCurrentPrice || '',
-                  variant.isActiveVariant ? 'Yes' : 'No',
-                  variant.variantFeatures || '',
-                  '<div class="contentCenter">' +
-                  '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(variant) + '\'></i>' +
-                  '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(variant.variantId) + '\'></i>' +
-                  '</div>'
-                ]).draw();
-              });
-            },
-            error: function (xhr, status, error) {
-              alert('An error occurred: ' + error);
-            }
-          });
+            var table = InitializeDatatableWithSlNo('CarVariantTable', 'CarVariants');
+            $.ajax({
+                url: '/Configuration/GetCarVariants',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (variant) {
+                        table.row.add([
+                            '', variant.brandName, variant.modelName, variant.variantName, variant.variantTrimLevel || '',
+                            variant.variantLaunchPrice || '', variant.variantCurrentPrice || '', variant.isActiveVariant ? 'Yes' : 'No', variant.variantFeatures || '',
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(variant) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(variant.variantId) + '\'></i></div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
         }
 
-        // --- EDIT VARIANT (LOAD DATA INTO FORM) ---
         function editCarVariant(data) {
-          $('#selectedCarVariantID').val(data.variantId);
-          $('#variantBrandDropdown').val(data.brandId);
-
-          // Load models of this brand first, then select model
-          loadModelsByBrand();
-          setTimeout(function () {
-            $('#variantModelDropdown').val(data.modelId);
-          }, 300);
-
-          $('#variantNameInput').val(data.variantName);
-          $('#variantTrimLevelInput').val(data.variantTrimLevel);
-          $('#variantLaunchPriceInput').val(data.variantLaunchPrice);
-          $('#variantCurrentPriceInput').val(data.variantCurrentPrice);
-          $('#isActiveVariantInput').prop('checked', data.isActiveVariant);
-          $('#variantFeaturesInput').val(data.variantFeatures);
-          $('#btnCarVariantSave').prop('disabled', false);
-          $('#carVariantModal').modal('show');
+            $('#selectedCarVariantID').val(data.variantId);
+            $('#variantBrandDropdown').val(data.brandId);
+            loadModelsByBrand();
+            setTimeout(function () { $('#variantModelDropdown').val(data.modelId); }, 300);
+            $('#variantNameInput').val(data.variantName);
+            $('#variantTrimLevelInput').val(data.variantTrimLevel);
+            $('#variantLaunchPriceInput').val(data.variantLaunchPrice);
+            $('#variantCurrentPriceInput').val(data.variantCurrentPrice);
+            $('#isActiveVariantInput').prop('checked', data.isActiveVariant);
+            $('#variantFeaturesInput').val(data.variantFeatures);
+            $('#btnCarVariantSave').prop('disabled', false);
+            $('#carVariantModal').modal('show');
         }
 
-        // --- DELETE VARIANT ---
         function deleteCarVariant(id) {
-          $.ajax({
-            url: '/Configuration/DeleteCarVariant',
-            type: 'POST',
-            data: { id: id },
-            success: function (response) {
-              if (response) {
-                msgPopup('success', 'Car Variant deleted successfully');
-              } else {
-                msgPopup('error', response.toString());
-              }
-              getCarVariants();
-            },
-            error: function (xhr, status, error) {
-              alert('An error occurred: ' + error);
-            }
-          });
+            $.ajax({
+                url: '/Configuration/DeleteCarVariant',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response) msgPopup('success', 'Car Variant deleted successfully');
+                    else msgPopup('error', response.toString());
+                    getCarVariants();
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
         }
-            function clearVehicleCategoryModalFields() {
+
+        // VEHICLE CATEGORY FUNCTIONS
+        function clearVehicleCategoryModalFields() {
             $('#selectedVehicleCategoryID').val('');
             $('#categoryNameInput').val('');
             $('#categoryDescriptionInput').val('');
@@ -1055,10 +835,9 @@
             $('#popularityRankInput').val('');
             $('#isActiveCategoryInput').prop('checked', true);
             $('#btnVehicleCategorySave').prop('disabled', false);
-            $('#vehicleCategoryModal').modal('toggle');
+            $('#vehicleCategoryModal').modal('show');
         }
 
-        // Save or update category
         function saveVehicleCategory() {
             if (CheckEmptyFields('VehicleCategory')) {
                 var categoryData = {
@@ -1070,7 +849,6 @@
                     popularityRank: $('#popularityRankInput').val(),
                     isActiveCategory: $('#isActiveCategoryInput').is(':checked')
                 };
-
                 $.ajax({
                     url: '/Configuration/AddOrEditVehicleCategory',
                     type: 'POST',
@@ -1080,18 +858,13 @@
                             msgPopup('success', 'Vehicle Category saved successfully');
                             $('#vehicleCategoryModal').modal('hide');
                             getVehicleCategories();
-                        } else {
-                            alert('Failed to save Vehicle Category.');
-                        }
+                        } else alert('Failed to save Vehicle Category.');
                     },
-                    error: function(xhr, status, error) {
-                        alert('An error occurred: ' + error);
-                    }
+                    error: function(xhr, status, error) { alert('An error occurred: ' + error); }
                 });
             }
         }
 
-        // Fetch and populate category table
         function getVehicleCategories() {
             var table = InitializeDatatableWithSlNo('VehicleCategoryTable', 'VehicleCategories');
             $.ajax({
@@ -1101,27 +874,17 @@
                     table.clear();
                     response.forEach(function(category) {
                         table.row.add([
-                            '',
-                            category.categoryName,
-                            category.categoryDescription || '',
-                            category.typicalSeatingCapacity || '',
-                            category.typicalPriceRange || '',
-                            category.popularityRank || '',
-                            category.isActiveCategory ? 'Yes' : 'No',
-                            '<div class="contentCenter">' +
-                            '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(category) + '\'></i>' +
-                            '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(category.categoryId) + '\'></i>' +
-                            '</div>'
+                            '', category.categoryName, category.categoryDescription || '', category.typicalSeatingCapacity || '',
+                            category.typicalPriceRange || '', category.popularityRank || '', category.isActiveCategory ? 'Yes' : 'No',
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(category) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(category.categoryId) + '\'></i></div>'
                         ]).draw();
                     });
                 },
-                error: function(xhr, status, error) {
-                    alert('An error occurred: ' + error);
-                }
+                error: function(xhr, status, error) { alert('An error occurred: ' + error); }
             });
         }
 
-        // Edit category modal form population
         function editVehicleCategory(data) {
             $('#selectedVehicleCategoryID').val(data.categoryId);
             $('#categoryNameInput').val(data.categoryName);
@@ -1134,27 +897,22 @@
             $('#vehicleCategoryModal').modal('show');
         }
 
-        // Delete vehicle category
         function deleteVehicleCategory(id) {
             $.ajax({
                 url: '/Configuration/DeleteVehicleCategory',
                 type: 'POST',
                 data: { id: id },
                 success: function(response) {
-                    if (response) {
-                        msgPopup('success', 'Vehicle Category deleted successfully');
-                    } else {
-                        msgPopup('error', response.toString());
-                    }
+                    if (response) msgPopup('success', 'Vehicle Category deleted successfully');
+                    else msgPopup('error', response.toString());
                     getVehicleCategories();
                 },
-                error: function(xhr, status, error) {
-                    alert('An error occurred: ' + error);
-                }
+                error: function(xhr, status, error) { alert('An error occurred: ' + error); }
             });
         }
 
-            function clearFuelTypeModalFields() {
+        // FUEL TYPE FUNCTIONS
+        function clearFuelTypeModalFields() {
             $('#selectedFuelTypeID').val('');
             $('#fuelTypeNameInput').val('');
             $('#fuelTypeDescriptionInput').val('');
@@ -1166,10 +924,9 @@
             $('#isActiveFuelTypeInput').prop('checked', true);
             $('#fuelTypeNameMessage').text('');
             $('#btnFuelTypeSave').prop('disabled', false);
-            $('#fuelTypeModal').modal('toggle');
+            $('#fuelTypeModal').modal('show');
         }
 
-        // Save or update fuel type
         function saveFuelType() {
             if (CheckEmptyFields('FuelType')) {
                 var fuelTypeData = {
@@ -1183,7 +940,6 @@
                     availabilityLevel: $('#availabilityLevelInput').val().trim(),
                     isActiveFuelType: $('#isActiveFuelTypeInput').is(':checked')
                 };
-
                 $.ajax({
                     url: '/Configuration/AddOrEditFuelType',
                     type: 'POST',
@@ -1193,18 +949,13 @@
                             msgPopup('success', 'Fuel Type saved successfully');
                             $('#fuelTypeModal').modal('hide');
                             getFuelTypes();
-                        } else {
-                            alert('Failed to save Fuel Type.');
-                        }
+                        } else alert('Failed to save Fuel Type.');
                     },
-                    error: function (xhr, status, error) {
-                        alert('An error occurred: ' + error);
-                    }
+                    error: function (xhr, status, error) { alert('An error occurred: ' + error); }
                 });
             }
         }
 
-        // Get all Fuel Types and populate the datatable
         function getFuelTypes() {
             var table = InitializeDatatableWithSlNo('FuelTypeTable', 'FuelTypes');
             $.ajax({
@@ -1214,29 +965,18 @@
                     table.clear();
                     response.forEach(function (fuel) {
                         table.row.add([
-                            '',
-                            fuel.fuelTypeName,
-                            fuel.fuelTypeDescription || '',
-                            fuel.isEcoFriendly ? 'Yes' : 'No',
-                            fuel.typicalFuelPrice || '',
-                            fuel.fuelEfficiencyRating || '',
-                            fuel.maintenanceCostLevel || '',
-                            fuel.availabilityLevel || '',
-                            fuel.isActiveFuelType ? 'Yes' : 'No',
-                            '<div class="contentCenter">' +
-                            '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(fuel) + '\'></i>' +
-                            '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(fuel.fuelTypeId) + '\'></i>' +
-                            '</div>'
+                            '', fuel.fuelTypeName, fuel.fuelTypeDescription || '', fuel.isEcoFriendly ? 'Yes' : 'No',
+                            fuel.typicalFuelPrice || '', fuel.fuelEfficiencyRating || '', fuel.maintenanceCostLevel || '',
+                            fuel.availabilityLevel || '', fuel.isActiveFuelType ? 'Yes' : 'No',
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(fuel) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(fuel.fuelTypeId) + '\'></i></div>'
                         ]).draw();
                     });
                 },
-                error: function (xhr, status, error) {
-                    alert('An error occurred: ' + error);
-                }
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
             });
         }
 
-        // Edit Fuel Type modal population
         function editFuelType(data) {
             $('#selectedFuelTypeID').val(data.fuelTypeId);
             $('#fuelTypeNameInput').val(data.fuelTypeName);
@@ -1252,35 +992,156 @@
             $('#fuelTypeModal').modal('show');
         }
 
-        // Delete Fuel Type
         function deleteFuelType(id) {
             $.ajax({
                 url: '/Configuration/DeleteFuelType',
                 type: 'POST',
                 data: { id: id },
                 success: function (response) {
-                    if (response) {
-                        msgPopup('success', 'Fuel Type deleted successfully');
-                    } else {
-                        msgPopup('error', response.toString());
-                    }
+                    if (response) msgPopup('success', 'Fuel Type deleted successfully');
+                    else msgPopup('error', response.toString());
                     getFuelTypes();
                 },
-                error: function (xhr, status, error) {
-                    alert('An error occurred: ' + error);
-                }
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
             });
         }
 
-        // Validation: check if fuel type name already exists in the table (case insensitive)
+        // TRANSMISSION FUNCTIONS
+        function clearTransmissionModalFields() {
+            $('#selectedTransmissionId').val('');
+            $('#transmissionNameInput').val('');
+            $('#transmissionFullNameInput').val('');
+            $('#transmissionDescriptionInput').val('');
+            $('#easeOfDrivingInput').val('');
+            $('#fuelEfficiencyImpactInput').val('');
+            $('#maintenanceCostInput').val('');
+            $('#isActiveTransmissionInput').prop('checked', true);
+            $('#transmissionNameMessage').text('');
+            $('#btnTransmissionSave').prop('disabled', false);
+            $('#transmissionModal').modal('show');
+        }
+
+        function saveTransmissionType() {
+            if (CheckEmptyFields('Transmission')) {
+                var transmissionData = {
+                    transmissionId: $('#selectedTransmissionId').val() || 0,
+                    transmissionName: $('#transmissionNameInput').val().trim(),
+                    transmissionFullName: $('#transmissionFullNameInput').val().trim(),
+                    transmissionDescription: $('#transmissionDescriptionInput').val().trim(),
+                    easeOfDriving: $('#easeOfDrivingInput').val().trim(),
+                    fuelEfficiencyImpact: $('#fuelEfficiencyImpactInput').val().trim(),
+                    maintenanceCost: $('#maintenanceCostInput').val().trim(),
+                    isActiveTransmission: $('#isActiveTransmissionInput').is(':checked')
+                };
+                $.ajax({
+                    url: '/Configuration/AddOrEditTransmissionType',
+                    type: 'POST',
+                    data: transmissionData,
+                    success: function (response) {
+                        if (response) {
+                            msgPopup('success', 'Transmission Type saved successfully');
+                            $('#transmissionModal').modal('hide');
+                            getTransmissionTypes();
+                        } else alert('Failed to save Transmission Type.');
+                    },
+                    error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+                });
+            }
+        }
+
+        function getTransmissionTypes() {
+            var table = InitializeDatatableWithSlNo('TransmissionTable', 'TransmissionTypes');
+            $.ajax({
+                url: '/Configuration/GetTransmissionTypes',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (transmission) {
+                        table.row.add([
+                            '', transmission.transmissionName, transmission.transmissionFullName || '', transmission.transmissionDescription || '',
+                            transmission.easeOfDriving || '', transmission.fuelEfficiencyImpact || '', transmission.maintenanceCost || '',
+                            transmission.isActiveTransmission ? 'Yes' : 'No',
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(transmission) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(transmission.transmissionId) + '\'></i></div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        function editTransmission(data) {
+            $('#selectedTransmissionId').val(data.transmissionId);
+            $('#transmissionNameInput').val(data.transmissionName);
+            $('#transmissionFullNameInput').val(data.transmissionFullName);
+            $('#transmissionDescriptionInput').val(data.transmissionDescription);
+            $('#easeOfDrivingInput').val(data.easeOfDriving);
+            $('#fuelEfficiencyImpactInput').val(data.fuelEfficiencyImpact);
+            $('#maintenanceCostInput').val(data.maintenanceCost);
+            $('#isActiveTransmissionInput').prop('checked', data.isActiveTransmission);
+            $('#transmissionNameMessage').text('');
+            $('#btnTransmissionSave').prop('disabled', false);
+            $('#transmissionModal').modal('show');
+        }
+
+        function deleteTransmissionType(id) {
+            $.ajax({
+                url: '/Configuration/DeleteTransmissionType',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response) msgPopup('success', 'Transmission Type deleted successfully');
+                    else msgPopup('error', response.toString());
+                    getTransmissionTypes();
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        // VALIDATION FUNCTIONS
+        function CheckNameAlreadyExist(input, tblId, messageTextId, buttonId) {
+            const enteredName = input.value.trim().toLowerCase();
+            const table = $('#' + tblId).DataTable();
+            const nameExists = table.column(1).data().toArray().some(name => name.trim().toLowerCase() === enteredName);
+            if (nameExists) {
+                $('#' + messageTextId).text('Name already exists!').css('color', 'red');
+                $('#' + buttonId).prop('disabled', true);
+            } else {
+                $('#' + messageTextId).text('');
+                $('#' + buttonId).prop('disabled', false);
+            }
+        }
+
+        function CheckNameAlreadyExistModel(input, tblId, messageTextId, buttonId) {
+            const enteredName = input.value.trim().toLowerCase();
+            const table = $('#' + tblId).DataTable();
+            const nameExists = table.column(2).data().toArray().some(name => name.trim().toLowerCase() === enteredName);
+            if (nameExists) {
+                $('#' + messageTextId).text('Model name already exists!').css('color', 'red');
+                $('#' + buttonId).prop('disabled', true);
+            } else {
+                $('#' + messageTextId).text('');
+                $('#' + buttonId).prop('disabled', false);
+            }
+        }
+
+        function CheckEmptyFields(prefix) {
+            let valid = true;
+            $('.requiredfield_' + prefix).each(function () {
+                if ($(this).val() === '') {
+                    $(this).css('border', '1px solid red');
+                    valid = false;
+                } else {
+                    $(this).css('border', '');
+                }
+            });
+            return valid;
+        }
+
         function checkFuelTypeNameExists(input) {
             const enteredName = input.value.trim().toLowerCase();
             const table = $('#FuelTypeTable').DataTable();
-            const nameExists = table
-                .column(1)
-                .data()
-                .toArray()
-                .some(name => name.trim().toLowerCase() === enteredName);
+            const nameExists = table.column(1).data().toArray().some(name => name.trim().toLowerCase() === enteredName);
             if (nameExists) {
                 $('#fuelTypeNameMessage').text('Fuel Type name already exists!').css('color', 'red');
                 $('#btnFuelTypeSave').prop('disabled', true);
@@ -1290,145 +1151,20 @@
             }
         }
 
-
-
-                // Clear Transmission Type modal fields and show modal
-        function clearTransmissionTypeModalFields() {
-          $('#selectedTransmissionId').val('');
-          $('#transmissionNameInput').val('');
-          $('#transmissionFullNameInput').val('');
-          $('#transmissionDescriptionInput').val('');
-          $('#easeOfDrivingInput').val('');
-          $('#fuelEfficiencyImpactInput').val('');
-          $('#maintenanceCostInput').val('');
-          $('#isActiveTransmissionInput').prop('checked', true);
-          $('#transmissionNameMessage').text('');
-          $('#btnTransmissionSave').prop('disabled', false);
-       $('#transmissionModal').modal('toggle');
-
-        }
-
-        // Save or update Transmission Type
-        function saveTransmissionType() {
-          if (CheckEmptyFields('TransmissionType')) {
-            var transmissionData = {
-              transmissionId: $('#selectedTransmissionId').val() || 0,
-              transmissionName: $('#transmissionNameInput').val().trim(),
-              transmissionFullName: $('#transmissionFullNameInput').val().trim(),
-              transmissionDescription: $('#transmissionDescriptionInput').val().trim(),
-              easeOfDriving: $('#easeOfDrivingInput').val().trim(),
-              fuelEfficiencyImpact: $('#fuelEfficiencyImpactInput').val().trim(),
-              maintenanceCost: $('#maintenanceCostInput').val().trim(),
-              isActiveTransmission: $('#isActiveTransmissionInput').is(':checked')
-            };
-
-            $.ajax({
-              url: '/Configuration/AddOrEditTransmissionType',
-              type: 'POST',
-              data: transmissionData,
-              success: function (response) {
-                if (response) {
-                  msgPopup('success', 'Transmission Type saved successfully');
-               $('#transmissionModal').modal('hide');
-
-                  getTransmissionTypes();
-                } else {
-                  alert('Failed to save Transmission Type.');
-                }
-              },
-              error: function (xhr, status, error) {
-                alert('An error occurred: ' + error);
-              }
-            });
-          }
-        }
-
-        // Fetch all Transmission Types and populate datatable
-        function getTransmissionTypes() {
-         var table = InitializeDatatableWithSlNo('TransmissionTable', 'TransmissionTypes');
-
-          $.ajax({
-            url: '/Configuration/GetTransmissionTypes',
-            type: 'GET',
-          
-            success: function (response) {
-                debugger
-              table.clear();
-              response.forEach(function (transmission) {
-                table.row.add([
-                  '',
-                  transmission.transmissionName,
-                  transmission.transmissionFullName || '',
-                  transmission.transmissionDescription || '',
-                  transmission.easeOfDriving || '',
-                  transmission.fuelEfficiencyImpact || '',
-                  transmission.maintenanceCost || '',
-                  transmission.isActiveTransmission ? 'Yes' : 'No',
-                  '<div class="contentCenter">' +
-                  '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(transmission) + '\'></i>' +
-                  '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(transmission.transmissionId) + '\'></i>' +
-                  '</div>'
-                ]).draw();
-              });
-            },
-            error: function (xhr, status, error) {
-              alert('An error occurred: ' + error);
-            }
-          });
-        }
-
-        // Load data into modal for editing
-      function editTransmission(data) {
-      $('#selectedTransmissionID').val(data.transmissionId);
-      $('#transmissionNameInput').val(data.transmissionName);
-      $('#transmissionFullNameInput').val(data.transmissionFullName);
-      $('#transmissionDescriptionInput').val(data.transmissionDescription);
-      $('#easeOfDrivingInput').val(data.easeOfDriving);
-      $('#fuelEfficiencyImpactInput').val(data.fuelEfficiencyImpact);
-      $('#maintenanceCostInput').val(data.maintenanceCost);
-      $('#isActiveTransmissionInput').prop('checked', data.isActiveTransmission);
-      $('#transmissionNameMessage').text('');
-      $('#btnTransmissionSave').prop('disabled', false);
-      $('#transmissionModal').modal('show');
-    }
-
-
-        // Delete Transmission Type
-        function deleteTransmissionType(id) {
-          $.ajax({
-            url: '/Configuration/DeleteTransmissionType',
-            type: 'POST',
-            data: { id: id },
-            success: function (response) {
-              if (response) {
-                msgPopup('success', 'Transmission Type deleted successfully');
-              } else {
-                msgPopup('error', response.toString());
-              }
-              getTransmissionTypes();
-            },
-            error: function (xhr, status, error) {
-              alert('An error occurred: ' + error);
-            }
-          });
-        }
-
-        // Optional: Validation example (check if name exists)
         function checkTransmissionNameExists(input) {
-          const enteredName = input.value.trim().toLowerCase();
-          const table = $('#TransmissionTypeTable').DataTable();
-          const nameExists = table
-            .column(1)
-            .data()
-            .toArray()
-            .some(name => name.trim().toLowerCase() === enteredName);
-          if (nameExists) {
-            $('#transmissionNameMessage').text('Transmission name already exists!').css('color', 'red');
-            $('#btnTransmissionSave').prop('disabled', true);
-          } else {
-            $('#transmissionNameMessage').text('');
-            $('#btnTransmissionSave').prop('disabled', false);
-          }
+            const enteredName = input.value.trim().toLowerCase();
+            const table = $('#TransmissionTable').DataTable();
+            const nameExists = table.column(1).data().toArray().some(name => name.trim().toLowerCase() === enteredName);
+            if (nameExists) {
+                $('#transmissionNameMessage').text('Transmission name already exists!').css('color', 'red');
+                $('#btnTransmissionSave').prop('disabled', true);
+            } else {
+                $('#transmissionNameMessage').text('');
+                $('#btnTransmissionSave').prop('disabled', false);
+            }
         }
 
     </script>
+
+</body>
+</html>

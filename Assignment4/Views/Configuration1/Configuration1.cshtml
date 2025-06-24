@@ -1,340 +1,444 @@
-﻿<style>
-    .customBtn {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 4px;
-    }
+﻿
 
-        .customBtn:hover {
-            background-color: #0056b3;
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        .customBtn {
+            background-color: #007bff;
             color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
         }
 
-    .contentCenter {
-        text-align: center;
-    }
+            .customBtn:hover {
+                background-color: #0056b3;
+                color: white;
+            }
 
-    .is-invalid {
-        border-color: #dc3545;
-    }
-</style>
+        .contentCenter {
+            text-align: center;
+        }
+
+        .is-invalid {
+            border-color: #dc3545;
+        }
+
+        .text-center {
+            text-align: center !important;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem !important;
+        }
+
+        .btn-edit, .btn-delete {
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+            .btn-edit:hover {
+                color: #28a745 !important;
+                transform: scale(1.1);
+            }
+
+            .btn-delete:hover {
+                color: #dc3545 !important;
+                transform: scale(1.1);
+            }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+    </style>
 
 
-<div class="container-fluid mt-3">
-    <ul class="nav nav-tabs" id="configTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="color-tab" data-bs-toggle="tab" data-bs-target="#colorTab" type="button" role="tab" aria-controls="colorTab" aria-selected="true">Car Colors</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="condition-tab" data-bs-toggle="tab" data-bs-target="#conditionTab" type="button" role="tab" aria-controls="conditionTab" aria-selected="false">Car Conditions</button>
-        </li>
+    <div class="container-fluid mt-3">
+        <ul class="nav nav-tabs" id="configTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="color-tab" data-bs-toggle="tab" data-bs-target="#colorTab" type="button" role="tab">Car Colors</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="condition-tab" data-bs-toggle="tab" data-bs-target="#conditionTab" type="button" role="tab">Car Conditions</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="state-tab" data-bs-toggle="tab" data-bs-target="#stateTab" type="button" role="tab">States</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="city-tab" data-bs-toggle="tab" data-bs-target="#cityTab" type="button" role="tab">Cities</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="engine-tab" data-bs-toggle="tab" data-bs-target="#engineTab" type="button" role="tab">Engine Specs</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="insurance-tab" data-bs-toggle="tab" data-bs-target="#insuranceTab" type="button" role="tab">Insurance Providers</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="insurance-tab" data-bs-toggle="tab" data-bs-target="#featureTab" type="button" role="tab">CarFeature</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="insurance-tab" data-bs-toggle="tab" data-bs-target="#featureTab" type="button" role="tab">CarFeature</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="RtoCode-tab" data-bs-toggle="tab" data-bs-target="#featureTab" type="button" role="tab">RtoCode</button>
+            </li>
 
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="state-tab" data-bs-toggle="tab" data-bs-target="#stateTab" type="button" role="tab" aria-controls="stateTab" aria-selected="false">States</button>
-        </li>
+        </ul>
 
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="city-tab" data-bs-toggle="tab" data-bs-target="#cityTab" type="button" role="tab" aria-controls="cityTab" aria-selected="false">Cities</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="engine-tab" data-bs-toggle="tab" data-bs-target="#engineTab" type="button" role="tab" aria-controls="engineTab" aria-selected="false">Engine Specs</button>
-        </li>
-    </ul>
+        <div class="tab-content mt-3" id="configTabContent">
+            <!-- CAR COLORS TAB -->
+            <div class="tab-pane fade show active" id="colorTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearCarColorModalFields()">Add Car Color</button>
+                <table id="CarColorTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Color Name</th>
+                            <th>Display Name</th>
+                            <th>Hex Code</th>
+                            <th>Color Family</th>
+                            <th>Metallic Paint</th>
+                            <th>Pearl Paint</th>
+                            <th>Solid Paint</th>
+                            <th>Popularity Rank</th>
+                            <th>Resale Value Impact</th>
+                            <th>Active</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
-    <div class="tab-content mt-3" id="configTabContent">
+            <!-- CAR CONDITIONS TAB -->
+            <div class="tab-pane fade" id="conditionTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearCarConditionModalFields()">Add Car Condition</button>
+                <table id="CarConditionTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Condition Name</th>
+                            <th>Description</th>
+                            <th>Percentage</th>
+                            <th>Price Reduction</th>
+                            <th>Typical Issues</th>
+                            <th>Recommended For</th>
+                            <th>Sort Order</th>
+                            <th>Active</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
-        <!-- CAR COLORS TAB -->
-        <div class="tab-pane fade show active" id="colorTab" role="tabpanel" aria-labelledby="color-tab">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="clearCarColorModalFields()" data-bs-toggle="modal" data-bs-target="#carColorModal">Add Car Color</button>
-            <table id="CarColorTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th> <!-- Add this line -->
+            <!-- STATES TAB -->
+            <div class="tab-pane fade" id="stateTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearStateModalFields()">Add State</button>
+                <table id="StateTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>State Name</th>
+                            <th>State Code</th>
+                            <th>Region</th>
+                            <th>Country</th>
+                            <th>Pin Code Prefix</th>
+                            <th>Popular For Cars</th>
+                            <th>Active</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
-                        <th>Color Name</th>
-                        <th>Display Name</th>
-                        <th>Hex Code</th>
-                        <th>Color Family</th>
-                        <th>Metallic Paint</th>
-                        <th>Pearl Paint</th>
-                        <th>Solid Paint</th>
-                        <th>Popularity Rank</th>
-                        <th>Resale Value Impact</th>
-                        <th>Active</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <!-- CITIES TAB -->
+            <div class="tab-pane fade" id="cityTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearCityModalFields(), loadStatesDropdown()">Add City</button>
+                <table id="CityTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>City Name</th>
+                            <th>State</th>
+                            <th>City Type</th>
+                            <th>Population</th>
+                            <th>Good Car Market</th>
+                            <th>Car Demand</th>
+                            <th>Active</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- ENGINE SPECS TAB (placeholder) -->
+            <!-- Fix the tab content pane -->
+            <div class="tab-pane fade" id="engineTab" role="tabpanel">
+
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearEngineSpecModalFields()">Add Engine Specification</button>
+                <table id="EngineSpecTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Engine Type</th>
+                            <th>Cylinders</th>
+                            <th>Valve Configuration</th>
+                            <th>Turbocharged</th>
+                            <th>Supercharged</th>
+                            <th>Naturally Aspirated</th>
+                            <th>Hybrid System</th>
+                            <th>Description</th>
+                            <th>Performance Rating</th>
+                            <th>Active</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="insuranceTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearInsuranceProviderModalFields()">Add Insurance Provider</button>
+                <table id="InsuranceProviderTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Provider Name</th>
+                            <th>Type</th>
+                            <th>Rating</th>
+                            <th>Claim Settlement Ratio</th>
+                            <th>Customer Service Rating</th>
+                            <th>Active</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="featureTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearCarFeatureModalFields()">Add Car Feature</button>
+                <table id="CarFeatureTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Feature Name</th>
+                            <th>Display Name</th>
+                            <th>Category</th>
+                            <th>Sub-Category</th>
+                            <th>Description</th>
+                            <th>Importance Level</th>
+                            <th>Typical In</th>
+                            <th>Affects Resale</th>
+                            <th>Standard</th>
+                            <th>Icon</th>
+                            <th>Active</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+          
+            
+        
+
+
         </div>
-
-        <!-- CAR CONDITIONS TAB -->
-        <div class="tab-pane fade" id="conditionTab" role="tabpanel" aria-labelledby="condition-tab">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="clearCarConditionModalFields()" data-bs-toggle="modal" data-bs-target="#carConditionModal">Add Car Condition</button>
-            <table id="CarConditionTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Condition Name</th>
-                        <th>Description</th>
-                        <th>Percentage</th>
-                        <th>Price Reduction</th>
-                        <th>Typical Issues</th>
-                        <th>Recommended For</th>
-                        <th>Sort Order</th>
-                        <th>Active</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <div class="tab-pane fade" id="stateTab" role="tabpanel" aria-labelledby="state-tab">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="clearStateModalFields()" data-bs-toggle="modal" data-bs-target="#stateModal">Add State</button>
-            <table id="StateTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>State Name</th>
-                        <th>State Code</th>
-                        <th>Region</th>
-                        <th>Country</th>
-                        <th>Pin Code Prefix</th>
-                        <th>Popular For Cars</th>
-                        <th>Active</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody></tbody>
-            </table>
-        </div>
-        <!-- CITIES TAB -->
-        <div class="tab-pane fade" id="cityTab" role="tabpanel" aria-labelledby="city-tab">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="clearCityModalFields(), loadStatesDropdown()" data-bs-toggle="modal" data-bs-target="#cityModal">Add City</button>
-            <table id="CityTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>City Name</th>
-                        <th>State</th>
-                        <th>City Type</th>
-                        <th>Population</th>
-                        <th>Good Car Market</th>
-                        <th>Car Demand</th>
-                        <th>Active</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-       
-
-
     </div>
 
-  
-    <!-- STATES TAB -->
-   
-
-</div>
-
-
-
-<!-- MODALS START HERE -->
-<!-- Car Color Modal -->
-<div class="modal fade" id="carColorModal" tabindex="-1" aria-labelledby="carColorModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="carColorForm">
+    <!-- MODALS -->
+    <!-- Car Color Modal -->
+    
+    <div class="modal fade" id="rtoModal" tabindex="-1" aria-labelledby="rtoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add / Edit Car Color</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title">RTO Code</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="selectedCarColorID" />
-                    <div class="mb-3">
-                        <label for="colorNameInput" class="form-label">Color Name</label>
-                        <input type="text" class="form-control requiredfield_CarColor" id="colorNameInput" required />
+                    <input type="hidden" id="rtoId" />
+
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <label>RTO Code</label>
+                            <input type="text" id="rtoCode" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>RTO Name</label>
+                            <input type="text" id="rtoName" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>State</label>
+                            <select id="stateId" class="form-control"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>City</label>
+                            <select id="cityId" class="form-control"></select>
+                        </div>
+                        <div class="col-12">
+                            <label>RTO Address</label>
+                            <input type="text" id="rtoAddress" class="form-control" />
+                        </div>
+                        <div class="col-6">
+                            <label>Contact Number</label>
+                            <input type="text" id="rtoContactNumber" class="form-control" />
+                        </div>
+                        <div class="col-6 d-flex align-items-end">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="isActiveRTO" />
+                                <label class="form-check-label" for="isActiveRTO">Is Active</label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="colorDisplayNameInput" class="form-label">Display Name</label>
-                        <input type="text" class="form-control" id="colorDisplayNameInput" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="colorHexCodeInput" class="form-label">Hex Code</label>
-                        <input type="text" class="form-control" id="colorHexCodeInput" placeholder="#FFFFFF" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="colorFamilyInput" class="form-label">Color Family</label>
-                        <input type="text" class="form-control" id="colorFamilyInput" />
-                    </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" id="isMetallicPaintInput" />
-                        <label class="form-check-label" for="isMetallicPaintInput">Metallic Paint</label>
-                    </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" id="isPearlPaintInput" />
-                        <label class="form-check-label" for="isPearlPaintInput">Pearl Paint</label>
-                    </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" id="isSolidPaintInput" checked />
-                        <label class="form-check-label" for="isSolidPaintInput">Solid Paint</label>
-                    </div>
-                    <div class="mb-3">
-                        <label for="popularityRankInput" class="form-label">Popularity Rank</label>
-                        <input type="number" class="form-control" id="popularityRankInput" min="1" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="resaleValueImpactInput" class="form-label">Resale Value Impact</label>
-                        <input type="text" class="form-control" id="resaleValueImpactInput" placeholder="Positive / Neutral / Negative" />
-                    </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" id="isActiveColorInput" checked />
-                        <label class="form-check-label" for="isActiveColorInput">Is Active</label>
-                    </div>
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnCarColorSave" class="btn btn-primary" onclick="saveCarColor()">Save</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('carColorModal')">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveRtoCode()">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Car Condition Modal -->
-<div class="modal fade" id="carConditionModal" tabindex="-1" aria-labelledby="carConditionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="carConditionForm">
+    <!-- Car Condition Modal -->
+    <div class="modal fade" id="carConditionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add / Edit Car Condition</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="selectedCarConditionID" />
                     <div class="mb-3">
-                        <label for="conditionNameInput" class="form-label">Condition Name</label>
+                        <label class="form-label">Condition Name</label>
                         <input type="text" class="form-control requiredfield_CarCondition" id="conditionNameInput" required />
                     </div>
                     <div class="mb-3">
-                        <label for="conditionDescriptionInput" class="form-label">Description</label>
+                        <label class="form-label">Description</label>
                         <textarea class="form-control" id="conditionDescriptionInput" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="conditionPercentageInput" class="form-label">Condition Percentage</label>
+                        <label class="form-label">Condition Percentage</label>
                         <input type="number" class="form-control" id="conditionPercentageInput" min="0" max="100" />
                     </div>
                     <div class="mb-3">
-                        <label for="expectedPriceReductionInput" class="form-label">Expected Price Reduction (%)</label>
+                        <label class="form-label">Expected Price Reduction (%)</label>
                         <input type="number" class="form-control" id="expectedPriceReductionInput" step="0.1" min="0" />
                     </div>
                     <div class="mb-3">
-                        <label for="typicalIssuesInput" class="form-label">Typical Issues</label>
+                        <label class="form-label">Typical Issues</label>
                         <textarea class="form-control" id="typicalIssuesInput" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="recommendedForInput" class="form-label">Recommended For</label>
+                        <label class="form-label">Recommended For</label>
                         <input type="text" class="form-control" id="recommendedForInput" />
                     </div>
                     <div class="mb-3">
-                        <label for="conditionSortOrderInput" class="form-label">Sort Order</label>
+                        <label class="form-label">Sort Order</label>
                         <input type="number" class="form-control" id="conditionSortOrderInput" min="1" />
                     </div>
                     <div class="form-check mb-3">
                         <input type="checkbox" class="form-check-input" id="isActiveConditionInput" checked />
-                        <label class="form-check-label" for="isActiveConditionInput">Is Active</label>
+                        <label class="form-check-label">Is Active</label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="btnCarConditionSave" class="btn btn-primary" onclick="saveCarCondition()">Save</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('carConditionModal')">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
 
-
-
-<!-- State Modal -->
-<div class="modal fade" id="stateModal" tabindex="-1" aria-labelledby="stateModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="stateForm">
+    <!-- State Modal -->
+    <div class="modal fade" id="stateModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add / Edit State</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="number"  id="selectedStateID" />
+                    <input type="hidden" id="selectedStateID" />
                     <div class="mb-3">
-                        <label for="stateNameInput" class="form-label">State Name</label>
+                        <label class="form-label">State Name</label>
                         <input type="text" class="form-control requiredfield_State" id="stateNameInput" required />
                     </div>
                     <div class="mb-3">
-                        <label for="stateCodeInput" class="form-label">State Code</label>
+                        <label class="form-label">State Code</label>
                         <input type="text" class="form-control" id="stateCodeInput" />
                     </div>
                     <div class="mb-3">
-                        <label for="stateRegionInput" class="form-label">Region</label>
+                        <label class="form-label">Region</label>
                         <input type="text" class="form-control" id="stateRegionInput" />
                     </div>
                     <div class="mb-3">
-                        <label for="countryNameInput" class="form-label">Country Name</label>
+                        <label class="form-label">Country Name</label>
                         <input type="text" class="form-control" id="countryNameInput" value="India" />
                     </div>
                     <div class="mb-3">
-                        <label for="statePinCodePrefixInput" class="form-label">Pin Code Prefix</label>
+                        <label class="form-label">Pin Code Prefix</label>
                         <input type="text" class="form-control" id="statePinCodePrefixInput" />
                     </div>
                     <div class="form-check mb-3">
                         <input type="checkbox" class="form-check-input" id="popularForCarsInput" checked />
-                        <label class="form-check-label" for="popularForCarsInput">Popular For Cars</label>
+                        <label class="form-check-label">Popular For Cars</label>
                     </div>
                     <div class="form-check mb-3">
                         <input type="checkbox" class="form-check-input" id="isActiveStateInput" checked />
-                        <label class="form-check-label" for="isActiveStateInput">Is Active</label>
+                        <label class="form-check-label">Is Active</label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="btnStateSave" class="btn btn-primary" onclick="saveState()">Save</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('stateModal')">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- City Modal -->
-<div class="modal fade" id="cityModal" tabindex="-1" aria-labelledby="cityModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="cityForm">
+    <!-- City Modal -->
+
+    <div class="modal fade" id="cityModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add / Edit City</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="selectedCityID" />
                     <div class="mb-3">
-                        <label for="cityNameInput" class="form-label">City Name</label>
+                        <label class="form-label">City Name</label>
                         <input type="text" class="form-control requiredfield_City" id="cityNameInput" required />
                     </div>
                     <div class="mb-3">
-                        <label for="stateIdInput" class="form-label">State</label>
-                        <select class="form-control requiredfield_City" id="stateIdInput" required>
+                        <label class="form-label">State</label>
+                        <select class="form-select requiredfield_City" id="stateIdInput" required>
                             <option value="">Select State</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="cityTypeInput" class="form-label">City Type</label>
-                        <select class="form-control" id="cityTypeInput">
+                        <label class="form-label">City Type</label>
+                        <select class="form-select" id="cityTypeInput">
                             <option value="">Select Type</option>
                             <option value="Metro">Metro</option>
                             <option value="Tier 1">Tier 1</option>
@@ -343,16 +447,16 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="cityPopulationInput" class="form-label">Population</label>
+                        <label class="form-label">Population</label>
                         <input type="number" class="form-control" id="cityPopulationInput" />
                     </div>
                     <div class="form-check mb-3">
                         <input type="checkbox" class="form-check-input" id="hasGoodCarMarketInput" checked />
-                        <label class="form-check-label" for="hasGoodCarMarketInput">Has Good Car Market</label>
+                        <label class="form-check-label">Has Good Car Market</label>
                     </div>
                     <div class="mb-3">
-                        <label for="typicalCarDemandInput" class="form-label">Typical Car Demand</label>
-                        <select class="form-control" id="typicalCarDemandInput">
+                        <label class="form-label">Typical Car Demand</label>
+                        <select class="form-select" id="typicalCarDemandInput">
                             <option value="">Select Demand</option>
                             <option value="High">High</option>
                             <option value="Medium">Medium</option>
@@ -361,620 +465,1476 @@
                     </div>
                     <div class="form-check mb-3">
                         <input type="checkbox" class="form-check-input" id="isActiveCityInput" checked />
-                        <label class="form-check-label" for="isActiveCityInput">Is Active</label>
+                        <label class="form-check-label">Is Active</label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="btnCitySave" class="btn btn-primary" onclick="saveCity()">Save</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('cityModal')">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
+    <!-- engineSpecModal Modal -->
+    <div class="modal fade" id="engineSpecModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add / Edit Engine Specification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="engineSpecId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Engine Type</label>
+                        <input type="text" class="form-control" id="engineType" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Engine Cylinders</label>
+                        <input type="number" class="form-control" id="engineCylinders" min="1" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Valve Configuration</label>
+                        <input type="text" class="form-control" id="engineValveConfiguration" />
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="turbochargedEngine" />
+                        <label class="form-check-label">Turbocharged Engine</label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="superchargedEngine" />
+                        <label class="form-check-label">Supercharged Engine</label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="naturallyAspiratedEngine" />
+                        <label class="form-check-label">Naturally Aspirated Engine</label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="hybridSystem" />
+                        <label class="form-check-label">Hybrid System</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Engine Description</label>
+                        <input type="text" class="form-control" id="engineDescription" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Performance Rating</label>
+                        <input type="text" class="form-control" id="performanceRating" />
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isActiveEngineSpec" checked />
+                        <label class="form-check-label">Is Active</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnEngineSpecSave" class="btn btn-primary" onclick="saveEngineSpec()">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="insuranceProviderModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add / Edit Insurance Provider</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="insuranceProviderId" />
+                    <div class="mb-3">
+                        <label class="form-label">Provider Name</label>
+                        <input type="text" class="form-control requiredfield_InsuranceProvider" id="providerName" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Provider Type</label>
+                        <input type="text" class="form-control" id="providerType" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Provider Rating</label>
+                        <input type="number" class="form-control" id="providerRating" step="0.1" min="0" max="5" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Claim Settlement Ratio (%)</label>
+                        <input type="number" class="form-control" id="claimSettlementRatio" step="0.01" min="0" max="100" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Customer Service Rating</label>
+                        <input type="text" class="form-control" id="customerServiceRating" />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isActiveProvider" checked />
+                        <label class="form-check-label">Is Active</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="saveInsuranceProvider()">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="carFeatureModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add / Edit Car Feature</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="featureId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Feature Name</label>
+                        <input type="text" class="form-control" id="featureName" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Display Name</label>
+                        <input type="text" class="form-control" id="featureDisplayName" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <input type="text" class="form-control" id="featureCategory" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sub-Category</label>
+                        <input type="text" class="form-control" id="featureSubCategory" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="featureDescription" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Importance Level</label>
+                        <input type="text" class="form-control" id="featureImportanceLevel" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Typical Found In</label>
+                        <input type="text" class="form-control" id="typicalFoundIn" />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="affectsResaleValue" />
+                        <label class="form-check-label">Affects Resale Value</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isStandardFeature" />
+                        <label class="form-check-label">Standard Feature</label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Feature Icon</label>
+                        <input type="text" class="form-control" id="featureIcon" />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="isActiveFeature" checked />
+                        <label class="form-check-label">Is Active</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="saveCarFeature()">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="rtoModal" tabindex="-1" aria-labelledby="rtoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="rtoForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="rtoModalLabel">Add / Edit RTO Code</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- Hidden field for edit -->
+                        <input type="hidden" id="rtoId" name="rtoId" />
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="rtoCode" class="form-label">RTO Code</label>
+                                <input type="text" class="form-control" id="rtoCode" name="rtoCode" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="rtoName" class="form-label">RTO Name</label>
+                                <input type="text" class="form-control" id="rtoName" name="rtoName" />
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="rtoStateDropdown" class="form-label">State</label>
+                                <select id="rtoStateDropdown" class="form-select" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="rtoCityDropdown" class="form-label">City</label>
+                                <select id="rtoCityDropdown" class="form-select"></select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="rtoAddress" class="form-label">RTO Address</label>
+                            <textarea class="form-control" id="rtoAddress" name="rtoAddress" rows="2"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="rtoContactNumber" class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" id="rtoContactNumber" name="rtoContactNumber" />
+                        </div>
+
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="isActiveRTO" name="isActiveRTO" />
+                            <label class="form-check-label" for="isActiveRTO">Active</label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 
 
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/bootstrap.bundle.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 
-<script>
-    $(document).ready(function () {
-        // -------------------- Cities --------------------
+    <script>
+        // Helper functions
+        function msgPopup(type, message) {
+            alert(message);
+        }
 
-        getCities();
-        // ----- Car Color Events -----
-        $('#CarColorTable').on('click', '.btn-edit', function () {
-            var data = JSON.parse($(this).attr('data-full-data'));
-            editCarColor(data);
-        });
+        function DeleteWarning(deleteFunction, id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                deleteFunction(id);
+            }
+        }
 
-        $('#CarColorTable').on('click', '.btn-delete', function () {
-            var id = JSON.parse($(this).attr('data-id'));
-            DeleteWarning(deleteCarColor, id);
-        });
+        // Initialize DataTable with Serial Numbers
+        function InitializeDatatableWithSlNo(tableId, tableName) {
+            if ($.fn.DataTable.isDataTable('#' + tableId)) {
+                $('#' + tableId).DataTable().destroy();
+            }
 
-        $('#carColor-tab').on('shown.bs.tab', function () {
-            getCarColors();
-        });
-
-
-        // ----- Car Condition Events -----
-        $('#CarConditionTable').on('click', '.btn-edit', function () {
-            var data = JSON.parse($(this).attr('data-full-data'));
-            editCarCondition(data);
-        });
-
-        $('#CarConditionTable').on('click', '.btn-delete', function () {
-            var id = JSON.parse($(this).attr('data-id'));
-            DeleteWarning(deleteCarCondition, id);
-        });
-
-        $('#carCondition-tab').on('shown.bs.tab', function () {
-            getCarConditions();
-        });
-
-        getCarColors();
-        getCarConditions();
-
-
-
-
-        $('#btnCarColorSave').on('click', function () {
-            saveCarColor();
-        });
-
-
-
-
-        // ----- State Events -----
-        $('#StateTable').on('click', '.btn-edit', function () {
-            var data = JSON.parse($(this).attr('data-full-data'));
-            editState(data);
-        });
-
-        $('#StateTable').on('click', '.btn-delete', function () {
-            var id = JSON.parse($(this).attr('data-id'));
-            DeleteWarning(deleteState, id);
-        });
-
-        $('#state-tab').on('shown.bs.tab', function () {
-            getStates();
-        });
-
-        getStates();
-         // -------------------- Cities --------------------
-        $('#CityTable').on('click', '.btn-edit', function () {
-            var data = JSON.parse($(this).attr('data-full-data'));
-            editCity(data);
-        });
-
-        $('#CityTable').on('click', '.btn-delete', function () {
-            var id = JSON.parse($(this).attr('data-id'));
-            DeleteWarning(deleteCity, id);
-        });
-
-    
-
-        getCities();
-    });
-
-
-
-     function getCarColors() {
-        var table = InitializeDatatableWithSlNo('CarColorTable', 'CarColors');
-
-        $.ajax({
-            url: '/Configuration1/GetCarColors',
-            type: 'GET',
-            success: function (response) {
-                table.clear();
-
-                // Check if response is valid and has data
-                if (response && Array.isArray(response)) {
-                    response.forEach(function (item) {
-                        
-
-                        // EXACTLY 11 elements to match your 11 table columns
-                        table.row.add([
-                             '', // This is for Sl No, DataTables will auto-fill
-
-                            item.colorName || '', // Column 1: Color Name
-                            item.colorDisplayName || '', // Column 2: Display Name
-                            item.colorHexCode || '', // Column 3: Hex Code
-                            item.colorFamily || '', // Column 4: Color Family
-                            item.isMetallicPaint ? 'Yes' : 'No', // Column 5: Metallic Paint
-                            item.isPearlPaint ? 'Yes' : 'No', // Column 6: Pearl Paint
-                            item.isSolidPaint ? 'Yes' : 'No', // Column 7: Solid Paint
-                            item.popularityRank !== null && item.popularityRank !== undefined ? item.popularityRank : '', // Column 8: Popularity Rank
-                            item.resaleValueImpact || '', // Column 9: Resale Value Impact
-                            item.isActiveColor ? 'Yes' : 'No', // Column 10: Active
-                            // Column 11: Action
-                            '<div class="contentCenter">' +
-                                '<i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' +
-                                JSON.stringify(item).replace(/'/g, '&apos;') + '\'></i>' +
-                                '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id="' +
-                                (item.colorId || '') + '"></i>' +
-                            '</div>'
-                        ]);
+            var table = $('#' + tableId).DataTable({
+                responsive: true,
+                lengthChange: false,
+                autoWidth: false,
+                searching: true,
+                ordering: true,
+                info: true,
+                paging: true,
+                pageLength: 10,
+                columnDefs: [{
+                    targets: 0,
+                    data: null,
+                    defaultContent: "",
+                    orderable: false,
+                    searchable: false,
+                    className: "text-center",
+                    width: "50px"
+                }],
+                order: [[1, 'asc']],
+                drawCallback: function(settings) {
+                    var api = this.api();
+                    var start = api.page.info().start;
+                    api.column(0, {page: 'current'}).nodes().each(function(cell, i) {
+                        cell.innerHTML = start + i + 1;
                     });
                 }
-
-                // Draw the table after all rows are added
-                table.draw();
-            },
-            error: function (xhr, status, error) {
-                console.error('Error loading Car Colors:', error);
-                alert('Error loading Car Colors: ' + (xhr.responseJSON?.error || error));
-            }
-        });
-    }
-  
-    function debugCarColorTable() {
-        console.log('=== CarColorTable Debug Info ===');
-        var headerCount = $('#CarColorTable thead th').length;
-        console.log('Number of columns:', headerCount);
-
-        var headers = $('#CarColorTable thead th').map(function(index) {
-            return 'Column ' + index + ': ' + $(this).text();
-        }).get();
-
-        console.log('Column headers:', headers);
-
-        if ($.fn.DataTable.isDataTable('#CarColorTable')) {
-            console.log('DataTable is initialized');
-        } else {
-            console.log('DataTable is NOT initialized');
-        }
-    }
-
-    // Clear modal fields function
-    function clearCarColorModalFields() {
-        $('#selectedCarColorID').val('');
-        $('#colorNameInput').val('');
-        $('#colorDisplayNameInput').val('');
-        $('#colorHexCodeInput').val('');
-        $('#colorFamilyInput').val('');
-        $('#isMetallicPaintInput').prop('checked', false);
-        $('#isPearlPaintInput').prop('checked', false);
-        $('#isSolidPaintInput').prop('checked', true);
-        $('#popularityRankInput').val('');
-        $('#resaleValueImpactInput').val('');
-        $('#isActiveColorInput').prop('checked', true);
-
-        // Remove validation classes
-        $('.requiredfield_CarColor').removeClass('is-invalid');
-    }
-
-    // Close modal function
-    function closeModal(modalId) {
-        $('#' + modalId).modal('hide');
-    }
-
-    function editCarColor(data) {
-        $('#selectedCarColorID').val(data.colorId);
-        $('#colorNameInput').val(data.colorName);
-        $('#colorDisplayNameInput').val(data.colorDisplayName);
-        $('#colorHexCodeInput').val(data.colorHexCode);
-        $('#colorFamilyInput').val(data.colorFamily);
-        $('#isMetallicPaintInput').prop('checked', data.isMetallicPaint);
-        $('#isPearlPaintInput').prop('checked', data.isPearlPaint);
-        $('#isSolidPaintInput').prop('checked', data.isSolidPaint);
-        $('#popularityRankInput').val(data.popularityRank);
-        $('#resaleValueImpactInput').val(data.resaleValueImpact);
-        $('#isActiveColorInput').prop('checked', data.isActiveColor);
-        $('#btnCarColorSave').prop('disabled', false);
-        $('#carColorModal').modal('show');
-    }
-
-    function saveCarColor() {
-        // Validate required fields
-        var isValid = true;
-
-        if (!$('#colorNameInput').val().trim()) {
-            $('#colorNameInput').addClass('is-invalid');
-            isValid = false;
-        } else {
-            $('#colorNameInput').removeClass('is-invalid');
-        }
-
-        if (!isValid) {
-            alert('Please fill in all required fields');
-            return;
-        }
-
-        var data = {
-            ColorId: $('#selectedCarColorID').val() || 0,
-            ColorName: $('#colorNameInput').val().trim(),
-            ColorDisplayName: $('#colorDisplayNameInput').val().trim(),
-            ColorHexCode: $('#colorHexCodeInput').val().trim(),
-            ColorFamily: $('#colorFamilyInput').val().trim(),
-            IsMetallicPaint: $('#isMetallicPaintInput').is(':checked'),
-            IsPearlPaint: $('#isPearlPaintInput').is(':checked'),
-            IsSolidPaint: $('#isSolidPaintInput').is(':checked'),
-            PopularityRank: $('#popularityRankInput').val() || null,
-            ResaleValueImpact: $('#resaleValueImpactInput').val().trim(),
-            IsActiveColor: $('#isActiveColorInput').is(':checked')
-        };
-
-        $.ajax({
-            url: '/Configuration1/AddOrEditCarColor',
-            type: 'POST',
-            data: data,
-            success: function (res) {
-                if (res.success) {
-                    $('#carColorModal').modal('hide');
-                    msgPopup('success', 'Car Color saved successfully');
-                    getCarColors();
-                } else {
-                    alert('Failed to save Car Color');
-                }
-            },
-            error: function () {
-                alert('Error saving Car Color');
-            }
-        });
-    }
-
-    function deleteCarColor(id) {
-        $.ajax({
-            url: '/Configuration1/DeleteCarColor',
-            type: 'POST',
-            data: { id: id },
-            success: function () {
-                msgPopup('success', 'Car Color deleted successfully');
-                getCarColors();
-            },
-            error: function () {
-                alert('Error deleting Car Color');
-            }
-        });
-    }
-
-
-
-
-     // ----- Car Condition Functions -----
-    function getCarConditions() {
-        var table = InitializeDatatableWithSlNo('CarConditionTable', 'CarConditions');
-        
-        $.ajax({
-        url: '/Configuration1/GetCarConditions',
-         type: 'GET',
-            success: function (response) {
-                table.clear();
-                response.forEach(function (item) {
-                    table.row.add([
-        '', // Sl No - handled by InitializeDatatableWithSlNo
-        item.conditionName || '',
-        item.conditionDescription || '',
-        item.conditionPercentage != null ? item.conditionPercentage + '%' : '',
-        item.expectedPriceReduction != null ? item.expectedPriceReduction + '%' : '',
-        item.typicalIssues || '',
-        item.recommendedFor || '',
-        item.conditionSortOrder != null ? item.conditionSortOrder : '',
-        item.isActiveCondition ? 'Yes' : 'No',
-        '<div class="contentCenter">' +
-            '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item).replace(/'/g, '&apos;') + '\'></i>' +
-            '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + item.conditionId + '\'></i>' +
-        '</div>'
-    ]).draw();
-
-                });
-            },
-            error: function (xhr, status, error) {
-                console.error('Error loading Car Conditions: ' + error);
-            }
-        });
-    }
-
-    function editCarCondition(data) {
-        $('#selectedCarConditionID').val(data.conditionId);
-        $('#conditionNameInput').val(data.conditionName);
-        $('#conditionDescriptionInput').val(data.conditionDescription);
-        $('#isActiveConditionInput').prop('checked', data.isActiveCondition);
-        $('#btnCarConditionSave').prop('disabled', false);
-        $('#carConditionModal').modal('show');
-    }
-
-     function saveCarCondition() {
-        var data = {
-            conditionId: parseInt($('#selectedCarConditionID').val()) || 0,
-            conditionName: $('#conditionNameInput').val()?.trim() || '',
-            conditionDescription: $('#conditionDescriptionInput').val()?.trim() || '',
-            conditionPercentage: parseInt($('#conditionPercentageInput').val()) || null,
-            expectedPriceReduction: parseFloat($('#expectedPriceReductionInput').val()) || null,
-            typicalIssues: $('#typicalIssuesInput').val()?.trim() || '',
-            recommendedFor: $('#recommendedForInput').val()?.trim() || '',
-            conditionSortOrder: parseInt($('#conditionSortOrderInput').val()) || null,
-            isActiveCondition: $('#isActiveConditionInput').is(':checked')
-        };
-        
-
-        $.ajax({
-            url: '/Configuration1/AddOrEditCarCondition',
-            type: 'POST',
-            data: data,
-            success: function (res) {
-                if (res.success || res.conditionId || res.conditionName) { // support both typed/untyped responses
-                    $('#carConditionModal').modal('hide');
-                    msgPopup('success', 'Car Condition saved successfully');
-                    getCarConditions();
-                } else {
-                    alert('Failed to save Car Condition');
-                }
-            },
-            error: function () {
-                alert('Error saving Car Condition');
-            }
-        });
-    }
-
-
-    function deleteCarCondition(id) {
-        $.ajax({
-            url: '/Configuration1/DeleteCarCondition',
-            type: 'POST',
-            data: { id: id },
-            success: function () {
-                msgPopup('success', 'Car Condition deleted successfully');
-                getCarConditions();
-            },
-            error: function () {
-                alert('Error deleting Car Condition');
-            }
-        });
-    }
-
-    function clearCarConditionModalFields() {
-        $('#selectedCarConditionID').val('');
-        $('#conditionNameInput').val('');
-        $('#conditionDescriptionInput').val('');
-        $('#conditionPercentageInput').val('');
-        $('#expectedPriceReductionInput').val('');
-        $('#typicalIssuesInput').val('');
-        $('#recommendedForInput').val('');
-        $('#conditionSortOrderInput').val('');
-        $('#isActiveConditionInput').prop('checked', true);
-
-        // Remove any validation errors (if present)
-        $('.requiredfield_CarCondition').removeClass('is-invalid');
-    }
-
-    function getStates() {
-        var table = InitializeDatatableWithSlNo('StateTable', 'States');
-        $.ajax({
-            url: '/Configuration1/GetAllStates',
-            type: 'GET',
-            success: function (response) {
-                table.clear();
-                response.forEach(function (item) {
-                    table.row.add([
-                        '', // Sl No
-                        item.stateName || '',
-                        item.stateCode || '',
-                        item.stateRegion || '',
-                        item.countryName || '',
-                        item.statePinCodePrefix || '',
-                        item.popularForCars ? 'Yes' : 'No',
-                        item.isActiveState ? 'Yes' : 'No',
-                        '<div class="contentCenter">' +
-                        '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item).replace(/'/g, '&apos;') + '\'></i>' +
-                        '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + item.stateId + '\'></i>' +
-                        '</div>'
-                    ]).draw();
-                });
-            },
-            error: function (xhr, status, error) {
-                console.error('Error loading States: ' + error);
-            }
-        });
-    }
-
-
-       function editState(data) {
-        ;
-        $('#selectedStateID').val(data.stateId);
-        $('#stateNameInput').val(data.stateName || '');
-        $('#stateCodeInput').val(data.stateCode || '');
-        $('#stateRegionInput').val(data.stateRegion || '');
-        $('#countryNameInput').val(data.countryName || '');
-        $('#statePinCodePrefixInput').val(data.statePinCodePrefix || '');
-        $('#popularForCarsInput').prop('checked', data.popularForCars === true);
-        $('#isActiveStateInput').prop('checked', data.isActiveState === true);
-
-        $('#btnStateSave').prop('disabled', false);
-        $('#stateModal').modal('show');
-    }
-
-      function saveState() {
-          
-          var stateId = $('#selectedStateID').val(); // ✅ correct
-
-        //var stateId = $('#selectedStateId').val();
-        var stateName = $('#stateNameInput').val() ? $('#stateNameInput').val().trim() : '';
-        var stateCode = $('#stateCodeInput').val() ? $('#stateCodeInput').val().trim() : '';
-        var stateRegion = $('#stateRegionInput').val() ? $('#stateRegionInput').val().trim() : '';
-        var countryName = $('#countryNameInput').val() ? $('#countryNameInput').val().trim() : '';
-        var pinCodePrefix = $('#statePinCodePrefixInput').val() ? $('#statePinCodePrefixInput').val().trim() : '';
-        var popularForCars = $('#popularForCarsInput').is(':checked');
-        var isActiveState = $('#isActiveStateInput').is(':checked');
-
-        // Now proceed with validation or AJAX
-        if (stateName === '') {
-            $('#stateNameInput').addClass('is-invalid');
-            return;
-        }
-
-        var stateData = {
-            stateId: stateId,
-            stateName: stateName,
-            stateCode: stateCode,
-            stateRegion: stateRegion,
-            countryName: countryName,
-            statePinCodePrefix: pinCodePrefix,
-            popularForCars: popularForCars,
-            isActiveState: isActiveState
-        };
-        
-
-        $.ajax({
-            url: '/Configuration1/AddOrEditState',
-            type: 'POST',
-            data: stateData,
-            success: function (response) {
-                $('#stateModal').modal('hide');
-                getStates();
-            },
-            error: function () {
-                alert('Error saving state');
-            }
-        });
-    }
-
-
-    function deleteState(id) {
-        $.ajax({
-            url: '/Configuration1/DeleteState',
-            type: 'POST',
-            data: { id: id },
-            success: function () {
-                msgPopup('success', 'State deleted successfully');
-                getStates();
-            },
-            error: function () {
-                alert('Error deleting State');
-            }
-        });
-    }
-        function clearStateModalFields() {
-        $('#selectedStateId').val('');
-        $('#stateNameInput').val('');
-        $('#stateCodeInput').val('');
-        $('#stateRegionInput').val('');
-        $('#countryNameInput').val('');
-        $('#statePinCodePrefixInput').val('');
-        $('#popularForCarsInput').prop('checked', false);
-        $('#isActiveStateInput').prop('checked', true);
-
-        // Remove validation error classes if present
-        $('.requiredfield_State').removeClass('is-invalid');
-    }
-    // ----- City Functions -----
-      function getCities() {
-        debugger;
-        var table = InitializeDatatableWithSlNo('CityTable', 'Cities');
-        $.ajax({
-            url: '/Configuration1/GetAllCities',
-            type: 'GET',
-            success: function (response) {
-                table.clear();
-                response.forEach(function (item) {
-                    table.row.add([
-                        '',
-                        item.cityName || '',
-                        item.stateName || '',
-                        item.cityType || '',
-                        item.cityPopulation || '',
-                        item.hasGoodCarMarket ? 'Yes' : 'No',
-                        item.typicalCarDemand || '',
-                        item.isActiveCity ? 'Yes' : 'No',
-                        '<div class="contentCenter">' +
-                            '<i class="fa fa-edit btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item) + '\'></i>' +
-                            '<i class="fa fa-trash btn-delete" style="color:red" data-id=\'' + item.cityId + '\'></i>' +
-                        '</div>'
-                    ]);
-                });
-
-                table.draw(); // ✅ Move outside the loop
-            },
-            error: function (xhr, status, error) {
-                console.error('Error loading Cities: ' + error);
-            }
-        });
-    }
-
-    function editCity(data) {
-        $('#selectedCityID').val(data.cityId);
-        $('#cityNameInput').val(data.cityName);
-        $('#cityStateDropdown').val(data.stateId);
-        $('#isActiveCityInput').prop('checked', data.isActiveCity);
-        $('#cityModal').modal('show');
-    }
-
-     function saveCity() {
-        var data = {
-            cityId: $('#selectedCityID').val() || 0,
-            cityName: $('#cityNameInput').val()?.trim() || '',
-            stateId: $('#stateIdInput').val() || 0,
-            cityType: $('#cityTypeInput').val() || '',
-            cityPopulation: $('#cityPopulationInput').val() || null,
-            hasGoodCarMarket: $('#hasGoodCarMarketInput').is(':checked'),
-            typicalCarDemand: $('#typicalCarDemandInput').val() || '',
-            isActiveCity: $('#isActiveCityInput').is(':checked')
-        };
-
-        if (!data.cityName || data.stateId == 0) {
-            $('.requiredfield_City').each(function () {
-                if (!$(this).val()) $(this).addClass('is-invalid');
             });
-            return;
+            return table;
+        }
+        $(document).ready(function () {
+
+            // =========================
+            // Edit/Delete Event Handlers
+            // =========================
+
+            // Car Colors
+            $('#CarColorTable').on('click', '.btn-edit', function () {
+                editCarColor(JSON.parse($(this).attr('data-full-data')));
+            });
+            $('#CarColorTable').on('click', '.btn-delete', function () {
+                DeleteWarning(deleteCarColor, JSON.parse($(this).attr('data-id')));
+            });
+
+            // Car Conditions
+            $('#CarConditionTable').on('click', '.btn-edit', function () {
+                editCarCondition(JSON.parse($(this).attr('data-full-data')));
+            });
+            $('#CarConditionTable').on('click', '.btn-delete', function () {
+                DeleteWarning(deleteCarCondition, JSON.parse($(this).attr('data-id')));
+            });
+
+            // States
+            $('#StateTable').on('click', '.btn-edit', function () {
+                editState(JSON.parse($(this).attr('data-full-data')));
+            });
+            $('#StateTable').on('click', '.btn-delete', function () {
+                DeleteWarning(deleteState, JSON.parse($(this).attr('data-id')));
+            });
+
+            // Cities
+            $('#CityTable').on('click', '.btn-edit', function () {
+                editCity(JSON.parse($(this).attr('data-full-data')));
+            });
+            $('#CityTable').on('click', '.btn-delete', function () {
+                DeleteWarning(deleteCity, JSON.parse($(this).attr('data-id')));
+            });
+
+            // Engine Specs
+            $('#EngineSpecTable').on('click', '.btn-edit', function () {
+                editEngineSpec(JSON.parse($(this).attr('data-full-data')));
+            });
+            $('#EngineSpecTable').on('click', '.btn-delete', function () {
+                DeleteWarning(deleteEngineSpec, JSON.parse($(this).attr('data-id')));
+            });
+
+            // Car Features
+            $('#CarFeatureTable').on('click', '.btn-edit', function () {
+                editCarFeature(JSON.parse($(this).attr('data-full-data')));
+            });
+            $('#CarFeatureTable').on('click', '.btn-delete', function () {
+                DeleteWarning(deleteCarFeature, JSON.parse($(this).attr('data-id')));
+            });
+
+            // =========================
+            // Initial Data Load
+            // =========================
+            getCarColors();
+            getCarConditions();
+            getStates();
+            getCities();
+            getEngineSpecifications();
+            getCarFeatures();
+            getInsuranceProviders();
+             openRtoModalForAdd()
+        });
+
+                function populateStatesDropdown() {
+            $.ajax({
+                url: '/Configuration1/GetAllStates',
+                type: 'GET',
+                success: function (states) {
+                    const $stateDropdown = $('#rtoStateDropdown');
+                    $stateDropdown.empty().append('<option value="">-- Select State --</option>');
+
+                    states.forEach(function (state) {
+                        $stateDropdown.append(
+                            `<option value="${state.stateId}">${state.stateName}</option>`
+                        );
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading States for dropdown:', error);
+                }
+            });
+        }
+                function populateCitiesDropdown(stateId) {
+            $.ajax({
+                url: '/Configuration1/GetAllCities',
+                type: 'GET',
+                success: function (cities) {
+                    const $cityDropdown = $('#rtoCityDropdown');
+                    $cityDropdown.empty().append('<option value="">-- Select City --</option>');
+
+                    // Optional: filter by selected state
+                    cities.filter(c => c.stateId === parseInt(stateId)).forEach(function (city) {
+                        $cityDropdown.append(
+                            `<option value="${city.cityId}">${city.cityName}</option>`
+                        );
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading Cities for dropdown:', error);
+                }
+            });
+        }
+                function openRtoModalForAdd() {
+            $('#rtoForm')[0].reset();
+            $('#rtoId').val('');
+
+            populateStatesDropdown();
+            populateCitiesDropdown(); // Or load dynamically after state change
+
+            $('#rtoModal').modal('show');
         }
 
-        $.ajax({
-            url: '/Configuration1/AddOrEditCity',
-            type: 'POST',
-            data: data,
-            success: function (res) {
-                if (res.success || res.cityId || res.cityName) {
-                    $('#cityModal').modal('hide');
-                    msgPopup('success', 'City saved successfully');
-                    getCities();
-                } else {
-                    alert('Failed to save city');
+
+      function getCarFeatures() {
+              const table = InitializeDatatableWithSlNo('CarFeatureTable', 'CarFeatures');
+            $.ajax({
+                  url: '/Configuration1/GetAllCarFeatures',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    if (Array.isArray(response)) {
+                        response.forEach(function (item) {
+                            table.row.add([
+                                '',
+                                item.featureName || '',
+                                item.featureDisplayName || '',
+                                item.featureCategory || '',
+                                item.featureSubCategory || '',
+                                item.featureDescription || '',
+                                item.featureImportanceLevel || '',
+                                item.typicalFoundIn || '',
+                                item.affectsResaleValue ? 'Yes' : 'No',
+                                item.isStandardFeature ? 'Yes' : 'No',
+                                item.featureIcon || '',
+                                item.isActiveFeature ? 'Yes' : 'No',
+                                `<div class="text-center">
+                                    <i class="fa fa-edit me-2 btn-edit" style="color:green;"
+                                        data-full='${JSON.stringify(item).replace(/'/g, "&apos;")}'></i>
+                                    <i class="fa fa-trash btn-delete" style="color:red;"
+                                        data-id='${item.featureId}'></i>
+                                </div>`
+                            ]).draw();
+                        });
+                    }
+                },
+                error: function () {
+                    alert('Failed to load Car Features');
                 }
-            },
-            error: function () {
-                alert('Error saving city');
+            });
+        }
+
+      function clearCarFeatureModalFields() {
+            $('#featureId').val('');
+            $('#featureName').val('');
+            $('#featureDisplayName').val('');
+            $('#featureCategory').val('');
+            $('#featureSubCategory').val('');
+            $('#featureDescription').val('');
+            $('#featureImportanceLevel').val('');
+            $('#typicalFoundIn').val('');
+            $('#affectsResaleValue').prop('checked', false);
+            $('#isStandardFeature').prop('checked', false);
+            $('#featureIcon').val('');
+            $('#isActiveFeature').prop('checked', true);
+            $('#carFeatureModal').modal('show');
+        }
+
+         function getInsuranceProviders() {
+            const table = InitializeDatatableWithSlNo('InsuranceProviderTable', 'InsuranceProviders');
+            $.ajax({
+                url: '/Configuration1/GetAllInsuranceProviders',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    if (response && Array.isArray(response)) {
+                        response.forEach(function (item) {
+                            table.row.add([
+                                '', // Sl No
+                                item.providerName || '',
+                                item.providerType || '',
+                                item.providerRating || '',
+                                item.claimSettlementRatio || '',
+                                item.customerServiceRating || '',
+                                item.isActiveProvider ? 'Yes' : 'No',
+                                `<div class="text-center">
+                                    <i class="fa fa-edit me-2 btn-edit" style="color:green;"
+                                       data-full='${JSON.stringify(item).replace(/'/g, "&apos;")}'></i>
+                                    <i class="fa fa-trash btn-delete" style="color:red;"
+                                       data-id='${item.insuranceProviderId}'></i>
+                                </div>`
+                            ]).draw();
+                        });
+                    }
+                },
+                error: function () {
+                    alert('Failed to load Insurance Providers');
+                }
+            });
+        }
+
+
+             function clearInsuranceProviderModalFields() {
+            $('#insuranceProviderId').val('');
+            $('#providerName').val('');
+            $('#providerType').val('');
+            $('#providerRating').val('');
+            $('#claimSettlementRatio').val('');
+            $('#customerServiceRating').val('');
+            $('#isActiveProvider').prop('checked', true);
+            $('.requiredfield_InsuranceProvider').removeClass('is-invalid');
+            $('#insuranceProviderModal').modal('show');
+        }
+
+        function editInsuranceProvider(data) {
+            $('#insuranceProviderId').val(data.insuranceProviderId);
+            $('#providerName').val(data.providerName);
+            $('#providerType').val(data.providerType);
+            $('#providerRating').val(data.providerRating);
+            $('#claimSettlementRatio').val(data.claimSettlementRatio);
+            $('#customerServiceRating').val(data.customerServiceRating);
+            $('#isActiveProvider').prop('checked', data.isActiveProvider);
+            $('#insuranceProviderModal').modal('show');
+        }
+
+        function saveInsuranceProvider() {
+            var isValid = true;
+            if (!$('#providerName').val().trim()) {
+                $('#providerName').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('#providerName').removeClass('is-invalid');
             }
-        });
-    }
 
-
-    function deleteCity(id) {
-        $.ajax({
-            url: '/Configuration1/DeleteCity',
-            type: 'POST',
-            data: { id: id },
-            success: function (res) {
-                msgPopup('success', 'City deleted');
-                getCities();
-            },
-            error: function () {
-                alert('Error deleting city');
+            if (!isValid) {
+                alert('Please fill in all required fields');
+                return;
             }
-        });
-    }
 
+            var data = {
+                InsuranceProviderId: $('#insuranceProviderId').val() || 0,
+                ProviderName: $('#providerName').val().trim(),
+                ProviderType: $('#providerType').val().trim(),
+                ProviderRating: $('#providerRating').val() || null,
+                ClaimSettlementRatio: $('#claimSettlementRatio').val() || null,
+                CustomerServiceRating: $('#customerServiceRating').val().trim(),
+                IsActiveProvider: $('#isActiveProvider').is(':checked')
+            };
+
+            $.ajax({
+                url: '/Configuration1/AddOrEditInsuranceProvider',
+                type: 'POST',
+                data: data,
+                success: function (res) {
+                    if (res.success || res.insuranceProviderId || res.providerName) {
+                        $('#insuranceProviderModal').modal('hide');
+                        msgPopup('success', 'Insurance Provider saved successfully');
+                        getInsuranceProviders();
+                    } else {
+                        alert('Failed to save Insurance Provider');
+                    }
+                },
+                error: function () {
+                    alert('Error saving Insurance Provider');
+                }
+            });
+        }
+
+        function deleteInsuranceProvider(id) {
+            if (!confirm("Are you sure you want to delete this provider?")) return;
+            $.ajax({
+                url: '/Configuration1/DeleteInsuranceProvider',
+                type: 'POST',
+                data: { id: id },
+                success: function () {
+                    msgPopup('success', 'Insurance Provider deleted successfully');
+                    getInsuranceProviders();
+                },
+                error: function () {
+                    alert('Error deleting Insurance Provider');
+                }
+            });
+        }
+
+
+                function getEngineSpecifications() {
+            var table = InitializeDatatableWithSlNo('EngineSpecTable', 'EngineSpecifications');
+            $.ajax({
+                url: '/Configuration1/GetAllEngineSpecs',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    if (response && Array.isArray(response)) {
+                        response.forEach(function (item) {
+                            table.row.add([
+                                '', // Sl No
+                                item.engineType || '',
+                                item.engineCylinders || '',
+                                item.engineValveConfiguration || '',
+                                item.turbochargedEngine ? 'Yes' : 'No',
+                                item.superchargedEngine ? 'Yes' : 'No',
+                                item.naturallyAspiratedEngine ? 'Yes' : 'No',
+                                item.hybridSystem ? 'Yes' : 'No',
+                                item.engineDescription || '',
+                                item.performanceRating || '',
+                                item.isActiveEngineSpec ? 'Yes' : 'No',
+                                '<div class="text-center">' +
+                                '<i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(item).replace(/'/g, '&apos;') + '\'></i>' +
+                                '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id="' + (item.engineSpecId || '') + '"></i>' +
+                                '</div>'
+                            ]).draw();
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading Engine Specifications:', error);
+                    alert('Error loading Engine Specifications: ' + error);
+                }
+            });
+        }
+                function editEngineSpec(data) {
+            $('#engineSpecId').val(data.engineSpecId);
+            $('#engineType').val(data.engineType);
+            $('#engineCylinders').val(data.engineCylinders);
+            $('#engineValveConfiguration').val(data.engineValveConfiguration);
+            $('#turbochargedEngine').prop('checked', data.turbochargedEngine);
+            $('#superchargedEngine').prop('checked', data.superchargedEngine);
+            $('#naturallyAspiratedEngine').prop('checked', data.naturallyAspiratedEngine);
+            $('#hybridSystem').prop('checked', data.hybridSystem);
+            $('#engineDescription').val(data.engineDescription);
+            $('#performanceRating').val(data.performanceRating);
+            $('#isActiveEngineSpec').prop('checked', data.isActiveEngineSpec);
+            $('#engineSpecModal').modal('show');
+        }
+                function saveEngineSpec() {
+            var isValid = true;
+            if (!$('#engineType').val().trim()) {
+                $('#engineType').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('#engineType').removeClass('is-invalid');
+            }
+
+            if (!isValid) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            var data = {
+                EngineSpecId: $('#engineSpecId').val() || 0,
+                EngineType: $('#engineType').val().trim(),
+                EngineCylinders: $('#engineCylinders').val() || null,
+                EngineValveConfiguration: $('#engineValveConfiguration').val().trim(),
+                TurbochargedEngine: $('#turbochargedEngine').is(':checked'),
+                SuperchargedEngine: $('#superchargedEngine').is(':checked'),
+                NaturallyAspiratedEngine: $('#naturallyAspiratedEngine').is(':checked'),
+                HybridSystem: $('#hybridSystem').is(':checked'),
+                EngineDescription: $('#engineDescription').val().trim(),
+                PerformanceRating: $('#performanceRating').val().trim(),
+                IsActiveEngineSpec: $('#isActiveEngineSpec').is(':checked')
+            };
+
+            $.ajax({
+                url: '/Configuration1/AddOrEditEngineSpecification',
+                type: 'POST',
+                data: data,
+                success: function (res) {
+                    if (res.success || res.engineSpecId) {
+                        $('#engineSpecModal').modal('hide');
+                        msgPopup('success', 'Engine Specification saved successfully');
+                        getEngineSpecifications();
+                    } else {
+                        alert('Failed to save Engine Specification');
+                    }
+                },
+                error: function () {
+                    alert('Error saving Engine Specification');
+                }
+            });
+        }
+                function deleteEngineSpec(id) {
+            $.ajax({
+                url: '/Configuration1/DeleteEngineSpecification',
+                type: 'POST',
+                data: { id: id },
+                success: function () {
+                    msgPopup('success', 'Engine Specification deleted successfully');
+                    getEngineSpecifications();
+                },
+                error: function () {
+                    alert('Error deleting Engine Specification');
+                }
+            });
+        }
+
+
+        // ================================
+        // CAR COLOR FUNCTIONS
+        // ================================
+        function getCarColors() {
+            var table = InitializeDatatableWithSlNo('CarColorTable', 'CarColors');
+            $.ajax({
+                url: '/Configuration1/GetCarColors',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    if (response && Array.isArray(response)) {
+                        response.forEach(function (item) {
+                            table.row.add([
+                                '', // Sl No
+                                item.colorName || '',
+                                item.colorDisplayName || '',
+                                item.colorHexCode || '',
+                                item.colorFamily || '',
+                                item.isMetallicPaint ? 'Yes' : 'No',
+                                item.isPearlPaint ? 'Yes' : 'No',
+                                item.isSolidPaint ? 'Yes' : 'No',
+                                item.popularityRank || '',
+                                item.resaleValueImpact || '',
+                                item.isActiveColor ? 'Yes' : 'No',
+                                '<div class="text-center">' +
+                                '<i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(item).replace(/'/g, '&apos;') + '\'></i>' +
+                                '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id="' + (item.colorId || '') + '"></i>' +
+                                '</div>'
+                            ]).draw();
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading Car Colors:', error);
+                    alert('Error loading Car Colors: ' + error);
+                }
+            });
+        }
+
+        function clearCarColorModalFields() {
+            $('#selectedCarColorID').val('');
+            $('#colorNameInput').val('');
+            $('#colorDisplayNameInput').val('');
+            $('#colorHexCodeInput').val('');
+            $('#colorFamilyInput').val('');
+            $('#isMetallicPaintInput').prop('checked', false);
+            $('#isPearlPaintInput').prop('checked', false);
+            $('#isSolidPaintInput').prop('checked', true);
+            $('#popularityRankInput').val('');
+            $('#resaleValueImpactInput').val('');
+            $('#isActiveColorInput').prop('checked', true);
+            $('.requiredfield_CarColor').removeClass('is-invalid');
+            $('#carColorModal').modal('show');
+        }
+
+        function editCarColor(data) {
+           
+            $('#selectedCarColorID').val(data.colorId);
+            $('#colorNameInput').val(data.colorName);
+            $('#colorDisplayNameInput').val(data.colorDisplayName);
+            $('#colorHexCodeInput').val(data.colorHexCode);
+            $('#colorFamilyInput').val(data.colorFamily);
+            $('#isMetallicPaintInput').prop('checked', data.isMetallicPaint);
+            $('#isPearlPaintInput').prop('checked', data.isPearlPaint);
+            $('#isSolidPaintInput').prop('checked', data.isSolidPaint);
+            $('#popularityRankInput').val(data.popularityRank);
+            $('#resaleValueImpactInput').val(data.resaleValueImpact);
+            $('#isActiveColorInput').prop('checked', data.isActiveColor);
+            $('#carColorModal').modal('show');
+        }
+
+        function saveCarColor() {
+            var isValid = true;
+            if (!$('#colorNameInput').val().trim()) {
+                $('#colorNameInput').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('#colorNameInput').removeClass('is-invalid');
+            }
+
+            if (!isValid) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            var data = {
+                ColorId: $('#selectedCarColorID').val() || 0,
+                ColorName: $('#colorNameInput').val().trim(),
+                ColorDisplayName: $('#colorDisplayNameInput').val().trim(),
+                ColorHexCode: $('#colorHexCodeInput').val().trim(),
+                ColorFamily: $('#colorFamilyInput').val().trim(),
+                IsMetallicPaint: $('#isMetallicPaintInput').is(':checked'),
+                IsPearlPaint: $('#isPearlPaintInput').is(':checked'),
+                IsSolidPaint: $('#isSolidPaintInput').is(':checked'),
+                PopularityRank: $('#popularityRankInput').val() || null,
+                ResaleValueImpact: $('#resaleValueImpactInput').val().trim(),
+                IsActiveColor: $('#isActiveColorInput').is(':checked')
+            };
+
+            $.ajax({
+                url: '/Configuration1/AddOrEditCarColor',
+                type: 'POST',
+                data: data,
+                success: function (res) {
+                    if (res.success || res.colorId || res.colorName) {
+                        $('#carColorModal').modal('hide');
+                        msgPopup('success', 'Car Color saved successfully');
+                        getCarColors();
+                    } else {
+                        alert('Failed to save Car Color');
+                    }
+                },
+                error: function () {
+                    alert('Error saving Car Color');
+                }
+            });
+        }
+
+        function deleteCarColor(id) {
+            $.ajax({
+                url: '/Configuration1/DeleteCarColor',
+                type: 'POST',
+                data: { id: id },
+                success: function () {
+                    msgPopup('success', 'Car Color deleted successfully');
+                    getCarColors();
+                },
+                error: function () {
+                    alert('Error deleting Car Color');
+                }
+            });
+        }
+
+        // ================================
+        // CAR CONDITION FUNCTIONS
+        // ================================
+        function getCarConditions() {
+            var table = InitializeDatatableWithSlNo('CarConditionTable', 'CarConditions');
+            $.ajax({
+                url: '/Configuration1/GetCarConditions',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (item) {
+                        table.row.add([
+                            '', // Sl No
+                            item.conditionName || '',
+                            item.conditionDescription || '',
+                            item.conditionPercentage != null ? item.conditionPercentage + '%' : '',
+                            item.expectedPriceReduction != null ? item.expectedPriceReduction + '%' : '',
+                            item.typicalIssues || '',
+                            item.recommendedFor || '',
+                            item.conditionSortOrder || '',
+                            item.isActiveCondition ? 'Yes' : 'No',
+                            '<div class="text-center">' +
+                            '<i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(item).replace(/'/g, '&apos;') + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id="' + item.conditionId + '"></i>' +
+                            '</div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading Car Conditions: ' + error);
+                }
+            });
+        }
+
+        function clearCarConditionModalFields() {
+            $('#selectedCarConditionID').val('');
+            $('#conditionPercentageInput').val(data.conditionPercentage);
+            $('#expectedPriceReductionInput').val(data.expectedPriceReduction);
+            $('#typicalIssuesInput').val(data.typicalIssues);
+            $('#recommendedForInput').val(data.recommendedFor);
+            $('#conditionSortOrderInput').val(data.conditionSortOrder);
+            $('#isActiveConditionInput').prop('checked', data.isActiveCondition);
+            $('#carConditionModal').modal('show');
+        }
+
+        function saveCarCondition() {
+            var data = {
+                conditionId: parseInt($('#selectedCarConditionID').val()) || 0,
+                conditionName: $('#conditionNameInput').val()?.trim() || '',
+                conditionDescription: $('#conditionDescriptionInput').val()?.trim() || '',
+                conditionPercentage: parseInt($('#conditionPercentageInput').val()) || null,
+                expectedPriceReduction: parseFloat($('#expectedPriceReductionInput').val()) || null,
+                typicalIssues: $('#typicalIssuesInput').val()?.trim() || '',
+                recommendedFor: $('#recommendedForInput').val()?.trim() || '',
+                conditionSortOrder: parseInt($('#conditionSortOrderInput').val()) || null,
+                isActiveCondition: $('#isActiveConditionInput').is(':checked')
+            };
+
+            $.ajax({
+                url: '/Configuration1/AddOrEditCarCondition',
+                type: 'POST',
+                data: data,
+                success: function (res) {
+                    if (res.success || res.conditionId || res.conditionName) {
+                        $('#carConditionModal').modal('hide');
+                        msgPopup('success', 'Car Condition saved successfully');
+                        getCarConditions();
+                    } else {
+                        alert('Failed to save Car Condition');
+                    }
+                },
+                error: function () {
+                    alert('Error saving Car Condition');
+                }
+            });
+        }
+
+        function deleteCarCondition(id) {
+            $.ajax({
+                url: '/Configuration1/DeleteCarCondition',
+                type: 'POST',
+                data: { id: id },
+                success: function () {
+                    msgPopup('success', 'Car Condition deleted successfully');
+                    getCarConditions();
+                },
+                error: function () {
+                    alert('Error deleting Car Condition');
+                }
+            });
+        }
+
+        // ================================
+        // STATE FUNCTIONS
+        // ================================
+        function getStates() {
+            var table = InitializeDatatableWithSlNo('StateTable', 'States');
+            $.ajax({
+                url: '/Configuration1/GetAllStates',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (item) {
+                        table.row.add([
+                            '', // Sl No
+                            item.stateName || '',
+                            item.stateCode || '',
+                            item.stateRegion || '',
+                            item.countryName || '',
+                            item.statePinCodePrefix || '',
+                            item.popularForCars ? 'Yes' : 'No',
+                            item.isActiveState ? 'Yes' : 'No',
+                            '<div class="text-center">' +
+                            '<i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(item).replace(/'/g, '&apos;') + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id="' + item.stateId + '"></i>' +
+                            '</div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading States: ' + error);
+                }
+            });
+        }
+
+        function clearStateModalFields() {
+            $('#selectedStateID').val('');
+            $('#stateNameInput').val('');
+            $('#stateCodeInput').val('');
+            $('#stateRegionInput').val('');
+            $('#countryNameInput').val('India');
+            $('#statePinCodePrefixInput').val('');
+            $('#popularForCarsInput').prop('checked', false);
+            $('#isActiveStateInput').prop('checked', true);
+            $('.requiredfield_State').removeClass('is-invalid');
+            $('#stateModal').modal('show');
+        }
+
+        function editState(data) {
+            $('#selectedStateID').val(data.stateId);
+            $('#stateNameInput').val(data.stateName || '');
+            $('#stateCodeInput').val(data.stateCode || '');
+            $('#stateRegionInput').val(data.stateRegion || '');
+            $('#countryNameInput').val(data.countryName || '');
+            $('#statePinCodePrefixInput').val(data.statePinCodePrefix || '');
+            $('#popularForCarsInput').prop('checked', data.popularForCars === true);
+            $('#isActiveStateInput').prop('checked', data.isActiveState === true);
+            $('#stateModal').modal('show');
+        }
+
+        function saveState() {
+            var stateId = $('#selectedStateID').val();
+            var stateName = $('#stateNameInput').val() ? $('#stateNameInput').val().trim() : '';
+
+            if (stateName === '') {
+                $('#stateNameInput').addClass('is-invalid');
+                alert('State name is required');
+                return;
+            } else {
+                $('#stateNameInput').removeClass('is-invalid');
+            }
+
+            var stateData = {
+                stateId: stateId || 0,
+                stateName: stateName,
+                stateCode: $('#stateCodeInput').val()?.trim() || '',
+                stateRegion: $('#stateRegionInput').val()?.trim() || '',
+                countryName: $('#countryNameInput').val()?.trim() || '',
+                statePinCodePrefix: $('#statePinCodePrefixInput').val()?.trim() || '',
+                popularForCars: $('#popularForCarsInput').is(':checked'),
+                isActiveState: $('#isActiveStateInput').is(':checked')
+            };
+
+            $.ajax({
+                url: '/Configuration1/AddOrEditState',
+                type: 'POST',
+                data: stateData,
+                success: function (response) {
+                    $('#stateModal').modal('hide');
+                    msgPopup('success', 'State saved successfully');
+                    getStates();
+                    loadStatesDropdown(); // Refresh city dropdown
+                },
+                error: function () {
+                    alert('Error saving state');
+                }
+            });
+        }
+
+        function deleteState(id) {
+            $.ajax({
+                url: '/Configuration1/DeleteState',
+                type: 'POST',
+                data: { id: id },
+                success: function () {
+                    msgPopup('success', 'State deleted successfully');
+                    getStates();
+                    loadStatesDropdown(); // Refresh city dropdown
+                },
+                error: function () {
+                    alert('Error deleting State');
+                }
+            });
+        }
+
+        // ================================
+        // CITY FUNCTIONS
+        // ================================
+        function getCities() {
+            var table = InitializeDatatableWithSlNo('CityTable', 'Cities');
+            $.ajax({
+                url: '/Configuration1/GetAllCities',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (item) {
+                        table.row.add([
+                            '', // Sl No
+                            item.cityName || '',
+                            item.stateName || '',
+                            item.cityType || '',
+                            item.cityPopulation || '',
+                            item.hasGoodCarMarket ? 'Yes' : 'No',
+                            item.typicalCarDemand || '',
+                            item.isActiveCity ? 'Yes' : 'No',
+                            '<div class="text-center">' +
+                            '<i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(item).replace(/'/g, '&apos;') + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id="' + item.cityId + '"></i>' +
+                            '</div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading Cities: ' + error);
+                }
+            });
+        }
 
         function clearCityModalFields() {
-        $('#selectedCityID').val('');
-        $('#cityNameInput').val('');
-        $('#stateIdInput').val('');
-        $('#cityTypeInput').val('');
-        $('#cityPopulationInput').val('');
-        $('#hasGoodCarMarketInput').prop('checked', false);
-        $('#typicalCarDemandInput').val('');
-        $('#isActiveCityInput').prop('checked', true);
+            $('#selectedCityID').val('');
+            $('#cityNameInput').val('');
+            $('#stateIdInput').val('');
+            $('#cityTypeInput').val('');
+            $('#cityPopulationInput').val('');
+            $('#hasGoodCarMarketInput').prop('checked', false);
+            $('#typicalCarDemandInput').val('');
+            $('#isActiveCityInput').prop('checked', true);
+            $('.requiredfield_City').removeClass('is-invalid');
+            $('#cityModal').modal('show');
+        }
 
-        // Clear validation styles
-        $('.requiredfield_City').removeClass('is-invalid');
-    }
+        function editCity(data) {
+            $('#selectedCityID').val(data.cityId);
+            $('#cityNameInput').val(data.cityName);
+            $('#cityTypeInput').val(data.cityType);
+            $('#cityPopulationInput').val(data.cityPopulation);
+            $('#hasGoodCarMarketInput').prop('checked', data.hasGoodCarMarket);
+            $('#typicalCarDemandInput').val(data.typicalCarDemand);
+            $('#isActiveCityInput').prop('checked', data.isActiveCity);
+
+            // Load states first, then set the value
+            loadStatesDropdown();
+            setTimeout(function() {
+                $('#stateIdInput').val(data.stateId);
+            }, 300);
+
+            $('#cityModal').modal('show');
+        }
+
+        function saveCity() {
+            var cityName = $('#cityNameInput').val()?.trim();
+            var stateId = $('#stateIdInput').val();
+
+            var isValid = true;
+            if (!cityName) {
+                $('#cityNameInput').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('#cityNameInput').removeClass('is-invalid');
+            }
+
+            if (!stateId || stateId == 0) {
+                $('#stateIdInput').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('#stateIdInput').removeClass('is-invalid');
+            }
+
+            if (!isValid) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            var data = {
+                cityId: $('#selectedCityID').val() || 0,
+                cityName: cityName,
+                stateId: stateId,
+                cityType: $('#cityTypeInput').val() || '',
+                cityPopulation: $('#cityPopulationInput').val() || null,
+                hasGoodCarMarket: $('#hasGoodCarMarketInput').is(':checked'),
+                typicalCarDemand: $('#typicalCarDemandInput').val() || '',
+                isActiveCity: $('#isActiveCityInput').is(':checked')
+            };
+
+            $.ajax({
+                url: '/Configuration1/AddOrEditCity',
+                type: 'POST',
+                data: data,
+                success: function (res) {
+                    if (res.success || res.cityId || res.cityName) {
+                        $('#cityModal').modal('hide');
+                        msgPopup('success', 'City saved successfully');
+                        getCities();
+                    } else {
+                        alert('Failed to save city');
+                    }
+                },
+                error: function () {
+                    alert('Error saving city');
+                }
+            });
+        }
+
+        function deleteCity(id) {
+            $.ajax({
+                url: '/Configuration1/DeleteCity',
+                type: 'POST',
+                data: { id: id },
+                success: function (res) {
+                    msgPopup('success', 'City deleted successfully');
+                    getCities();
+                },
+                error: function () {
+                    alert('Error deleting city');
+                }
+            });
+        }
 
         function loadStatesDropdown() {
-        $.get('/Configuration1/GetAllStates', function (states) {
-            $('#stateIdInput').html('<option value="">Select State</option>');
-            states.forEach(function (state) {
-                $('#stateIdInput').append(`<option value="${state.stateId}">${state.stateName}</option>`);
+            $.ajax({
+                url: '/Configuration1/GetAllStates',
+                type: 'GET',
+                success: function (states) {
+                    var dropdown = $('#stateIdInput');
+                    dropdown.html('<option value="">Select State</option>');
+                    states.forEach(function (state) {
+                        dropdown.append(`<option value="${state.stateId}">${state.stateName}</option>`);
+                    });
+                },
+                error: function() {
+                    alert('Failed to load states for dropdown');
+                }
+            });
+        }
+
+        // ================================
+        // VALIDATION FUNCTIONS
+        // ================================
+        function CheckEmptyFields(prefix) {
+            let valid = true;
+            $('.requiredfield_' + prefix).each(function () {
+                if ($(this).val() === '') {
+                    $(this).css('border', '1px solid red');
+                    valid = false;
+                } else {
+                    $(this).css('border', '');
+                }
+            });
+            return valid;
+        }
+
+        function CheckNameAlreadyExist(input, tblId, messageTextId, buttonId) {
+            const enteredName = input.value.trim().toLowerCase();
+            const table = $('#' + tblId).DataTable();
+            const nameExists = table.column(1).data().toArray().some(name => name.trim().toLowerCase() === enteredName);
+            if (nameExists) {
+                $('#' + messageTextId).text('Name already exists!').css('color', 'red');
+                $('#' + buttonId).prop('disabled', true);
+            } else {
+                $('#' + messageTextId).text('');
+                $('#' + buttonId).prop('disabled', false);
+            }
+        }
+
+        function validateHexCode(input) {
+            const hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+            const value = input.value.trim();
+
+            if (value && !hexPattern.test(value)) {
+                $(input).addClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                $(input).after('<div class="invalid-feedback">Please enter a valid hex color code (e.g., #FFFFFF)</div>');
+                return false;
+            } else {
+                $(input).removeClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                return true;
+            }
+        }
+
+        function validatePopularityRank(input) {
+            const value = parseInt(input.value);
+            if (input.value && (isNaN(value) || value < 1)) {
+                $(input).addClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                $(input).after('<div class="invalid-feedback">Popularity rank must be a positive number</div>');
+                return false;
+            } else {
+                $(input).removeClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                return true;
+            }
+        }
+
+        function validatePercentage(input, fieldName) {
+            const value = parseFloat(input.value);
+            if (input.value && (isNaN(value) || value < 0 || value > 100)) {
+                $(input).addClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                $(input).after('<div class="invalid-feedback">' + fieldName + ' must be between 0 and 100</div>');
+                return false;
+            } else {
+                $(input).removeClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                return true;
+            }
+        }
+
+        function validatePinCode(input) {
+            const value = input.value.trim();
+            const pinPattern = /^\d{1,3}$/;
+
+            if (value && !pinPattern.test(value)) {
+                $(input).addClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                $(input).after('<div class="invalid-feedback">Pin code prefix should be 1-3 digits</div>');
+                return false;
+            } else {
+                $(input).removeClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                return true;
+            }
+        }
+
+        function validateStateCode(input) {
+            const value = input.value.trim();
+            const codePattern = /^[A-Z]{2,3}$/;
+
+            if (value && !codePattern.test(value.toUpperCase())) {
+                $(input).addClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                $(input).after('<div class="invalid-feedback">State code should be 2-3 uppercase letters</div>');
+                return false;
+            } else {
+                $(input).removeClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                return true;
+            }
+        }
+
+        function validatePopulation(input) {
+            const value = parseInt(input.value);
+            if (input.value && (isNaN(value) || value < 0)) {
+                $(input).addClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                $(input).after('<div class="invalid-feedback">Population must be a positive number</div>');
+                return false;
+            } else {
+                $(input).removeClass('is-invalid');
+                $(input).next('.invalid-feedback').remove();
+                return true;
+            }
+        }
+
+        // ================================
+        // UTILITY FUNCTIONS
+        // ================================
+        function formatNumber(num) {
+            if (num === null || num === undefined || num === '') return '';
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function getColorPreview(hexCode) {
+            if (hexCode && hexCode.startsWith('#')) {
+                return `<div style="width: 20px; height: 20px; background-color: ${hexCode}; border: 1px solid #ccc; display: inline-block; margin-right: 5px;"></div>`;
+            }
+            return '';
+        }
+
+        function exportTableToCSV(tableId, filename) {
+            const table = $('#' + tableId).DataTable();
+            const data = table.buttons.exportData({
+                columns: ':visible'
+            });
+
+            let csvContent = data.header.join(',') + '\n';
+            data.body.forEach(function(row) {
+                csvContent += row.join(',') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename + '.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function resetForm(formId) {
+            $('#' + formId)[0].reset();
+            $('#' + formId + ' .is-invalid').removeClass('is-invalid');
+            $('#' + formId + ' .invalid-feedback').remove();
+        }
+
+        function showLoading(show) {
+            if (show) {
+                $('body').append('<div id="loadingOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; justify-content: center; align-items: center;"><div class="spinner-border text-light" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+            } else {
+                $('#loadingOverlay').remove();
+            }
+        }
+
+        // ================================
+        // EVENT LISTENERS FOR VALIDATION
+        // ================================
+        $(document).ready(function() {
+            // Add real-time validation
+            $('#colorHexCodeInput').on('blur', function() {
+                validateHexCode(this);
+            });
+                $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if ($(e.target).attr('href') === '#engineTab') {
+                getEngineSpecifications(); // Call the function to fetch data
+            }
+        });
+            $('#popularityRankInput').on('blur', function() {
+                validatePopularityRank(this);
+            });
+
+            $('#conditionPercentageInput').on('blur', function() {
+                validatePercentage(this, 'Condition percentage');
+            });
+
+            $('#expectedPriceReductionInput').on('blur', function() {
+                validatePercentage(this, 'Expected price reduction');
+            });
+
+            $('#statePinCodePrefixInput').on('blur', function() {
+                validatePinCode(this);
+            });
+
+            $('#stateCodeInput').on('blur', function() {
+                validateStateCode(this);
+            });
+
+            $('#cityPopulationInput').on('blur', function() {
+                validatePopulation(this);
+            });
+
+            // Auto-format state code to uppercase
+            $('#stateCodeInput').on('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+
+            // Auto-format hex code
+            $('#colorHexCodeInput').on('input', function() {
+                let value = this.value;
+                if (value && !value.startsWith('#')) {
+                    this.value = '#' + value;
+                }
+            });
+
+            // Format population with commas
+            $('#cityPopulationInput').on('blur', function() {
+                if (this.value) {
+                    const num = parseInt(this.value.replace(/,/g, ''));
+                    if (!isNaN(num)) {
+                        this.value = formatNumber(num);
+                    }
+                }
+            });
+
+            // Remove commas when focusing on population field
+            $('#cityPopulationInput').on('focus', function() {
+                this.value = this.value.replace(/,/g, '');
             });
         });
-    }
-</script>
+
+        // ================================
+        // KEYBOARD SHORTCUTS
+        // ================================
+        $(document).keydown(function(e) {
+            // Ctrl+S to save in any open modal
+            if (e.ctrlKey && e.which === 83) {
+                e.preventDefault();
+                if ($('#carColorModal').hasClass('show')) {
+                    saveCarColor();
+                } else if ($('#carConditionModal').hasClass('show')) {
+                    saveCarCondition();
+                } else if ($('#stateModal').hasClass('show')) {
+                    saveState();
+                } else if ($('#cityModal').hasClass('show')) {
+                    saveCity();
+                }
+            }
+
+            // Escape to close any open modal
+            if (e.which === 27) {
+                $('.modal.show').modal('hide');
+            }
+        });
+                function clearEngineSpecModalFields() {
+            // Clear all text and number inputs
+            document.getElementById("engineSpecId").value = '';
+            document.getElementById("engineType").value = '';
+            document.getElementById("engineCylinders").value = '';
+            document.getElementById("engineValveConfiguration").value = '';
+            document.getElementById("engineDescription").value = '';
+            document.getElementById("performanceRating").value = '';
+
+            // Uncheck all checkboxes
+            document.getElementById("turbochargedEngine").checked = false;
+            document.getElementById("superchargedEngine").checked = false;
+            document.getElementById("naturallyAspiratedEngine").checked = false;
+            document.getElementById("hybridSystem").checked = false;
+            document.getElementById("isActiveEngineSpec").checked = false;
+              $('#engineSpecModal').modal('show'); // ✅ Open the modal
+            // (Optional) Show the modal if needed
+            // $('#engineSpecModal').modal('show');
+        }
+
+
+        // ================================
+        // INITIALIZATION COMPLETE
+        // ================================
+        console.log('Configuration2 page fully loaded and initialized');
+
+    </script>
