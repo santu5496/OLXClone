@@ -986,7 +986,11 @@
                     $('#InsuranceProviderTable').on('click', '.btn-edit', function () { editInsuranceProvider(JSON.parse($(this).attr('data-full-data'))); });
                     $('#InsuranceProviderTable').on('click', '.btn-delete', function () { DeleteWarning(deleteInsuranceProvider, JSON.parse($(this).attr('data-id'))); });
                     $('#CarFeatureTable').on('click', '.btn-edit', function () { editCarFeature(JSON.parse($(this).attr('data-full-data'))); });
-                    $('#CarFeatureTable').on('click', '.btn-delete', function () { DeleteWarning(deleteCarFeature, JSON.parse($(this).attr('data-id'))); });
+                        $('#CarFeatureTable').on('click', '.btn-delete', function () {
+        const id = $(this).data('id');
+        DeleteWarning(deleteCarFeature, id);
+    });
+
               
                     $('#RtoCodeTable').on('click', '.btn-delete', function () { DeleteWarning(deleteRtoCode, JSON.parse($(this).attr('data-id'))); });
        $('#EngineSpecTable').on('click', '.btn-edit', function () {
@@ -1047,6 +1051,29 @@
                     $('#btnCarColorSave').prop('disabled', false);
                     $('#carColorModal').modal('show');
                 }
+        function deleteCarFeature(id) {
+
+            debugger
+        $.ajax({
+            url: '/Configuration1/DeleteCarFeature',
+            type: 'POST',
+            data: { id: id },
+            success: function (response) {
+
+                if (response) {
+                    debugger
+                    msgPopup('success', 'Car Feature deleted successfully');
+                    getCarFeatures(); // Refresh the table
+                } else {
+                    msgPopup('error', 'Failed to delete Car Feature');
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+    }
+
                     function clearCarColorModalFields() {
         $('#selectedCarColorID').val('');
         $('#colorNameInput').val('');
@@ -1168,6 +1195,42 @@
                         error: function (xhr, status, error) { alert('An error occurred: ' + error); }
                     });
                 }
+                    function deleteInsuranceProvider(id) {
+        $.ajax({
+            url: '/Configuration1/DeleteInsuranceProvider',
+            type: 'POST',
+            data: { id: id },
+            success: function (response) {
+                if (response) {
+                    msgPopup('success', 'Insurance Provider deleted successfully');
+                    getInsuranceProviders(); // Refresh the table
+                } else {
+                    msgPopup('error', 'Failed to delete Insurance Provider');
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+    }
+        function deleteCarFeature(id) {
+        $.ajax({
+            url: '/Configuration1/DeleteCarFeature',
+            type: 'POST',
+            data: { id: id },
+            success: function (response) {
+                if (response) {
+                    msgPopup('success', 'Car Feature deleted successfully');
+                    getCarFeatures(); // Refresh the table
+                } else {
+                    msgPopup('error', 'Failed to delete Car Feature');
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+    }
 
                 // CAR CONDITION FUNCTIONS - CORRECTED
                 function clearCarConditionModalFields() {
@@ -1298,6 +1361,24 @@
 
         $('#btnCarFeatureSave').prop('disabled', false);
         $('#carFeatureModal').modal('show');
+    }
+        function deleteEngineSpec(id) {
+        $.ajax({
+            url: '/Configuration1/DeleteEngineSpec',
+            type: 'POST',
+            data: { id: id },
+            success: function (response) {
+                if (response.success) {
+                    msgPopup('success', 'Engine Specification deleted successfully');
+                    getEngineSpecs(); // Refresh the table
+                } else {
+                    msgPopup('error', response.error || 'Failed to delete');
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
     }
 
 
@@ -1510,35 +1591,43 @@
                     $('#engineSpecModal').modal('show');
                 }
 
-                            function saveEngineSpec() {
-                    if (CheckEmptyFields('EngineSpec')) {
-                        var data = {
-                            EngineSpecId: $('#selectedEngineSpecID').val() || 0,
-                            EngineType: $('#engineTypeInput').val().trim(),
-                            Cylinders: $('#engineCylindersInput').val() || null,
-                            ValveConfig: $('#engineValveConfigurationInput').val(),
-                            Turbocharged: $('#turbochargedEngineInput').is(':checked'),
-                            Supercharged: $('#superchargedEngineInput').is(':checked'),
-                            NaturallyAspirated: $('#naturallyAspiratedEngineInput').is(':checked'),
-                            Hybrid: $('#hybridSystemInput').is(':checked'),
-                            Description: $('#engineDescriptionInput').val().trim(),
-                            Performance: $('#performanceRatingInput').val(),
-                            IsActive: $('#isActiveEngineSpecInput').is(':checked')
-                        };
-                        $.ajax({
-                            url: '/Configuration1/AddOrEditEngineSpec',
-                            type: 'POST',
-                            data: data,
-                            success: function (res) {
-                                msgPopup('success', 'Engine Specification saved successfully');
-                                $('#engineSpecModal').modal('hide');
-                                getEngineSpecs();
-                            },
-                            error: function (xhr, s, e) { alert('An error occurred: ' + e); }
-                        });
+    function saveEngineSpec() {
+        if (CheckEmptyFields('EngineSpec')) {
+            var data = {
+                engineSpecId: $('#selectedEngineSpecID').val() || 0,
+                engineType: $('#engineTypeInput').val().trim(),
+                engineCylinders: $('#engineCylindersInput').val() || null,
+                engineValveConfiguration: $('#engineValveConfigurationInput').val(),
+                turbochargedEngine: $('#turbochargedEngineInput').is(':checked'),
+                superchargedEngine: $('#superchargedEngineInput').is(':checked'),
+                naturallyAspiratedEngine: $('#naturallyAspiratedEngineInput').is(':checked'),
+                hybridSystem: $('#hybridSystemInput').is(':checked'),
+                engineDescription: $('#engineDescriptionInput').val().trim(),
+                performanceRating: $('#performanceRatingInput').val(),
+                isActiveEngineSpec: $('#isActiveEngineSpecInput').is(':checked')
+            };
+
+            $.ajax({
+                url: '/Configuration1/AddOrEditEngineSpec',
+                type: 'POST',
+                data: data,
+                success: function (res) {
+                    if (res.success) {
+                        msgPopup('success', 'Engine Specification saved successfully');
+                        $('#engineSpecModal').modal('hide');
+                        getEngineSpecs();
+                    } else {
+                        msgPopup('error', res.error || 'Save failed.');
                     }
+                },
+                error: function (xhr, s, e) {
+                    alert('An error occurred: ' + e);
                 }
-                    function getEngineSpecs() {
+            });
+        }
+    }
+
+        function getEngineSpecs() {
         const table = InitializeDatatableWithSlNo('EngineSpecTable');
         engineSpecDataStore = {}; // reset before populating
 
@@ -1573,15 +1662,16 @@
              
                         function saveInsuranceProvider() {
                     if (CheckEmptyFields('InsuranceProvider')) {
-                        var data = {
-                            InsuranceProviderId: $('#selectedInsuranceProviderID').val() || 0,
-                            ProviderName: $('#providerNameInput').val().trim(),
-                            ProviderType: $('#providerTypeInput').val(),
-                            Rating: $('#providerRatingInput').val() || null,
-                            ClaimSettlementRatio: $('#claimSettlementRatioInput').val() || null,
-                            ServiceRating: $('#customerServiceRatingInput').val(),
-                            IsActive: $('#isActiveProviderInput').is(':checked')
-                        };
+                        const data = {
+        insuranceProviderId: $('#selectedInsuranceProviderID').val() || 0,
+        providerName: $('#providerNameInput').val().trim(),
+        providerType: $('#providerTypeInput').val(),
+        providerRating: $('#providerRatingInput').val() || null,
+        claimSettlementRatio: $('#claimSettlementRatioInput').val() || null,
+        customerServiceRating: $('#customerServiceRatingInput').val(),
+        isActiveProvider: $('#isActiveProviderInput').is(':checked')
+    };
+
 
                         $.ajax({
                             url: '/Configuration1/AddOrEditInsuranceProvider',
@@ -1650,32 +1740,33 @@
                         });
                     }
                 }
-                        function getCarFeatures() {
-                    var table = InitializeDatatableWithSlNo('CarFeatureTable', 'CarFeatures');
-                    $.get('/Configuration1/GetAllCarFeatures', function (response) {
-                        table.clear();
-                        response.forEach(function (feature) {
-                            table.row.add([
-                                '', feature.featureName,
-                                feature.displayName || '',
-                                feature.category || '',
-                                feature.subCategory || '',
-                                feature.description || '',
-                                feature.importance || '',
-                                feature.typicalIn || '',
-                                feature.affectsResale ? 'Yes' : 'No',
-                                feature.isStandard ? 'Yes' : 'No',
-                                feature.icon || '',
-                                feature.isActive ? 'Yes' : 'No',
-                                `<div class="text-center">
-                                    <i class="fa fa-edit me-2 btn-edit" style="color:green;" data-full-data='${JSON.stringify(feature)}'></i>
-                                    <i class="fa fa-trash btn-delete" style="color:red;" data-id='${feature.carFeatureId}'></i>
-                                </div>`
-                            ]).draw();
-                        });
-                    });
-                }
-    function loadStates(selectId = 'stateIdInput', selectedId = '') {
+                          function getCarFeatures() {
+        var table = InitializeDatatableWithSlNo('CarFeatureTable', 'CarFeatures');
+        $.get('/Configuration1/GetAllCarFeatures', function (response) {
+            table.clear();
+            response.forEach(function (feature) {
+                table.row.add([
+                    '', feature.featureName,
+                    feature.displayName || '',
+                    feature.category || '',
+                    feature.subCategory || '',
+                    feature.description || '',
+                    feature.importance || '',
+                    feature.typicalIn || '',
+                    feature.affectsResale ? 'Yes' : 'No',
+                    feature.isStandard ? 'Yes' : 'No',
+                    feature.icon || '',
+                    feature.isActive ? 'Yes' : 'No',
+                    `<div class="text-center">
+                        <i class="fa fa-edit me-2 btn-edit" style="color:green;" data-full-data='${JSON.stringify(feature)}'></i>
+                        <i class="fa fa-trash btn-delete" style="color:red;" data-id="${feature.featureId}"></i>
+                    </div>`
+                ]).draw();
+            });
+        });
+    }
+
+                      function loadStates(selectId = 'stateIdInput', selectedId = '') {
         $.ajax({
             url: '/Configuration1/GetAllStates',
             type: 'GET',
@@ -1708,6 +1799,17 @@
     }
 
 
+        function clearInsuranceProviderModalFields() {
+        $('#selectedInsuranceProviderID').val('');
+        $('#providerNameInput').val('');
+        $('#providerTypeInput').val('');
+        $('#providerRatingInput').val('');
+        $('#claimSettlementRatioInput').val('');
+        $('#customerServiceRatingInput').val('');
+        $('#isActiveProviderInput').prop('checked', true); // default to active
+        $('#btnInsuranceProviderSave').prop('disabled', false);
+        $('#insuranceProviderModal').modal('show');
+    }
 
 
 
@@ -1844,6 +1946,23 @@
         });
     }
 
+        function clearCarFeatureModalFields() {
+        $('#selectedCarFeatureID').val('');
+        $('#featureNameInput').val('');
+        $('#featureDisplayNameInput').val('');
+        $('#featureCategoryInput').val('');
+        $('#featureSubCategoryInput').val('');
+        $('#featureDescriptionInput').val('');
+        $('#featureImportanceLevelInput').val('');
+        $('#typicalFoundInInput').val('');
+        $('#affectsResaleValueInput').prop('checked', false);
+        $('#isStandardFeatureInput').prop('checked', false);
+        $('#featureIconInput').val('');
+        $('#isActiveFeatureInput').prop('checked', true); // default to active
+        $('#featureNameMessage').text('');
+        $('#btnCarFeatureSave').prop('disabled', false);
+        $('#carFeatureModal').modal('show');
+    }
 
         function onStateChangeForRto() {
         const selectedStateId = $('#rtoStateIdInput').val();
@@ -1884,4 +2003,4 @@
         }
     }
 
-        </script>
+</script>

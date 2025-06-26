@@ -243,26 +243,20 @@ namespace Assignment4.Controllers
         {
             try
             {
-               
-
-                if (data.engineSpecId==null)
+                if (data.engineSpecId == 0)
                 {
-                   var result= _dbConn.AddEngineSpec(data);
+                    var result = _dbConn.AddEngineSpec(data);
                     return Json(result != null ? new { success = true, data = result } : new { success = false });
                 }
-                else if(data.engineSpecId !=null)
+                else
                 {
-                    var result  =  _dbConn.UpdateEngineSpec(data);
+                    var result = _dbConn.UpdateEngineSpec(data);
                     return Json(result != null ? new { success = true, data = result } : new { success = false });
                 }
-
-                return Json(true);
-
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, error = ex.Message });
-                return Json(false);
             }
         }
 
@@ -310,19 +304,25 @@ namespace Assignment4.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
-
         [HttpPost]
         public IActionResult DeleteCarFeature(int id)
         {
             try
             {
-                return Json(new { success = _dbConn.DeleteCarFeature(id) });
+                if (id <= 0)
+                    return Json(new { success = false, error = "Invalid feature ID." });
+
+                bool deleted = _dbConn.DeleteCarFeature(id);
+
+                return Json(new { success = deleted });
             }
             catch (Exception ex)
             {
+                // Log ex here if you have a logging system
                 return Json(new { success = false, error = ex.Message });
             }
         }
+
 
         // ------------------- INSURANCE PROVIDERS -------------------
 
