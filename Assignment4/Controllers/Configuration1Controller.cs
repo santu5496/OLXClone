@@ -37,18 +37,18 @@ namespace Assignment4.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddOrEditCarColor(CarColors model)
+        public IActionResult AddOrEditCarColor(CarColors data)
         {
             try
             {
-                if(model.colorId==0)
+                if(data.colorId==0)
                 {
-                  var result = _dbConn.AddCarColor(model);
+                  var result = _dbConn.AddCarColor(data);
                     return Json(result != null ? new { success = true, data = result } : new { success = false });
                 }
                 else
                 {
-                               var result=        _dbConn.UpdateCarColor(model);
+                               var result=        _dbConn.UpdateCarColor(data);
                     return Json(result ? new { success = true } : new { success = false });
                 }
 
@@ -239,19 +239,30 @@ namespace Assignment4.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddOrEditEngineSpec(EngineSpecifications model)
+        public IActionResult AddOrEditEngineSpec(EngineSpecifications data)
         {
             try
             {
-                var result = model.engineSpecId == 0
-                    ? _dbConn.AddEngineSpec(model)
-                    : _dbConn.UpdateEngineSpec(model);
+               
 
-                return Json(result != null ? new { success = true, data = result } : new { success = false });
+                if (data.engineSpecId==null)
+                {
+                   var result= _dbConn.AddEngineSpec(data);
+                    return Json(result != null ? new { success = true, data = result } : new { success = false });
+                }
+                else if(data.engineSpecId !=null)
+                {
+                    var result  =  _dbConn.UpdateEngineSpec(data);
+                    return Json(result != null ? new { success = true, data = result } : new { success = false });
+                }
+
+                return Json(true);
+
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, error = ex.Message });
+                return Json(false);
             }
         }
 
@@ -360,16 +371,46 @@ namespace Assignment4.Controllers
 
         // ------------------- RTO CODES -------------------
 
+       [HttpGet]
+        //public IActionResult GetAllRTOCodes()
+        //{
+        //    try
+        //    {
+        //        var rtoCodes = _dbConn.GetAllRTOCodes();
+        //        if (rtoCodes == null)
+        //        {
+        //            return Json(new { success = false, error = "No RTO codes found." });
+        //        }
+        //        return Json(rtoCodes);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception
+        //        Console.WriteLine($"Error in GetAllRTOCodes: {ex.Message}");
+        //        return Json(new { success = false, error = ex.Message });
+        //    }
+        //}
         [HttpGet]
-        public IActionResult GetAllRTOCodes()
+
+        public JsonResult GetAllRTOCodes()
         {
             try
             {
-                return Json(_dbConn.GetAllRTOCodes());
+                var rtoCodes = _dbConn.GetAllRTOCodes();
+                return Json(new
+                {
+                    success = true,
+                    data = rtoCodes
+                });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, error = ex.Message });
+                Console.WriteLine($"Error in GetAllRTOCodes: {ex.Message}");
+                return Json(new
+                {
+                    success = false,
+                    error = ex.Message
+                });
             }
         }
 
@@ -389,6 +430,29 @@ namespace Assignment4.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
+        // Controller Method
+        [HttpGet]
+
+        public IActionResult GetCitiesByState(int stateId)
+        {
+            try
+            {
+                if (stateId <= 0)
+                {
+                    return Json(new { success = false, error = "Invalid state ID." });
+                }
+
+                var cities = _dbConn.GetCitiesByStateId(stateId);
+
+                return Json(new { success = true, data = cities });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetCitiesByState: {ex.Message}");
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
 
         [HttpPost]
         public IActionResult DeleteRTOCode(int id)

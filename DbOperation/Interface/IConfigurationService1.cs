@@ -1,4 +1,5 @@
 ﻿using DbOperation.Models;
+using DbOperation.ViewModels;
 using System.Collections.Generic;
 using static DbOperation.Implementation.ConfigurationService1;
 
@@ -32,6 +33,8 @@ namespace DbOperation.Interface
         GeographicCities GetCityById(int id);
         GeographicCities AddCity(GeographicCities city);
         GeographicCities UpdateCity(GeographicCities city);
+
+        List<CityViewModel> GetCitiesByStateId(int stateId);
         bool DeleteCity(int id);
 
         // Engine Specifications
@@ -57,12 +60,13 @@ namespace DbOperation.Interface
         bool DeleteInsuranceProvider(int id);
 
         // RTO Codes
-        List<RTOCodes> GetAllRTOCodes();
+        List<RTOCodeViewModel> GetAllRTOCodes();
         List<RTOCodes> GetRTOCodesByState(int stateId);
         RTOCodes GetRTOCodeById(int id);
         RTOCodes GetRTOCodeByCode(string code);
         RTOCodes AddRTOCode(RTOCodes rtoCode);
         RTOCodes UpdateRTOCode(RTOCodes rtoCode);
+        List<RTOCodes> GetAllRTOCodes1();
         bool DeleteRTOCode(int id);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DbOperation.Interface;
 using DbOperation.Models;
+using DbOperation.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -58,11 +59,11 @@ namespace DbOperation.Implementation
                 existing.popularityRank = color.popularityRank;
                 existing.resaleValueImpact = color.resaleValueImpact;
                 existing.isActiveColor = color.isActiveColor;
-                _context.CarColors.Update(color);
+                _context.CarColors.Update(existing);
                 _context.SaveChanges();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return true;
             }
@@ -454,6 +455,56 @@ namespace DbOperation.Implementation
                 return new List<CityDto>();
             }
         }
+
+
+        public List<CityViewModel> GetCitiesByStateId(int stateId)
+        {
+            try
+            {
+                using var context = new Assignment4Context(_dbConn);
+                var cities = context.GeographicCities
+                    .Include(c => c.state)
+                    .Where(c => c.stateId == stateId && c.isActiveCity == true)
+                    .OrderBy(c => c.cityName)
+                    .Select(c => new CityViewModel
+                    {
+                        cityId = c.cityId,
+                        stateId = c.stateId,
+                        cityName = c.cityName,
+                        cityType = c.cityType,
+                        cityPopulation = c.cityPopulation,
+                        hasGoodCarMarket = c.hasGoodCarMarket ?? false,
+                        typicalCarDemand = c.typicalCarDemand,
+                        isActiveCity = c.isActiveCity ?? true,
+                        stateName = c.state.stateName
+                    })
+                    .ToList();
+                return cities;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetCitiesByStateId: {ex.Message}");
+                return new List<CityViewModel>();
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -893,7 +944,7 @@ namespace DbOperation.Implementation
         }
 
         // Get All RTO Codes
-        public List<RTOCodes> GetAllRTOCodes()
+        public List<RTOCodes> GetAllRTOCodes1()
         {
             try
             {
@@ -911,7 +962,38 @@ namespace DbOperation.Implementation
                 return null;
             }
         }
-
+        public List<RTOCodeViewModel> GetAllRTOCodes()
+        {
+            try
+            {
+                using var context = new Assignment4Context(_dbConn);
+                var rtoCodes = context.RTOCodes
+                    .Include(r => r.state)
+                    .Include(r => r.city)
+                    .Where(r => r.isActiveRTO == true)
+                    .OrderBy(r => r.rtoCode)
+                    .Select(r => new RTOCodeViewModel
+                    {
+                        rtoId = r.rtoId,
+                        rtoCode = r.rtoCode,
+                        rtoName = r.rtoName,
+                        stateId = r.stateId,
+                        stateName = r.state.stateName,
+                        cityId = r.cityId,
+                        cityName = r.city != null ? r.city.cityName : "",
+                        rtoAddress = r.rtoAddress,
+                        rtoContactNumber = r.rtoContactNumber,
+                        isActiveRTO = r.isActiveRTO ?? true
+                    })
+                    .ToList();
+                return rtoCodes;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetAllRTOCodes: {ex.Message}");
+                return new List<RTOCodeViewModel>();
+            }
+        }
         // Get RTO Codes by State
         public List<RTOCodes> GetRTOCodesByState(int stateId)
         {
