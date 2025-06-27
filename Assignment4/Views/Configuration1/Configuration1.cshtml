@@ -97,7 +97,7 @@
             <div class="tab-pane fade show active" id="colorTab" role="tabpanel">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4>Car Colors Management</h4>
-                    <button type="button" class="btn btn-primary" onclick="clearCarColorModalFields()">
+                    <button type="button" id="bharat" class="btn btn-primary" onclick="clearCarColorModalFields()">
                         <i class="fa fa-plus me-2"></i>Add Car Color
                     </button>
                 </div>
@@ -1123,23 +1123,24 @@
                     }
                 }
 
-                    function editEngineSpec(data) {
-        $('#selectedEngineSpecID').val(data.engineSpecId);
-        $('#engineTypeInput').val(data.engineType);
-        $('#engineCylindersInput').val(data.cylinders);
-        $('#engineValveConfigurationInput').val(data.valveConfig);
-        $('#turbochargedEngineInput').prop('checked', data.turbocharged);
-        $('#superchargedEngineInput').prop('checked', data.supercharged);
-        $('#naturallyAspiratedEngineInput').prop('checked', data.naturallyAspirated);
-        $('#hybridSystemInput').prop('checked', data.hybrid);
-        $('#engineDescriptionInput').val(data.description);
-        $('#performanceRatingInput').val(data.performance);
-        $('#isActiveEngineSpecInput').prop('checked', data.isActive);
+        function editEngineSpec(data) 
+        {
+            $('#selectedEngineSpecID').val(data.engineSpecId);
+            $('#engineTypeInput').val(data.engineType);
+            $('#engineCylindersInput').val(data.cylinders);
+            $('#engineValveConfigurationInput').val(data.valveConfig);
+            $('#turbochargedEngineInput').prop('checked', data.turbocharged);
+            $('#superchargedEngineInput').prop('checked', data.supercharged);
+            $('#naturallyAspiratedEngineInput').prop('checked', data.naturallyAspirated);
+            $('#hybridSystemInput').prop('checked', data.hybrid);
+            $('#engineDescriptionInput').val(data.engineDescription);
+            $('#performanceRatingInput').val(data.performanceRating);
+            $('#isActiveEngineSpecInput').prop('checked', data.isActive);
+            $('#engineTypeMessage').text('');
+            $('#btnEngineSpecSave').prop('disabled', false);
+            $('#engineSpecModal').modal('show');
 
-        $('#engineTypeMessage').text('');
-        $('#btnEngineSpecSave').prop('disabled', false);
-        $('#engineSpecModal').modal('show');
-    }
+        }
 
 
                 function getCarColors() {
@@ -1629,7 +1630,7 @@
 
         function getEngineSpecs() {
         const table = InitializeDatatableWithSlNo('EngineSpecTable');
-        engineSpecDataStore = {}; // reset before populating
+        engineSpecDataStore = {};
 
         $.get('/Configuration1/GetALLEngineSpecs', function (data) {
             table.clear();
@@ -1641,14 +1642,14 @@
                 // Populate DataTable using ID reference only
                 table.row.add([
                     '', spec.engineType,
-                    spec.cylinders || '',
-                    spec.valveConfig || '',
+                    spec.engineCylinders || '',
+                    spec.engineValveConfiguration || '',
                     spec.turbocharged ? 'Yes' : 'No',
                     spec.supercharged ? 'Yes' : 'No',
                     spec.naturallyAspirated ? 'Yes' : 'No',
                     spec.hybrid ? 'Yes' : 'No',
-                    spec.description || '',
-                    spec.performance || '',
+                    spec.engineDescription || '',
+                    spec.performanceRating || '',
                     spec.isActive ? 'Yes' : 'No',
                     `<div class="text-center">
                         <i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-id="${spec.engineSpecId}"></i>

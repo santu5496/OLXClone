@@ -444,7 +444,7 @@ namespace Assignment4.Controllers
 
                 var cities = _dbConn.GetCitiesByStateId(stateId);
 
-                return Json(new { success = true, data = cities });
+                return Json( cities );
             }
             catch (Exception ex)
             {

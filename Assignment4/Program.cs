@@ -18,6 +18,10 @@ builder.Services.AddSingleton<IConfigurationService1, ConfigurationService1>(pro
 {
     return new ConfigurationService1(builder.Configuration.GetConnectionString("Assignment4"));
 });
+builder.Services.AddSingleton<IVehicleManagementSerivice, VehicleManagementService>(provider =>
+{
+    return new VehicleManagementService(builder.Configuration.GetConnectionString("Assignment4"));
+});
 
 //builder.Services.AddSingleton<IInventoryMaterialLog, InventoryMaterialLogService>(provider =>
 //{
@@ -72,7 +76,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Configuration1}/{action=Configuration1}/{id?}");
   //  pattern: "{controller=Login}/{action=Login}/{id?}");
 
 app.Run();
