@@ -138,6 +138,7 @@ namespace DbOperation.Implementation
                                   modelGeneration = m.modelGeneration,
                                   modelId = m.modelId,
                                   modelBodyType = m.modelBodyType,
+                                  modelDescription=m.modelDescription,
                                   modelDiscontinuedYear = m.modelDiscontinuedYear
 
                               }).ToList();
@@ -430,10 +431,8 @@ namespace DbOperation.Implementation
         public List<CarModels> GetCarModelsByBrand(int brandId)
         {
             using var Db = new Assignment4Context(_dbConn);
-            return Db.CarModels
-                     .Where(m => m.brandId == brandId)
-                     .OrderBy(m => m.modelName)
-                     .ToList();
+            return Db.CarModels.ToList();
+                    
         }
 
 

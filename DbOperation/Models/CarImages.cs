@@ -7,33 +7,77 @@ namespace DbOperation.Models;
 
 public partial class CarImages
 {
-    public int imageId { get; set; }
+    public int carImageId { get; set; }
 
     public int listingId { get; set; }
 
-    public string imageFileName { get; set; }
+    public string registrationNumber { get; set; }
 
-    public string imageFilePath { get; set; }
+    public byte[] slot1ImageData { get; set; }
 
-    public long? imageFileSize { get; set; }
+    public string slot1Description { get; set; }
 
-    public string imageType { get; set; }
+    public byte[] slot2ImageData { get; set; }
 
-    public string imageCategory { get; set; }
+    public string slot2Description { get; set; }
 
-    public string imageDescription { get; set; }
+    public byte[] slot3ImageData { get; set; }
 
-    public bool? isPrimaryImage { get; set; }
+    public string slot3Description { get; set; }
 
-    public bool? isWatermarked { get; set; }
+    public byte[] slot4ImageData { get; set; }
 
-    public int? imageSortOrder { get; set; }
+    public string slot4Description { get; set; }
 
-    public DateTime? imageUploadDate { get; set; }
+    public byte[] slot5ImageData { get; set; }
 
-    public string imageQuality { get; set; }
+    public string slot5Description { get; set; }
 
-    public bool? isActiveImage { get; set; }
+    public byte[] slot6ImageData { get; set; }
+
+    public string slot6Description { get; set; }
+
+    public byte[] slot7ImageData { get; set; }
+
+    public string slot7Description { get; set; }
+
+    public byte[] slot8ImageData { get; set; }
+
+    public string slot8Description { get; set; }
+
+    public byte[] slot9ImageData { get; set; }
+
+    public string slot9Description { get; set; }
+
+    public byte[] slot10ImageData { get; set; }
+
+    public string slot10Description { get; set; }
+
+    public byte[] slot11ImageData { get; set; }
+
+    public string slot11Description { get; set; }
+
+    public byte[] slot12ImageData { get; set; }
+
+    public string slot12Description { get; set; }
+
+    public byte[] slot13ImageData { get; set; }
+
+    public string slot13Description { get; set; }
+
+    public byte[] slot14ImageData { get; set; }
+
+    public string slot14Description { get; set; }
+
+    public byte[] slot15ImageData { get; set; }
+
+    public string slot15Description { get; set; }
+
+    public DateTime? uploadDate { get; set; }
+
+    public bool? isActive { get; set; }
 
     public virtual CarListings listing { get; set; }
+
+    public virtual CarListings registrationNumberNavigation { get; set; }
 }

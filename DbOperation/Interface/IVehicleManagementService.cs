@@ -13,11 +13,11 @@ namespace DbOperation.Interface
         bool UpdateCarListing(CarListings listing);
         bool DeleteCarListing(int listingId);
 
-        // --- Car Images ---
-        bool AddCarImage(CarImages image);
-        List<CarImages> GetImagesByListingId(int listingId);
-        bool UpdateCarImage(CarImages image);
-        bool DeleteCarImage(int imageId);
+        //// --- Car Images ---
+        //bool AddCarImage(CarImages image);
+        //List<CarImages> GetImagesByListingId(int listingId);
+        //bool UpdateCarImage(CarImages image);
+        //bool DeleteCarImage(int imageId);
 
         // --- Car Listing Features ---
         bool AddCarListingFeature(CarListingFeatures feature);

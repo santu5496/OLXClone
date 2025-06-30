@@ -22,6 +22,10 @@ builder.Services.AddSingleton<IVehicleManagementSerivice, VehicleManagementServi
 {
     return new VehicleManagementService(builder.Configuration.GetConnectionString("Assignment4"));
 });
+builder.Services.AddSingleton<IImageServices, ImageServices>(provider =>
+{
+    return new ImageServices(builder.Configuration.GetConnectionString("Assignment4"));
+});
 
 //builder.Services.AddSingleton<IInventoryMaterialLog, InventoryMaterialLogService>(provider =>
 //{

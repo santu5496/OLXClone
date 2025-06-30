@@ -117,11 +117,7 @@ namespace DbOperation.Implementation
             {
                 using var context = new Assignment4Context(_dbConn);
 
-                if (image.imageUploadDate == null)
-                    image.imageUploadDate = DateTime.Now;
-
-                if (image.isActiveImage == null)
-                    image.isActiveImage = true;
+             
 
                 context.CarImages.Add(image);
                 context.SaveChanges();
@@ -133,65 +129,7 @@ namespace DbOperation.Implementation
             }
         }
 
-        // 🖼️ Get All Images for a Listing
-        public List<CarImages> GetImagesByListingId(int listingId)
-        {
-            using var context = new Assignment4Context(_dbConn);
-            return context.CarImages
-                          .Where(img => img.listingId == listingId && img.isActiveImage == true)
-                          .OrderBy(img => img.imageSortOrder)
-                          .ToList();
-        }
-
-        // ✏️ Update Car Image Metadata
-        public bool UpdateCarImage(CarImages image)
-        {
-            try
-            {
-                using var context = new Assignment4Context(_dbConn);
-                var existing = context.CarImages.FirstOrDefault(i => i.imageId == image.imageId);
-                if (existing == null) return false;
-
-                existing.imageFileName = image.imageFileName;
-                existing.imageFilePath = image.imageFilePath;
-                existing.imageFileSize = image.imageFileSize;
-                existing.imageType = image.imageType;
-                existing.imageCategory = image.imageCategory;
-                existing.imageDescription = image.imageDescription;
-                existing.isPrimaryImage = image.isPrimaryImage;
-                existing.isWatermarked = image.isWatermarked;
-                existing.imageSortOrder = image.imageSortOrder;
-                existing.imageQuality = image.imageQuality;
-                existing.isActiveImage = image.isActiveImage;
-
-                context.CarImages.Update(existing);
-                context.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        // ❌ Delete Image by ID
-        public bool DeleteCarImage(int imageId)
-        {
-            try
-            {
-                using var context = new Assignment4Context(_dbConn);
-                var image = context.CarImages.FirstOrDefault(i => i.imageId == imageId);
-                if (image == null) return false;
-
-                context.CarImages.Remove(image);
-                context.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+       
         // ➕ Add Feature to Car Listing
         public bool AddCarListingFeature(CarListingFeatures feature)
         {

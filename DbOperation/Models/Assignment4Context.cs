@@ -146,30 +146,45 @@ public partial class Assignment4Context : DbContext
 
         modelBuilder.Entity<CarImages>(entity =>
         {
-            entity.HasKey(e => e.imageId).HasName("PK__CarImage__336E9B553A18A96C");
+            entity.HasKey(e => e.carImageId).HasName("PK__CarImage__D0FBA3139DFC00AE");
 
-            entity.HasIndex(e => new { e.listingId, e.isPrimaryImage }, "IX_CarImages_ListingId").IsDescending(false, true);
+            entity.HasIndex(e => new { e.listingId, e.isActive }, "IX_CarImages_ListingId");
 
-            entity.HasIndex(e => new { e.imageType, e.isActiveImage }, "IX_CarImages_Type");
+            entity.HasIndex(e => new { e.registrationNumber, e.isActive }, "IX_CarImages_RegistrationNumber");
 
-            entity.Property(e => e.imageCategory).HasMaxLength(30);
-            entity.Property(e => e.imageDescription).HasMaxLength(200);
-            entity.Property(e => e.imageFileName)
+            entity.HasIndex(e => new { e.listingId, e.registrationNumber }, "UQ_CarImages_ListingId_RegistrationNumber").IsUnique();
+
+            entity.Property(e => e.isActive).HasDefaultValue(true);
+            entity.Property(e => e.registrationNumber)
                 .IsRequired()
-                .HasMaxLength(200);
-            entity.Property(e => e.imageFilePath)
-                .IsRequired()
-                .HasMaxLength(600);
-            entity.Property(e => e.imageQuality).HasMaxLength(20);
-            entity.Property(e => e.imageType).HasMaxLength(50);
-            entity.Property(e => e.imageUploadDate).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.isActiveImage).HasDefaultValue(true);
-            entity.Property(e => e.isPrimaryImage).HasDefaultValue(false);
-            entity.Property(e => e.isWatermarked).HasDefaultValue(false);
+                .HasMaxLength(25);
+            entity.Property(e => e.slot10Description).HasMaxLength(200);
+            entity.Property(e => e.slot11Description).HasMaxLength(200);
+            entity.Property(e => e.slot12Description).HasMaxLength(200);
+            entity.Property(e => e.slot13Description).HasMaxLength(200);
+            entity.Property(e => e.slot14Description).HasMaxLength(200);
+            entity.Property(e => e.slot15Description).HasMaxLength(200);
+            entity.Property(e => e.slot1Description).HasMaxLength(200);
+            entity.Property(e => e.slot2Description).HasMaxLength(200);
+            entity.Property(e => e.slot3Description).HasMaxLength(200);
+            entity.Property(e => e.slot4Description).HasMaxLength(200);
+            entity.Property(e => e.slot5Description).HasMaxLength(200);
+            entity.Property(e => e.slot6Description).HasMaxLength(200);
+            entity.Property(e => e.slot7Description).HasMaxLength(200);
+            entity.Property(e => e.slot8Description).HasMaxLength(200);
+            entity.Property(e => e.slot9Description).HasMaxLength(200);
+            entity.Property(e => e.uploadDate).HasDefaultValueSql("(getdate())");
 
-            entity.HasOne(d => d.listing).WithMany(p => p.CarImages)
+            entity.HasOne(d => d.listing).WithMany(p => p.CarImageslisting)
                 .HasForeignKey(d => d.listingId)
-                .HasConstraintName("FK__CarImages__listi__32AB8735");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CarImages_ListingId");
+
+            entity.HasOne(d => d.registrationNumberNavigation).WithMany(p => p.CarImagesregistrationNumberNavigation)
+                .HasPrincipalKey(p => p.registrationNumber)
+                .HasForeignKey(d => d.registrationNumber)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CarImages_RegistrationNumber");
         });
 
         modelBuilder.Entity<CarListingFeatures>(entity =>
@@ -239,6 +254,8 @@ public partial class Assignment4Context : DbContext
 
             entity.HasIndex(e => e.manufacturingYear, "IX_CarListings_Year").IsDescending();
 
+            entity.HasIndex(e => e.registrationNumber, "UQ_CarListings_RegistrationNumber").IsUnique();
+
             entity.Property(e => e.accidentSeverityLevel).HasMaxLength(20);
             entity.Property(e => e.areaOrLocality).HasMaxLength(120);
             entity.Property(e => e.availableForContactDays).HasMaxLength(100);
@@ -297,7 +314,9 @@ public partial class Assignment4Context : DbContext
             entity.Property(e => e.preferredContactMethod).HasMaxLength(30);
             entity.Property(e => e.preferredViewingLocation).HasMaxLength(200);
             entity.Property(e => e.priceIncludesTransfer).HasDefaultValue(false);
-            entity.Property(e => e.registrationNumber).HasMaxLength(25);
+            entity.Property(e => e.registrationNumber)
+                .IsRequired()
+                .HasMaxLength(25);
             entity.Property(e => e.requiresImmediateRepairs).HasDefaultValue(false);
             entity.Property(e => e.sellerEmailAddress).HasMaxLength(120);
             entity.Property(e => e.sellerName)

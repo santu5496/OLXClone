@@ -75,57 +75,7 @@ namespace Assignment4.Controllers
             }
         }
 
-        // ====== CAR IMAGES ======
-
-        public IActionResult GetCarImages(int listingId)
-        {
-            try
-            {
-                var data = _vehicleService.GetImagesByListingId(listingId);
-                return Json(data);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { error = ex.Message });
-            }
-        }
-
-        public bool AddCarImage(CarImages image)
-        {
-            try
-            {
-                return _vehicleService.AddCarImage(image);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public bool UpdateCarImage(CarImages image)
-        {
-            try
-            {
-                return _vehicleService.UpdateCarImage(image);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public bool DeleteCarImage(int imageId)
-        {
-            try
-            {
-                return _vehicleService.DeleteCarImage(imageId);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
+       
         // ====== LISTING FEATURES ======
 
         public IActionResult GetFeaturesByListingId(int listingId)

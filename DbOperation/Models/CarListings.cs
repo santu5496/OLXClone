@@ -229,7 +229,9 @@ public partial class CarListings
 
     public virtual ICollection<BusinessAnalytics> BusinessAnalytics { get; set; } = new List<BusinessAnalytics>();
 
-    public virtual ICollection<CarImages> CarImages { get; set; } = new List<CarImages>();
+    public virtual ICollection<CarImages> CarImageslisting { get; set; } = new List<CarImages>();
+
+    public virtual ICollection<CarImages> CarImagesregistrationNumberNavigation { get; set; } = new List<CarImages>();
 
     public virtual ICollection<CarListingFeatures> CarListingFeatures { get; set; } = new List<CarListingFeatures>();
 
