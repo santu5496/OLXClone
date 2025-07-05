@@ -1,23 +1,27 @@
 ﻿using DbOperation.Models;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using static DbOperation.Implementation.ImageServices;
 
 namespace DbOperation.Interface
 {
     public interface IImageServices
     {
-        Task<CarImages> GetImageByIdAsync(int id);
-        Task<List<CarImages>> GetAllImagesAsync();
-        Task AddImageAsync(CarImages image);
-        Task UpdateImageAsync(CarImages image);
-        Task DeleteImageAsync(int id);
+        // Basic CRUD operations
+        Task<CarImages> GetImageByIdAsync(int carImageId);
+        Task<List<CarImageDisplayDto>> GetAllImagesAsync();
+        Task<CarImageDisplayDto> GetImageForEditAsync(int carImageId);
+        Task<bool> AddOrUpdateImageAsync(CarImageDto imageDto);
+        Task<bool> DeleteImageAsync(int carImageId);
 
-        // ✅ Upload image directly from stream (e.g. from file upload)
-        Task AddImageFromStreamAsync(int listingId, string registrationNumber, Stream imageStream, string description);
+        // Specific operations
+        Task<CarImages> GetImageByCarRegistrationAsync(int listingId);
+        Task<bool> HasImagesForCarAsync(int listingId);
 
-
+        // Utility methods
+        string ConvertByteArrayToBase64(byte[] imageData);
+        byte[] ConvertBase64ToByteArray(string base64String);
+        string GenerateImagePath(byte[] imageData, int carImageId, int slotNumber);
     }
 }

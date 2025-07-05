@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Images Management - 10 Images</title>
+    <title>Car Images Management - 10 Images Version</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
@@ -87,15 +87,11 @@
         }
 
         @@media (max-width: 768px) {
-            .col-md-2-4
-
-        {
-            flex: 0 0 50%;
-            max-width: 50%;
+            .col-md-2-4 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
         }
-
-        }
-
         /* Table scroll for many columns */
         .table-responsive {
             overflow-x: auto;
@@ -103,14 +99,12 @@
     </style>
 </head>
 <body>
-
     <div class="container-fluid mt-3">
         <ul class="nav nav-tabs" id="carImageTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="image-listing-tab" data-bs-toggle="tab" data-bs-target="#CarImageListingTab" type="button" role="tab">Car Images Listing</button>
             </li>
         </ul>
-
         <div class="tab-content mt-3" id="carImageTabContent">
             <div class="tab-pane fade show active" id="CarImageListingTab" role="tabpanel">
                 <button class="customBtn mb-2" onclick="clearImageModal()">Add Car Images</button>
@@ -142,7 +136,6 @@
             </div>
         </div>
     </div>
-
     <!-- Car Images Modal -->
     <div class="modal fade" id="carImageModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl">
@@ -157,7 +150,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Car Registration Number *</label>
-                                <select class="form-select ClearImageModalData requiredfield" id="carRegistrationId">
+                                <select class="form-select ClearImageModalData requiredfield" id="carRegistrationId" onchange="DataExistInTheTable()">
                                     <option value="">Select Car Registration</option>
                                 </select>
                             </div>
@@ -171,12 +164,10 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Image Upload Slots -->
                     <div class="row">
                         <div class="col-12">
                             <h6 class="text-primary mb-3">Upload Images (10 Slots Available)</h6>
-
                             <!-- Exterior Images - Row 1 (Slots 1-5) -->
                             <h6 class="text-secondary mb-2">Exterior Images</h6>
                             <div class="row">
@@ -236,7 +227,6 @@
                                     <input type="text" class="form-control ClearImageModalData" id="description5" placeholder="Dashboard description" style="margin-top: 5px;">
                                 </div>
                             </div>
-
                             <!-- Interior Images - Row 2 (Slots 6-10) -->
                             <h6 class="text-secondary mb-2 mt-4">Interior & Other Images</h6>
                             <div class="row">
@@ -307,7 +297,6 @@
             </div>
         </div>
     </div>
-
     <!-- Image Preview Modal -->
     <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -326,14 +315,12 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
-    <script>
-        // Car Images Management - 10 Images Version
+<script>
+            // Updated Car Images Management JavaScript - Fixed for 10 Images with Duplicate Check
         let imageSlots = {
             1: null, 2: null, 3: null, 4: null, 5: null,
             6: null, 7: null, 8: null, 9: null, 10: null
@@ -359,11 +346,15 @@
             loadCarRegistrations();
             setupImageUploads();
 
-            // Car selection change event
+            // Car selection change event - SINGLE EVENT BINDING
             $('#carRegistrationId').on('change', function () {
                 var carId = $(this).val();
                 if (carId) {
-                    loadCarDetails(carId);
+                    // First check if data exists in table
+                    if (!DataExistInTheTable()) {
+                        // Only load car details if no duplicate found
+                        loadCarDetails(carId);
+                    }
                 } else {
                     $('#carDetails').text('Select a car to view details');
                 }
@@ -380,7 +371,6 @@
         function setupSlotUpload(slotNumber) {
             const slotId = `#slot${slotNumber}`;
             const slot = $(slotId);
-
             if (slot.length === 0) {
                 console.log(`Slot ${slotNumber} not found in HTML`);
                 return;
@@ -415,7 +405,6 @@
                 if (file) {
                     handleFileUpload(slotNumber, file);
                 }
-
                 // Clean up
                 document.body.removeChild(fileInput);
             });
@@ -458,13 +447,14 @@
                 </div>
             `);
 
-            // Store the file
-            imageSlots[slotNumber] = file;
-
-            // Read and display the image
+            // Read and convert file to base64
             const reader = new FileReader();
-
             reader.onload = function(e) {
+                // Store the base64 string (without data URL prefix)
+                const base64Data = e.target.result.split(',')[1];
+                imageSlots[slotNumber] = base64Data;
+
+                // Display the image
                 displayImage(slotNumber, e.target.result);
             };
 
@@ -502,7 +492,6 @@
                 </div>
             `);
 
-            // Add click handler for preview
             slot.off('click').on('click', function(e) {
                 if (!$(e.target).closest('button').length) {
                     showImagePreview(imageDataUrl, slotNumber);
@@ -592,7 +581,7 @@
                 "scrollX": true
             });
 
-            // Load data from server
+            // Load data from server with updated endpoint
             $.ajax({
                 url: '/Images/GetCarImages',
                 type: 'GET',
@@ -609,7 +598,7 @@
                             }
 
                             table.row.add([
-                                item.carImageId || item.imageId,
+                                item.carImageId,
                                 item.registrationNumber,
                                 ...images,
                                 formatDate(item.uploadDate),
@@ -637,7 +626,7 @@
 
         function createActionButtons(item) {
             const itemData = JSON.stringify(item).replace(/'/g, '&apos;');
-            const itemId = item.carImageId || item.imageId;
+            const itemId = item.carImageId;
 
             return `
                 <i class='fa fa-edit btn-edit' style='color:green; cursor:pointer; margin-right:10px;'
@@ -669,52 +658,7 @@
             });
         }
 
-        function loadCarRegistrations() {
-            console.log('Loading car registrations...');
-
-            $.ajax({
-                url: '/VehicleManagement/GetCarListings',
-                type: 'GET',
-                success: function(response) {
-                    console.log('Car registrations loaded successfully');
-                    populateDropdown('#carRegistrationId', response, 'listingId', 'registrationNumber', 'Select Car Registration');
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error loading car registrations:', error);
-                    showMessage('Failed to load car registrations', 'error');
-                }
-            });
-        }
-
-        function loadCarDetails(carId) {
-            if (!carId) return;
-
-            console.log('Loading car details for ID:', carId);
-
-            $.ajax({
-                url: '/VehicleManagement/GetCarListings',
-                type: 'GET',
-              
-                success: function(response) {
-                    if (response) {
-                        $('#carDetails').html(`
-                            <strong>${response.brandName || 'N/A'} ${response.modelName || 'N/A'}</strong><br>
-                            <small>Year: ${response.manufacturingYear || 'N/A'} | Fuel: ${response.fuelType || 'N/A'} | ${response.kilometersOnOdometer || 'N/A'} km</small>
-                        `);
-                    } else {
-                        $('#carDetails').text('No details available');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error loading car details:', error);
-                    $('#carDetails').text('Error loading car details');
-                }
-            });
-        }
-
         function saveCarImages() {
-           
-
             const carRegistrationId = $('#carRegistrationId').val();
             if (!carRegistrationId) {
                 showMessage('Please select a car registration', 'warning');
@@ -722,71 +666,67 @@
                 return;
             }
 
-            // Check if at least one image is uploaded
-            const uploadedImages = Object.values(imageSlots).filter(file => file !== null);
-            if (uploadedImages.length === 0) {
+            // Count how many images we have
+            const imageCount = Object.values(imageSlots).filter(val => val !== null).length;
+            if (imageCount === 0) {
                 showMessage('Please upload at least one image', 'warning');
                 return;
             }
 
-            // Prepare form data
-            const formData = new FormData();
-            formData.append('carRegistrationId', carRegistrationId);
-            formData.append('carImageId', $('#carImageId').val() || '0');
+            const imageData = {
+                carImageId: parseInt($('#carImageId').val()) || 0,
+                carRegistrationId: parseInt(carRegistrationId),
+                registrationNumber: $('#carRegistrationId option:selected').text(),
 
-            // Add images and descriptions for all 10 slots
-            let addedCount = 0;
-            for (let i = 1; i <= 10; i++) {
-                if (imageSlots[i]) {
-                    formData.append(`slot${i}Image`, imageSlots[i]);
-                    const description = $(`#description${i}`).val();
-                    if (description) {
-                        formData.append(`slot${i}Description`, description);
-                    }
-                    addedCount++;
-                }
-            }
+                // Only include slots 1-10 (matching the UI)
+                slot1ImageData: imageSlots[1],
+                slot1Description: $('#description1').val() || '',
+                slot2ImageData: imageSlots[2],
+                slot2Description: $('#description2').val() || '',
+                slot3ImageData: imageSlots[3],
+                slot3Description: $('#description3').val() || '',
+                slot4ImageData: imageSlots[4],
+                slot4Description: $('#description4').val() || '',
+                slot5ImageData: imageSlots[5],
+                slot5Description: $('#description5').val() || '',
+                slot6ImageData: imageSlots[6],
+                slot6Description: $('#description6').val() || '',
+                slot7ImageData: imageSlots[7],
+                slot7Description: $('#description7').val() || '',
+                slot8ImageData: imageSlots[8],
+                slot8Description: $('#description8').val() || '',
+                slot9ImageData: imageSlots[9],
+                slot9Description: $('#description9').val() || '',
+                slot10ImageData: imageSlots[10],
+                slot10Description: $('#description10').val() || '',
 
-            // Show loading state
+                isActive: true
+            };
+
             const saveBtn = $('#saveImagesBtn');
             const originalText = saveBtn.text();
-            saveBtn.prop('disabled', true).text(`Uploading ${addedCount} images...`);
-            let image=formData;
-            // Upload with progress tracking
+            saveBtn.prop('disabled', true).text(`Uploading ${imageCount} images...`);
+
             $.ajax({
                 url: '/Images/AddOrUpdateCarImages',
                 type: 'POST',
-                data: image,
-                processData: false,
-                contentType: false,
-                timeout: 60000, // 60 seconds timeout
-                xhr: function() {
-                    const xhr = new window.XMLHttpRequest();
-                    xhr.upload.addEventListener("progress", function(evt) {
-                        if (evt.lengthComputable) {
-                            const percentComplete = Math.round((evt.loaded / evt.total) * 100);
-                            saveBtn.text(`Uploading... ${percentComplete}%`);
-                        }
-                    }, false);
-                    return xhr;
-                },
-                success: function(response) {
+                contentType: 'application/json',
+                data: JSON.stringify(imageData),
+                success: function (response) {
                     saveBtn.prop('disabled', false).text(originalText);
 
-                    if (response && (response.success || response.Success)) {
-                        showMessage(`Successfully uploaded ${addedCount} image${addedCount > 1 ? 's' : ''}!`, 'success');
-
+                    if (response && response.success) {
+                        showMessage(response.message || `Successfully uploaded ${imageCount} image${imageCount > 1 ? 's' : ''}!`, 'success');
                         setTimeout(() => {
                             $('#carImageModal').modal('hide');
-                            initCarImages(); // Refresh the table
+                            initCarImages();
                         }, 1500);
-
                     } else {
-                        const errorMsg = response.message || response.Message || 'Failed to save images';
+                        const errorMsg = response.message || 'Failed to save images';
                         showMessage('Upload failed: ' + errorMsg, 'error');
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     saveBtn.prop('disabled', false).text(originalText);
 
                     let errorMessage = 'Error uploading images';
@@ -794,10 +734,12 @@
                         errorMessage = 'Upload timed out. Please try with smaller images.';
                     } else if (xhr.status === 413) {
                         errorMessage = 'Files too large. Please reduce image sizes.';
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
                     } else if (xhr.responseText) {
                         try {
                             const errorResponse = JSON.parse(xhr.responseText);
-                            errorMessage = errorResponse.message || errorResponse.Message || errorMessage;
+                            errorMessage = errorResponse.message || errorMessage;
                         } catch (e) {
                             errorMessage += ': ' + xhr.responseText.substring(0, 100);
                         }
@@ -812,9 +754,9 @@
         function editCarImage(data) {
             console.log('Editing car image:', data);
 
-            $('#carImageId').val(data.carImageId || data.imageId);
-            $('#carRegistrationId').val(data.carRegistrationId || data.listingId);
-            loadCarDetails(data.carRegistrationId || data.listingId);
+            $('#carImageId').val(data.carImageId);
+            $('#carRegistrationId').val(data.carRegistrationId);
+            loadCarDetails(data.carRegistrationId);
 
             // Clear all slots first
             clearAllSlots();
@@ -838,6 +780,7 @@
 
         function loadExistingImageToSlot(slotNumber, imagePath, description) {
             const slot = $(`#slot${slotNumber}`);
+
             slot.addClass('has-image');
             slot.css({
                 'border': '3px solid #28a745',
@@ -847,9 +790,7 @@
             });
 
             slot.html(`
-                <div style="position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.8); color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: bold; z-index: 15;">
-                    ${slotNumber}
-                </div>
+                <div style="position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; z-index: 5;">${slotNumber}</div>
                 <img src="${imagePath}" alt="Existing Image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px; display: block;">
                 <button type="button" onclick="removeImage(${slotNumber})" style="position: absolute; top: 5px; right: 5px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 15;">
                     <i class="fas fa-times"></i>
@@ -858,6 +799,13 @@
                     ✅ ${slotLabels[slotNumber]}
                 </div>
             `);
+
+            // For existing images, we need to convert back to base64 for editing
+            // The imagePath is already a data URL, so extract the base64 part
+            if (imagePath.startsWith('data:image')) {
+                const base64Data = imagePath.split(',')[1];
+                imageSlots[slotNumber] = base64Data;
+            }
 
             slot.off('click').on('click', function(e) {
                 if (!$(e.target).closest('button').length) {
@@ -874,11 +822,11 @@
                 type: 'POST',
                 data: { id: id },
                 success: function(response) {
-                    if (response && (response.success || response.Success)) {
-                        showMessage('Images deleted successfully', 'success');
+                    if (response && response.success) {
+                        showMessage(response.message || 'Images deleted successfully', 'success');
                         initCarImages(); // Refresh the table
                     } else {
-                        const errorMsg = response.message || response.Message || 'Failed to delete images';
+                        const errorMsg = response.message || 'Failed to delete images';
                         showMessage('Delete failed: ' + errorMsg, 'error');
                     }
                 },
@@ -932,8 +880,124 @@
             }
         }
 
-        // =================== UTILITY FUNCTIONS ===================
+        function loadCarRegistrations() {
+            console.log('Loading car registrations...');
 
+            $.ajax({
+                url: '/VehicleManagement/GetCarListings',
+                type: 'GET',
+                success: function(response) {
+                    console.log('Car registrations loaded successfully');
+                    populateDropdown('#carRegistrationId', response, 'listingId', 'registrationNumber', 'Select Car Registration');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading car registrations:', error);
+                    showMessage('Failed to load car registrations', 'error');
+                }
+            });
+        }
+
+        function loadCarDetails(carId) {
+            if (!carId) return;
+
+            console.log('Loading car details for ID:', carId);
+
+            $.ajax({
+                url: '/VehicleManagement/GetCarListings',
+                type: 'GET',
+                data: { id: carId },
+                success: function(response) {
+                    if (response) {
+                        $('#carDetails').html(`
+                            <strong>${response.brandName || 'N/A'} ${response.modelName || 'N/A'}</strong><br>
+                            <small>Year: ${response.manufacturingYear || 'N/A'} | Fuel: ${response.fuelType || 'N/A'} | ${response.kilometersOnOdometer || 'N/A'} km</small>
+                        `);
+                    } else {
+                        $('#carDetails').text('No details available');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading car details:', error);
+                    $('#carDetails').text('Error loading car details');
+                }
+            });
+        }
+
+        // =================== DUPLICATE CHECK FUNCTION ===================
+
+        function DataExistInTheTable() {
+            console.log('Checking if data exists in table...');
+
+            const enteredRegNo = $('#carRegistrationId').val();
+
+            // Early return if nothing selected
+            if (!enteredRegNo || enteredRegNo.trim() === '') {
+                $('#carDetails').text('Select a car to view details');
+                return false;
+            }
+
+            // Check if DataTable is initialized
+            if (!$.fn.DataTable.isDataTable('#tblCarImages')) {
+                console.log('DataTable not yet initialized');
+                return false;
+            }
+
+            const table = $('#tblCarImages').DataTable();
+
+            // Check if table has any data
+            if (table.rows().count() === 0) {
+                console.log('No data in table to check against');
+                return false; // No data to check against
+            }
+
+            // Get the selected registration number text (not the ID)
+            const selectedRegText = $('#carRegistrationId option:selected').text().trim();
+
+            // Safely check against the registration number from the table data
+            const exists = table.rows().data().toArray().some(row => {
+                // The registration number is in column index 1 (0-based indexing)
+                const tableRegNumber = row[1]; // This gets the registration number from the table
+                return tableRegNumber && tableRegNumber.trim().toLowerCase() === selectedRegText.toLowerCase();
+            });
+
+            if (exists) {
+                // Show styled alert message
+                showMessage('Images for this car registration already exist in the table. Please select a different vehicle or edit the existing record.', 'warning');
+
+                // Reset dropdown and details
+                $('#carRegistrationId').val('');
+                $('#carDetails').text('Select a car to view details');
+
+                // Optional: Focus back to dropdown for better UX
+                setTimeout(() => {
+                    $('#carRegistrationId').focus();
+                }, 100);
+
+                return true;
+            }
+
+            console.log('No duplicate found, registration is available');
+            return false;
+        }
+
+        // Alternative styled alert function (if you prefer using SweetAlert or custom modal)
+        function showStyledAlert(type, message) {
+            // Using the existing showMessage function for consistency
+            showMessage(message, type);
+
+            // Alternative: If you want to use browser alert (not recommended for production)
+            // alert(message);
+
+            // Alternative: If you have SweetAlert2 library
+            // Swal.fire({
+            //     icon: type,
+            //     title: type === 'warning' ? 'Warning!' : 'Information',
+            //     text: message,
+            //     confirmButtonText: 'OK'
+            // });
+        }
+
+        // Utility Functions
         function populateDropdown(selector, data, valueField, textField, defaultText = 'Select Option') {
             try {
                 const dropdown = $(selector);
@@ -947,7 +1011,7 @@
                         }
                     });
                 } else {
-                    console.warn('Invalid data provided for dropdown:', selector);
+                    console.log('Invalid data provided for dropdown', selector);
                 }
             } catch (error) {
                 console.error(`Error populating dropdown ${selector}:`, error);
@@ -968,15 +1032,13 @@
                     hour: '2-digit',
                     minute: '2-digit'
                 };
+
                 return date.toLocaleDateString('en-US', options);
             } catch (error) {
                 console.error('Error formatting date:', error);
                 return dateString;
             }
         }
-
-        console.log('Car Images Management System Ready - 10 Images Version');
-    </script>
-
+</script>
 </body>
 </html>

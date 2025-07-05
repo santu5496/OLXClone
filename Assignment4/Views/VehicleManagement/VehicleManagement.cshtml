@@ -75,25 +75,25 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Brand *</label>
-                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" id="brandId">
+                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" required id="brandId">
                                         <option value="">Select Brand</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Model *</label>
-                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" id="modelId">
+                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" required id="modelId">
                                         <option value="">Select Model</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Variant</label>
-                                    <select class="form-select ClearListingModalData" id="variantId">
+                                    <select class="form-select ClearListingModalData" required id="variantId">
                                         <option value="">Select Variant</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Category</label>
-                                    <select class="form-select ClearListingModalData" id="categoryId">
+                                    <select class="form-select ClearListingModalData" required id="categoryId">
                                         <option value="">Select Category</option>
                                     </select>
                                 </div>
@@ -101,11 +101,11 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Manufacturing Year *</label>
-                                    <input type="number" class="form-control ClearListingModalData requiredfield requiredfield_Listing" id="manufacturingYear" min="1990" max="2025">
+                                    <input type="number" class="form-control ClearListingModalData requiredfield requiredfield_Listing" required id="manufacturingYear" min="1990" max="2025">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Manufacturing Month</label>
-                                    <select class="form-select ClearListingModalData" id="manufacturingMonth">
+                                    <select class="form-select ClearListingModalData" required id="manufacturingMonth">
                                         <option value="">Select Month</option>
                                         <option value="1">January</option>
                                         <option value="2">February</option>
@@ -123,11 +123,11 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Registration Year *</label>
-                                    <input type="number" class="form-control ClearListingModalData requiredfield requiredfield_Listing" id="registrationYear" min="1990" max="2025">
+                                    <input type="number" class="form-control ClearListingModalData requiredfield requiredfield_Listing" required id="registrationYear" min="1990" max="2025">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Registration Month</label>
-                                    <select class="form-select ClearListingModalData" id="registrationMonth">
+                                    <select class="form-select ClearListingModalData" required id="registrationMonth">
                                         <option value="">Select Month</option>
                                         <option value="1">January</option>
                                         <option value="2">February</option>
@@ -157,7 +157,7 @@
                                 <h6 class="text-primary mb-3">Engine Specifications</h6>
                                 <div class="mb-3">
                                     <label class="form-label">Engine Capacity (CC)</label>
-                                    <input type="number" class="form-control ClearListingModalData" id="engineCapacityInCC" min="0">
+                                    <input type="number" class="form-control ClearListingModalData" required id="engineCapacityInCC" min="0">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Engine Capacity (Liters)</label>
@@ -177,7 +177,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Engine Specification</label>
-                                    <select class="form-select ClearListingModalData" id="engineSpecId">
+                                    <select class="form-select ClearListing ModalData" id="engineSpecId">
                                         <option value="">Select Engine Spec</option>
                                     </select>
                                 </div>
@@ -186,13 +186,13 @@
                                 <h6 class="text-primary mb-3">Vehicle Specifications</h6>
                                 <div class="mb-3">
                                     <label class="form-label">Fuel Type *</label>
-                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" id="fuelTypeId">
+                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" required id="fuelTypeId">
                                         <option value="">Select Fuel Type</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Transmission *</label>
-                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" id="transmissionId">
+                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing"  id="transmissionId">
                                         <option value="">Select Transmission</option>
                                     </select>
                                 </div>
@@ -208,11 +208,11 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Number of Doors</label>
-                                    <input type="number" class="form-control ClearListingModalData" id="numberOfDoors" min="2" max="6">
+                                    <input type="number" class="form-control ClearListingModalData" required id="numberOfDoors" min="2" max="6">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Seating Capacity</label>
-                                    <input type="number" class="form-control ClearListingModalData" id="seatingCapacity" min="2" max="10">
+                                    <input type="number" class="form-control ClearListingModalData" required id="seatingCapacity" min="2" max="10">
                                 </div>
                             </div>
                         </div>
@@ -244,15 +244,15 @@
                                 <h6 class="text-primary mb-3">Ownership & Usage</h6>
                                 <div class="mb-3">
                                     <label class="form-label">Total Previous Owners</label>
-                                    <input type="number" class="form-control ClearListingModalData" id="totalPreviousOwners" min="0" max="10">
+                                    <input type="number" class="form-control ClearListingModalData" required id="totalPreviousOwners" min="0" max="10">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Current Ownership Duration (Years)</label>
-                                    <input type="number" class="form-control ClearListingModalData" id="currentOwnershipDuration" min="0">
+                                    <input type="number" class="form-control ClearListingModalData" required id="currentOwnershipDuration" min="0">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Kilometers on Odometer *</label>
-                                    <input type="number" class="form-control ClearListingModalData requiredfield requiredfield_Listing" id="kilometersOnOdometer" min="0">
+                                    <input type="number" class="form-control ClearListingModalData requiredfield requiredfield_Listing" required id="kilometersOnOdometer" min="0">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Average Monthly Kilometers</label>
@@ -261,7 +261,7 @@
                                 <h6 class="text-primary mb-3 mt-4">Mileage Information</h6>
                                 <div class="mb-3">
                                     <label class="form-label">City Mileage (KMPL)</label>
-                                    <input type="number" step="0.1" class="form-control ClearListingModalData" id="mileageInCityKMPL" min="0">
+                                    <input type="number" step="0.1" class="form-control ClearListingModalData" required id="mileageInCityKMPL" min="0">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Highway Mileage (KMPL)</label>
@@ -294,7 +294,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Tyre Condition (1-10)</label>
-                                    <input type="number" class="form-control ClearListingModalData" id="tyreConditionRating" min="1" max="10">
+                                    <input type="number" class="form-control ClearListingModalData"  id="tyreConditionRating" min="1" max="10">
                                 </div>
                                 <h6 class="text-primary mb-3 mt-4">Vehicle History</h6>
                                 <div class="form-check mb-3">
@@ -312,15 +312,15 @@
                                     </select>
                                 </div>
                                 <div class="form-check mb-3">
-                                    <input type="checkbox" class="form-check-input ClearListingModalData" id="isFloodAffected">
+                                    <input type="checkbox" class="form-check-input ClearListingModalData" required id="isFloodAffected">
                                     <label class="form-check-label">Is Flood Affected</label>
                                 </div>
                                 <div class="form-check mb-3">
-                                    <input type="checkbox" class="form-check-input ClearListingModalData" id="hasElectricalIssues">
+                                    <input type="checkbox" class="form-check-input ClearListingModalData" required id="hasElectricalIssues">
                                     <label class="form-check-label">Has Electrical Issues</label>
                                 </div>
                                 <div class="form-check mb-3">
-                                    <input type="checkbox" class="form-check-input ClearListingModalData" id="hasMechanicalIssues">
+                                    <input type="checkbox" class="form-check-input ClearListingModalData" required id="hasMechanicalIssues">
                                     <label class="form-check-label">Has Mechanical Issues</label>
                                 </div>
                                 <div class="form-check mb-3">
@@ -341,19 +341,19 @@
                                 <h6 class="text mb-3">Pricing Information</h6>
                                 <div class="mb-3">
                                     <label class="form-label">Original Purchase Price</label>
-                                    <input type="number" step="0.01" class="form-control ClearListingModalData" id="originalPurchasePrice" min="0">
+                                    <input type="number" step="0.01" class="form-control ClearListingModalData" required id="originalPurchasePrice" min="0">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Current Market Price</label>
-                                    <input type="number" step="0.01" class="form-control ClearListingModalData" id="currentMarketPrice" min="0">
+                                    <input type="number" step="0.01" class="form-control ClearListingModalData"  id="currentMarketPrice" min="0">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Selling Price Asked *</label>
-                                    <input type="number" step="0.01" class="form-control ClearListingModalData requiredfield requiredfield_Listing" id="sellingPriceAsked" min="0">
+                                    <input type="number" step="0.01" class="form-control ClearListingModalData requiredfield requiredfield_Listing" required id="sellingPriceAsked" min="0">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Minimum Acceptable Price</label>
-                                    <input type="number" step="0.01" class="form-control ClearListingModalData" id="minimumAcceptablePrice" min="0">
+                                    <input type="number" step="0.01" class="form-control ClearListingModalData" required id="minimumAcceptablePrice" min="0">
                                 </div>
                                 <div class="form-check mb-3">
                                     <input type="checkbox" class="form-check-input ClearListingModalData" id="isPriceNegotiable">
@@ -372,17 +372,17 @@
                                 <h6 class="text-primary mb-3">Registration & Documentation</h6>
                                 <div class="mb-3">
                                     <label class="form-label">Registration Number</label>
-                                    <input type="text" class="form-control ClearListingModalData" id="registrationNumber" placeholder="e.g., KA01AB1234">
+                                    <input type="text" class="form-control ClearListingModalData" required id="registrationNumber" placeholder="e.g., KA01AB1234">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">RTO Code</label>
-                                    <select class="form-select ClearListingModalData" id="rtoId">
+                                    <select class="form-select ClearListingModalData" required id="rtoId">
                                         <option value="">Select RTO</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Chassis Number</label>
-                                    <input type="text" class="form-control ClearListingModalData" id="chassisNumber">
+                                    <input type="text" class="form-control  ClearListingModalData" id="chassisNumber">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Engine Number</label>
@@ -395,8 +395,8 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Insurance Type</label>
-                                    <select class="form-select ClearListingModalData" id="insuranceType">
+                                    <label  class="form-label"> Insurance Type</label>
+                                    <select required class="form-select ClearListingModalData" id="insuranceType">
                                         <option value="">Select Type</option>
                                         <option value="Comprehensive">Comprehensive</option>
                                         <option value="Third Party">Third Party</option>
@@ -408,8 +408,8 @@
                                     <input type="text" class="form-control ClearListingModalData" id="insurancePolicyNumber">
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Insurance Expiry Date</label>
-                                    <input type="date" class="form-control ClearListingModalData" id="insuranceExpiryDate">
+                                    <label  class="form-label">Insurance Expiry Date</label>
+                                    <input required type="date" class="form-control ClearListingModalData" id="insuranceExpiryDate">
                                 </div>
                             </div>
                         </div>
@@ -1190,6 +1190,11 @@
         $('#isUrgentSale').prop('checked', data.isUrgentSale || false);
 
         $('#listingModal').modal('show');
+    }
+
+    function Validation()
+    {
+
     }
 
     // =================== CAR LISTINGS ===================
