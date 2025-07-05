@@ -283,87 +283,93 @@
                 </a>
             </li>
             <li>
-                <a asp-area="" asp-controller="Home"   asp-action="index">
+                <a asp-area="" hidden asp-controller="Home" asp-action="index">
                     <span class="icon"><i class="fa-solid fa-house"></i></span>
                     <span class="title">Home</span>
                 </a>
             </li>
             <li>
-                <a asp-area="" asp-controller="Billing" asp-action="Billing">
+                <a asp-area=""  asp-controller="VehicleManagement" asp-action="VehicleManagement">
                     <span class="icon"><i class="fa-solid fa-credit-card"></i></span>
-                    <span class="title">Billing</span>
+                    <span class="title">VehicleManagement</span>
                 </a>
             </li>
             <li>
-                <a asp-area="" asp-controller="Billing" asp-action="BillRecords">
+                <a asp-area="" hidden asp-controller="Billing" asp-action="BillRecords">
                     <span class="icon"><i class="fa-solid fa-file-invoice"></i></span>
                     <span class="title">Bill Records</span>
                 </a>
             </li>
             <li>
-                <a asp-area="" asp-controller="Configuration" asp-action="Configuration">
+                <a asp-area="" hidden asp-controller="Configuration" asp-action="Configuration">
                     <span class="icon"><i class="fa-solid fa-cogs"></i></span>
                     <span class="title">Configuration</span>
                 </a>
             </li>
             <li>
-                <a asp-area="" asp-controller="RawInventory"   asp-action="RawInventory">
+                <a asp-area="" hidden asp-controller="Configuration1" asp-action="Configuration1">
+                    <span class="icon"><i class="fa-solid fa-cogs"></i></span>
+                    <span class="title">Configuration1</span>
+                </a>
+            </li>
+            <li>
+                <a asp-area="" hidden asp-controller="RawInventory" asp-action="RawInventory">
                     <span class="icon"><i class="fa-solid fa-box-open"></i></span>
                     <span class="title">Purchase Item</span>
                 </a>
             </li>
             <li>
-                <a asp-area="" asp-controller="Reports" asp-action="InventoryStock">
+                <a asp-area="" hidden asp-controller="Reports" asp-action="InventoryStock">
                     <span class="icon"><i class="fa-solid fa-box-open"></i></span>
                     <span class="title">Inventory Stock</span>
                 </a>
             </li>
 
             <li>
-                <a asp-area="" asp-controller="FinishedGoods"   asp-action="FinishedGoods">
+                <a asp-area="" hidden asp-controller="FinishedGoods" asp-action="FinishedGoods">
                     <span class="icon"><i class="fa-solid fa-bread-slice"></i></span>
                     <span class="title">Baked Items</span>
                 </a>
             </li>
             <li>
-                <a asp-area="" asp-controller="Recipe"   asp-action="RecipeData">
+                <a asp-area="" hidden asp-controller="Recipe" asp-action="RecipeData">
                     <span class="icon"><i class="fa-solid fa-book-open"></i></span>
                     <span class="title">Recipe</span>
                 </a>
             </li>
             <li>
-                <a asp-area="" asp-controller="ReturnManagement" asp-action="ReturnManagement">
+                <a asp-area=""  asp-controller="Images" asp-action="Images">
                     <span class="icon"><i class="fa-solid fa-undo-alt"></i></span>
-                    <span class="title">Return Management</span>
+                    <span class="title">Images</span>
                 </a>
             </li>
 
             <li>
-                <a asp-area=""   asp-controller="Reports" asp-action="DailyReport">
+                <a asp-area="" asp-controller="SearchView" asp-action="SearchView">
                     <span class="icon"><i class="fa-solid fa-chart-line"></i></span>
-                    <span class="title">Daily Report</span>
+                    <span class="title">SearchView</span>
                 </a>
             </li>
             <li>
-                <a asp-area="" asp-controller="Reports" asp-action="PurchaseSoldReports">
+                <a asp-area="" hidden asp-controller="Reports" asp-action="PurchaseSoldReports">
                     <span class="icon"><i class="fa-solid fa-chart-line"></i></span>
                     <span class="title">Purchase Sold Report</span>
                 </a>
             </li>
             <li>
-                <a asp-area=""   asp-controller="Billing" asp-action="GenerateBarCode">
+                <a asp-area="" hidden asp-controller="Billing" asp-action="GenerateBarCode">
                     <span class="icon"><i class="fa-solid fa-barcode"></i></span>
                     <span class="title">Generate Barcode</span>
                 </a>
             </li>
             <li>
-                <a asp-area="" asp-controller="OrderManagement" asp-action="OrderManagement">
+                <a asp-area="" hidden asp-controller="OrderManagement" asp-action="OrderManagement">
                     <span class="icon"><i class="fa-solid fa-box"></i></span>
                     <span class="title">Order Management</span>
                 </a>
             </li>
             <li>
-                <a asp-area="" asp-controller="DailyExpense" asp-action="DailyExpense">
+                <a asp-area="" hidden asp-controller="DailyExpense" asp-action="DailyExpense">
                     <span class="icon"><i class="fa-solid fa-box"></i></span>
                     <span class="title">Daily Expense</span>
                 </a>

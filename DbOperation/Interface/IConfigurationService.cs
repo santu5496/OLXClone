@@ -1,42 +1,69 @@
 ﻿using DbOperation.Models;
+using DbOperation.ViewModels;
 
 namespace DbOperation.Interface
 {
     public interface IConfigurationService
+
     {
-        bool AddInventoryItem(InventoryItems Item);
+        List<CarModelNamveVewModel> GetCarModels(string? search = null);
+        List<CarBrands> GetCarBrands(string? search);
+        CarBrands? GetCarBrandById(int id);
+        bool AddCarBrand(CarBrands brand);
+        bool UpdateCarBrand(CarBrands brand);
+        bool DeleteCarBrand(int id);
 
-        List<ItemMasterView> GetInventoryItems();
+      
+        CarModels? GetCarModelById(int id);
+        bool AddCarModel(CarModels model);
+        bool UpdateCarModel(CarModels model);
+        bool DeleteCarModel(int id);
 
-        bool DeleteInventoryItem(int id);
 
-        bool UpdateInventoryItem(InventoryItems Item);
 
-        bool AddSupplier(Suppliers suppliers);
 
-        List<Suppliers> GetSupplierDts();
+        // CarVariants CRUD methods
+        bool AddCarVariant(CarVariants variant);
+        bool UpdateCarVariant(CarVariants variant);
+      
+        CarVariants GetCarVariantById(int id);
+        bool DeleteCarVariant(int id);
+        List<CarVariantViewModel> GetCarVariants(string? search = null);
+        // Optional helper for filtering variants by model or brand (if needed)
 
-        bool DeleteSupplier(int id);
+        List<CarVariants> GetCarVariantsByModel(int modelId);
+        List<CarModels> GetCarModelsByBrand(int brandId);
 
-        bool UpdateSupplier(Suppliers suppliers);
 
-        bool AddCategory(Category cat);
 
-        List<Category> GetCategory();
+        #region start VehicleCategories CRUD
 
-        bool UpdateCategory(Category category);
+        List<VehicleCategories> GetVehicleCategories(string? search = null);
+        VehicleCategories GetVehicleCategoryById(int id);
+        bool AddVehicleCategory(VehicleCategories category);
+        bool UpdateVehicleCategory(VehicleCategories category);
+        bool DeleteVehicleCategory(int id);
+        #endregion
 
-        bool DeleteCategory(int id);
+        // FuelTypes CRUD
+        List<FuelTypes> GetFuelTypes(string? search = null);
 
-        bool AddCustomer(Customers customer);
+        FuelTypes? GetFuelTypeById(int id);
 
-        List<Customers> GetCustomers();
+        bool AddFuelType(FuelTypes fuelType);
 
-        bool UpdateCustomer(Customers customer);
+        bool UpdateFuelType(FuelTypes fuelType);
 
-        bool DeleteCustomer(int id);
+        bool DeleteFuelType(int id);
 
-        dynamic GetCustomerDetailsWithUnpaidBills(int customerId);
+
+
+        List<TransmissionTypes> GetTransmissionTypes(string? search = null);
+        TransmissionTypes GetTransmissionTypeById(int id);
+        bool AddTransmissionType(TransmissionTypes transmission);
+        bool UpdateTransmissionType(TransmissionTypes transmission);
+        bool DeleteTransmissionType(int id);
+
     }
 
 }

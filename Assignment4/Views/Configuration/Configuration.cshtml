@@ -1,914 +1,1170 @@
-﻿
-<div class="container-fluid mt-3">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Configuration</title>
 
-        <li class="nav-item">
-            <a class="nav-link active" id="room-tab" data-bs-toggle="tab" href="#inventoryTab" role="tab" aria-selected="true">Inventory Items</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link " id="profile-tab" data-bs-toggle="tab" href="#supplier" role="tab" aria-controls="profile" aria-selected="true">Supplier</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link " id="profile-tab" data-bs-toggle="tab" href="#category" role="tab" aria-controls="profile" aria-selected="true">Category</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link " id="profile-tab" data-bs-toggle="tab" href="#customerTab" role="tab" aria-controls="profile" aria-selected="true">Customer</a>
-        </li>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    </ul>
+    <style>
+        .text-center {
+            text-align: center !important;
+        }
 
-    <div class="tab-content mt-2" id="myTabContent">
+        .me-2 {
+            margin-right: 0.5rem !important;
+        }
 
-        <div class="tab-pane fade active show" id="inventoryTab" role="tabpanel">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearInventoryStockModalFieldsfcn()" data-bs-toggle="modal" data-bs-target="#inventoryItemModal">
-                Add InventoryItem
-            </button>
-            <table id="InventoryItemTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Item Name</th>
-                        <th>Item Type</th>
-                        <th>Description</th>
-                        <th>Categeory</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated here via JavaScript -->
-                </tbody>
-            </table>
+        .btn-edit, .btn-delete {
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+            .btn-edit:hover {
+                color: #28a745 !important;
+                transform: scale(1.1);
+            }
+
+            .btn-delete:hover {
+                color: #dc3545 !important;
+                transform: scale(1.1);
+            }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .nav-tabs .nav-link:hover {
+            border-color: #007bff;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-fluid mt-3">
+        <ul class="nav nav-tabs" id="carTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="brand-tab" data-bs-toggle="tab" data-bs-target="#brandTab" type="button" role="tab">Car Brands</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="model-tab" data-bs-toggle="tab" data-bs-target="#modelTab" type="button" role="tab">Car Models</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="variant-tab" data-bs-toggle="tab" data-bs-target="#variantTab" type="button" role="tab">Car Variants</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="category-tab" data-bs-toggle="tab" data-bs-target="#categoryTab" type="button" role="tab">Vehicle Categories</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="fuelType-tab" data-bs-toggle="tab" data-bs-target="#fuelTypeTab" type="button" role="tab">Fuel Types</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="transmission-tab" data-bs-toggle="tab" data-bs-target="#transmissionTab" type="button" role="tab">Transmission Types</button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3" id="carTabContent">
+            <!-- Brand Tab -->
+            <div class="tab-pane fade show active" id="brandTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="ClearCarBrandModalFields()">Add Car Brand</button>
+                <table id="CarBrandTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Brand Name</th><th>Country</th><th>Website</th><th>Luxury</th><th>Active</th><th>Notes</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Model Tab -->
+            <div class="tab-pane fade" id="modelTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="ClearCarModelModalFields()">Add Car Model</button>
+                <table id="CarModelTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Brand</th><th>Model Name</th><th>Launch Year</th><th>Discontinued</th><th>Generation</th><th>Body Type</th><th>Active</th><th>Description</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Variant Tab -->
+            <div class="tab-pane fade" id="variantTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearCarVariantModalFields()">Add Car Variant</button>
+                <table id="CarVariantTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Brand</th><th>Model</th><th>Variant</th><th>Trim</th><th>Launch Price</th><th>Current Price</th><th>Active</th><th>Features</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Category Tab -->
+            <div class="tab-pane fade" id="categoryTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearVehicleCategoryModalFields()">Add Vehicle Category</button>
+                <table id="VehicleCategoryTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Category</th><th>Description</th><th>Seating</th><th>Price Range</th><th>Popularity</th><th>Active</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Fuel Type Tab -->
+            <div class="tab-pane fade" id="fuelTypeTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearFuelTypeModalFields()">Add Fuel Type</button>
+                <table id="FuelTypeTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Fuel Type</th><th>Description</th><th>Eco Friendly</th><th>Price</th><th>Efficiency</th><th>Maintenance</th><th>Availability</th><th>Active</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Transmission Tab -->
+            <div class="tab-pane fade" id="transmissionTab" role="tabpanel">
+                <button type="button" class="btn btn-primary mt-2 mb-2" onclick="clearTransmissionModalFields()">Add Transmission Type</button>
+                <table id="TransmissionTable" class="table table-striped table-bordered">
+                    <thead><tr><th>Sl No</th><th>Name</th><th>Full Name</th><th>Description</th><th>Ease of Driving</th><th>Fuel Impact</th><th>Maintenance</th><th>Active</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
-        <div class="tab-pane fade " id="supplier" role="tabpanel">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearSupplierDtsModalFieldsfcn()">
-                Add Supplier
-            </button>
-            <table id="SupplierTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Supplier Name</th>
-                        <th>Contact No</th>
-                        <th>Address</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated here via JavaScript -->
-                </tbody>
-            </table>
 
-        </div>
-
-        <div class="tab-pane fade " id="category" role="tabpanel">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearCategoryModalFieldsFcn()">
-                Add Category
-            </button>
-            <table id="CategoryTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Category Name</th>
-                        <th>Description</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated here via JavaScript -->
-                </tbody>
-            </table>
-
-        </div>
-
-        <div class="tab-pane fade " id="customerTab" role="tabpanel">
-            <button type="button" class="customBtn mt-2 mb-2" onclick="ClearCustomerModalFieldsFcn()">
-                Add Customer
-            </button>
-            <table id="CustomerTable" class="dataTables_wrapper table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sl No</th>
-                        <th>Customer Name</th>
-                        <th>Address</th>
-                        <th>Phone No</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated here via JavaScript -->
-                </tbody>
-            </table>
-        </div>
-
-        @* Add Inventory Item Pop-up *@
-        <div class="modal fade" id="inventoryItemModal" tabindex="-1" aria-labelledby="addInventoryItemModalLabel" aria-hidden="true">
+        <!-- Modals -->
+        <!-- Car Brand Modal -->
+        <div class="modal fade" id="carBrandModal" tabindex="-1">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addInventoryItemModalLabel">Add Inventory Item</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title">Add / Edit Car Brand</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="inventoryItemform">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="ingrediantNameInput" class="form-label">Item Name</label>
-                                    <input type="text" class="form-control ClearInventoryItemModalData requiredfield requiredfield_Inv" onkeyup="CheckNameAlreadyExist(this,'InventoryItemTable','itemNameMessage','btnInvetoryItemModal')" id="ingrediantNameInput" required>
-                                    <span id="itemNameMessage"></span>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="itemType" class="form-label">Item Type</label>
-                                    <select class="form-control form-select ClearInventoryItemModalData requiredfield requiredfield_Inv" id="itemType" onchange="HideUnitAndPrice(this.value)" required>
-                                        <option value="">Select Item Type</option>
-                                        <option value="raw">Raw</option>
-                                        <option value="finishedgoods">Finished Goods</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3 nonRaw">
-                                    <label for="categoryType" class="form-label">Category</label>
-                                    <select class="form-control ClearInventoryItemModalData form-select" id="categoryType" required>
-                                        <option value="">Select Category</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="descriptionInput" class="form-label">Description</label>
-                                    <textarea rows="5" cols="30" class="form-control ClearInventoryItemModalData" id="descriptionInput"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="mb-3 nonRaw">
-                                <label for="itemPrice" class="form-label">Item Price</label>
-                                <input type="number" class="form-control ClearInventoryItemModalData" id="itemPrice" required>
-                            </div>
-                            <div class="row">
-                                <div class="mb-3 col-md-6 nonRaw">
-                                    <label for="unit" class="form-label">Quantity</label>
-                                    <input type="text" class="form-control ClearInventoryItemModalData" id="quantityUnit" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="unit" class="form-label">Unit</label>
-                                    <select type="text" class="form-control form-select ClearInventoryItemModalData" id="unit">
-                                        <option value="kg">kg</option>
-                                        <option value="ltr">ltr</option>
-                                        <option value="g">g</option>
-                                        <option value="ml">ml</option>
-                                        <option value="mg">mg</option>
-                                        <option value="pcs">pcs</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <input type="hidden" class="ClearInventoryItemModalData" id="selectedInventoryItemID">
-                        </form>
+                        <input type="hidden" id="selectedCarBrandID" />
+                        <div class="mb-3">
+                            <label class="form-label">Brand Name</label>
+                            <input type="text" class="form-control requiredfield_CarBrand" id="brandNameInput" onkeyup="CheckNameAlreadyExist(this, 'CarBrandTable', 'brandNameMessage', 'btnCarBrandSave')" />
+                            <span id="brandNameMessage"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Country of Origin</label>
+                            <input type="text" class="form-control" id="brandCountryInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Website</label>
+                            <input type="url" class="form-control" id="brandWebsiteInput" />
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="isLuxuryBrandInput" />
+                            <label class="form-check-label">Is Luxury Brand</label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="isActiveBrandInput" checked />
+                            <label class="form-check-label">Is Active</label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" id="brandNotesInput" rows="3"></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" onclick="saveInventoryItem()" id="btnInvetoryItemModal" class="btn btn-primary">Save</button>
+                        <button type="button" id="btnCarBrandSave" onclick="saveCarBrand()" class="btn btn-primary">Save</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        @* Add Supplier Details Pop-up *@
-        <div class="modal fade" id="supplierDtsModal" tabindex="-1" aria-labelledby="addSupplierDtsModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <!-- Car Model Modal -->
+        <div class="modal fade" id="carModelModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addSupplierDtsModalLabel">Add Supplier Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title">Add / Edit Car Model</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="supplierDtsform">
-                            <div class="mb-3">
-                                <label for="supplierNameInput" class="form-label">Supplier Name</label>
-                                <input type="text" class="form-control ClearSupplierDtsModalData requiredfield requiredfield_Sup" onkeyup="CheckNameAlreadyExist(this,'SupplierTable','supplierNameMessage','btnSupplierModal')" id="supplierNameInput" required>
-                                <span id="supplierNameMessage"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label for="supplierContactInput" class="form-label">Conatct No</label>
-                                <input type="text" class="form-control ClearSupplierDtsModalData requiredfield_Sup requiredfield PhonenumberValidation" id="supplierContactInput" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="supplierAddressInput" class="form-label">Address</label>
-                                <textarea rows="5" cols="30" class="form-control ClearSupplierDtsModalData" id="supplierAddressInput"></textarea>
-                            </div>
-                            @* <div class="mb-3">
-                                <label for="supplierStateInput" class="form-label">State</label>
-                                <input type="text" class="form-control ClearSupplierDtsModalData requiredfield_Sup requiredfield" id="supplierStateInput" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="supplierCityInput" class="form-label">City</label>
-                                <input type="text" class="form-control ClearSupplierDtsModalData requiredfield_Sup requiredfield" id="supplierCityInput" required>
-                            </div> *@
-
-                            <input type="hidden" class="ClearSupplierDtsModalData" id="selectedSupplierID">
-
-                        </form>
+                        <input type="hidden" id="selectedCarModelID" />
+                        <div class="mb-3">
+                            <label class="form-label">Brand</label>
+                            <select class="form-select requiredfield_CarModel" id="modelBrandDropdown">
+                                <option value="">Select Brand</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Model Name</label>
+                            <input type="text" class="form-control requiredfield_CarModel" id="modelNameInput" onkeyup="CheckNameAlreadyExistModel(this, 'CarModelTable', 'modelNameMessage', 'btnCarModelSave')" />
+                            <span id="modelNameMessage"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Launch Year</label>
+                            <input type="number" class="form-control" id="modelLaunchYearInput" min="1900" max="2099" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Discontinued Year</label>
+                            <input type="number" class="form-control" id="modelDiscontinuedYearInput" min="1900" max="2099" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Generation</label>
+                            <input type="text" class="form-control" id="modelGenerationInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Body Type</label>
+                            <input type="text" class="form-control" id="modelBodyTypeInput" />
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="isActiveModelInput" checked />
+                            <label class="form-check-label">Is Active</label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="modelDescriptionInput" rows="3"></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" onclick="saveSupplierDetails()" id="btnSupplierModal" class="btn btn-primary">Save</button>
+                        <button type="button" id="btnCarModelSave" onclick="saveCarModel()" class="btn btn-primary">Save</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        @* Add Category Details Pop-up *@ 
-        <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <!-- Car Variant Modal -->
+        <div class="modal fade" id="carVariantModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="categoryModalLabel">Add Category</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title">Add / Edit Car Variant</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="categoryItemform">
-                            <div class="mb-3">
-                                <label for="txtCategoryName" class="form-label">Category Name</label>
-                                <input type="text" class="form-control ClearCategoryModalData requiredfield requiredfield_Cat" onkeyup="CheckNameAlreadyExist(this,'CategoryTable','categoryNameMessage','btnCategoryModal')" id="txtCategoryName" required>
-                                <span id="categoryNameMessage"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label for="txtCategoryDesc" class="form-label">Description</label>
-                                <textarea rows="5" cols="30" class="form-control ClearCategoryaModalDat" id="txtCategoryDesc"></textarea>
-                            </div>
-                            <input type="hidden" class="ClearCategoryModalData" id="selectedCategoryID">
-
-                        </form>
+                        <input type="hidden" id="selectedCarVariantID" />
+                        <div class="mb-3">
+                            <label class="form-label">Brand</label>
+                            <select class="form-select requiredfield_CarVariant" id="variantBrandDropdown">
+                                <option value="">Select Brand</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Model</label>
+                            <select class="form-select requiredfield_CarVariant" id="variantModelDropdown">
+                                <option value="">Select Model</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Variant Name</label>
+                            <input type="text" class="form-control requiredfield_CarVariant" id="variantNameInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Trim Level</label>
+                            <input type="text" class="form-control" id="variantTrimLevelInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Launch Price</label>
+                            <input type="number" class="form-control" id="variantLaunchPriceInput" step="0.01" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Current Price</label>
+                            <input type="number" class="form-control" id="variantCurrentPriceInput" step="0.01" />
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="isActiveVariantInput" checked />
+                            <label class="form-check-label">Is Active</label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Features</label>
+                            <textarea class="form-control" id="variantFeaturesInput" rows="3"></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" onclick="saveCategory()" id="btnCategoryModal" class="btn btn-primary">Save</button>
+                        <button type="button" id="btnCarVariantSave" onclick="saveCarVariant()" class="btn btn-primary">Save</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        @* Add Customer Details Pop-up *@ 
-        <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <!-- Vehicle Category Modal -->
+        <div class="modal fade" id="vehicleCategoryModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="customerModalLabel">Add Customer</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title">Add / Edit Vehicle Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="categoryItemform">
-                            <div class="mb-3">
-                                <label for="txtCustomerName" class="form-label">Customer Name</label>
-                                <input type="text" class="form-control ClearCustomerModalData requiredfield requiredfield_Cust" onkeyup="CheckNameAlreadyExist(this,'CustomerTable','custNameMessage','btnCustomerModal')" id="txtCustomerName" required>
-                                <span id="custNameMessage"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label for="txtCustomerAddress" class="form-label">Address</label>
-                                <textarea rows="5" cols="30" class="form-control ClearCustomerModalData" id="txtCustomerAddress"></textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="txtCustomerPhone" class="form-label">Phone No</label>
-                                <input type="text" class="form-control ClearCustomerModalData requiredfield requiredfield_Cust" id="txtCustomerPhone" required>
-                                <small id="phoneError" class="text-danger"></small>
-                            </div>
-
-                            <input type="hidden" class="ClearCustomerModalData" id="selectedcustomerID">
-
-                        </form>
+                        <input type="hidden" id="selectedVehicleCategoryID" />
+                        <div class="mb-3">
+                            <label class="form-label">Category Name</label>
+                            <input type="text" class="form-control requiredfield_VehicleCategory" id="categoryNameInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="categoryDescriptionInput" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Typical Seating Capacity</label>
+                            <input type="text" class="form-control" id="typicalSeatingCapacityInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Typical Price Range</label>
+                            <input type="text" class="form-control" id="typicalPriceRangeInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Popularity Rank</label>
+                            <input type="number" class="form-control" id="popularityRankInput" min="1" />
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="isActiveCategoryInput" checked />
+                            <label class="form-check-label">Is Active</label>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" onclick="saveCustomer()" id="btnCustomerModal" class="btn btn-primary">Save</button>
+                        <button type="button" id="btnVehicleCategorySave" onclick="saveVehicleCategory()" class="btn btn-primary">Save</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Fuel Type Modal -->
+        <div class="modal fade" id="fuelTypeModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add / Edit Fuel Type</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="selectedFuelTypeID" />
+                        <div class="mb-3">
+                            <label class="form-label">Fuel Type Name</label>
+                            <input type="text" class="form-control requiredfield_FuelType" id="fuelTypeNameInput" onkeyup="checkFuelTypeNameExists(this)" />
+                            <span id="fuelTypeNameMessage"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="fuelTypeDescriptionInput" rows="3"></textarea>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="isEcoFriendlyInput" />
+                            <label class="form-check-label">Is Eco Friendly</label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Typical Fuel Price</label>
+                            <input type="number" class="form-control" id="typicalFuelPriceInput" step="0.01" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fuel Efficiency Rating</label>
+                            <input type="text" class="form-control" id="fuelEfficiencyRatingInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Maintenance Cost Level</label>
+                            <input type="text" class="form-control" id="maintenanceCostLevelInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Availability Level</label>
+                            <input type="text" class="form-control" id="availabilityLevelInput" />
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="isActiveFuelTypeInput" checked />
+                            <label class="form-check-label">Is Active</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnFuelTypeSave" onclick="saveFuelType()" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transmission Modal -->
+        <div class="modal fade" id="transmissionModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add / Edit Transmission Type</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="selectedTransmissionId" />
+                        <div class="mb-3">
+                            <label class="form-label">Transmission Name</label>
+                            <input type="text" class="form-control requiredfield_Transmission" id="transmissionNameInput" onkeyup="checkTransmissionNameExists(this)" />
+                            <span id="transmissionNameMessage"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="transmissionFullNameInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="transmissionDescriptionInput" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ease of Driving</label>
+                            <input type="text" class="form-control" id="easeOfDrivingInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fuel Efficiency Impact</label>
+                            <input type="text" class="form-control" id="fuelEfficiencyImpactInput" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Maintenance Cost</label>
+                            <input type="text" class="form-control" id="maintenanceCostInput" />
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="isActiveTransmissionInput" checked />
+                            <label class="form-check-label">Is Active</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnTransmissionSave" onclick="saveTransmissionType()" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<script>
-
-       $(document).ready(function() {
-           $('#InventoryItemTable').on('click', '.btn-edit', function () {
-
-                   var fullData = JSON.parse($(this).attr('data-full-data'));
-
-                   editInventoryItem(fullData);
-
-               });
-
-           $('#InventoryItemTable').on('click', '.btn-delete', function () {
-
-                   var ID = JSON.parse($(this).attr('data-id'));
-
-                   DeleteWarning(deleteInventoryItem,ID);
-
-
-               });
-
-           $('#SupplierTable').on('click', '.btn-edit', function () {
-
-                   var fullData = JSON.parse($(this).attr('data-full-data'));
-
-                   editSupplierdts(fullData);
-
-               });
-
-
-           $('#SupplierTable').on('click', '.btn-delete', function () {
-
-                   var ID = JSON.parse($(this).attr('data-id'));
-
-                   DeleteWarning(deleteSupplierdts,ID);
-
-
-               });
-
-           $('#CategoryTable').on('click', '.btn-edit', function () {
-
-                   var fullData = JSON.parse($(this).attr('data-full-data'));
-
-                   editCategory(fullData);
-
-               });
-
-           $('#CategoryTable').on('click', '.btn-delete', function () {
-
-                   var ID = JSON.parse($(this).attr('data-id'));
-
-                   DeleteWarning(deleteCategory,ID);
-
-
-               });
-
-
-           $('#CustomerTable').on('click', '.btn-edit', function () {
-
-                   var fullData = JSON.parse($(this).attr('data-full-data'));
-
-                   editCustomerDts(fullData);
-
-               });
-
-           $('#CustomerTable').on('click', '.btn-delete', function () {
-
-                   var ID = JSON.parse($(this).attr('data-id'));
-
-                   DeleteWarning(deleteCustomer,ID);
-
-
-               });
-
-
-           getInventoryItems();
-           getSupplierDts();
-           getCategory();
-           getCustomerDts();
-       });
-
-         //to validate phoneNo
-         document.getElementById("txtCustomerPhone").addEventListener("input", function () {
-           let phoneInput = this.value.trim();
-           let phoneError = document.getElementById("phoneError");
-
-
-           let phonePattern = /^[0-9]{10}$/;
-
-           if (!phonePattern.test(phoneInput)) {
-               phoneError.textContent = "Enter a valid 10-digit phone number.";
-           } else {
-               phoneError.textContent = "";
-           }
-       });
-
-
-        function ClearInventoryStockModalFieldsfcn()
-         {
-           $('.ClearInventoryItemModalData').val('');
-           $('#inventoryItemModal').modal('toggle');
-         }
-
-         function ClearSupplierDtsModalFieldsfcn()
-         {
-           $('.ClearSupplierDtsModalData').val('');
-           $("#supplierDtsModal").modal('toggle');
-         }
-
-         function ClearCategoryModalFieldsFcn()
-         {
-             $('.ClearCategoryModalData').val('');
-             $('#categoryModal').modal('toggle');
-         }
-
-         function ClearCustomerModalFieldsFcn()
-         {
-            $('.ClearCustomerModalData').val('');
-            $('#customerModal').modal('toggle');
-         }
-
-
-       function ClearInventoryItemModalData()
-       {
-           $('.ClearInventoryItemModalData').val('');
-       }
-
-       function ClearSupplierDtsModalData()
-       {
-           $('.ClearSupplierDtsModalData').val('');
-       }
-
-       function ClearCategoryModalData()
-       {
-           $('.ClearCategoryModalData').val('');
-       }
-
-           function ClearCustomerModalData()
-       {
-           $('.ClearCustomerModalData').val('');
-       }
-
-
-       function HideUnitAndPrice(value)
-       {
-           if(value == 'raw')
-           {
-               $('.nonRaw').hide();
-           }
-           else
-           {
-               $('.nonRaw').show();
-           }
-       }
-
-       // Function to save or update InventoryItem
-        function saveInventoryItem() {
-            if(CheckEmptyFields('Inv')){
-           var itemdata = {};
-            itemdata.itemId = $('#selectedInventoryItemID').val(); // Retrieve ID from hidden input
-            itemdata.itemName = $('#ingrediantNameInput').val(); // Retrieve ingredientName from input
-            itemdata.itemDescription = $('#descriptionInput').val(); // Retrieve description from input
-            itemdata.itemType = $('#itemType').val()
-            itemdata.unit = $('#unit').val()
-            itemdata.pricePerUnit = $('#itemPrice').val()
-            itemdata.fkCategoryId = $('#categoryType').val()
-            itemdata.priceQuantity = $('#quantityUnit').val()
-           var url = '/Configuration/AddOrEditInventoryItem' ; // Determine if updating or adding
-
-           $.ajax({
-               url: url,
-               type: 'POST',
-               data: {
-                   item : itemdata
-               },
-               success: function (response) {
-                   if (response) {
-                       msgPopup('success', 'data saved successfully');
-                       $('#inventoryItemModal').modal('toggle');
-                       getInventoryItems();
-                   } else {
-                       alert('Failed to ' + (id ? 'update' : 'add') + ' data.');
-                   }
-               },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-           });
-           }
-       }
-
-       // Function to getInventoryItems
-       function getInventoryItems() {
-            var table = InitializeDatatableWithSlNo('InventoryItemTable','InventoryItemMaster');
-              $.ajax({
-                   url: '/Configuration/GetInventoryItems',
-                   type: 'POST',
-                   success: function (response) {
-                           response.forEach(function (item) {
-
-                   table.row.add([
-
-                       '',
-
-                       item.itemName,
-
-                       item.itemType,
-
-                       item.itemDescription,
-
-                       item.categeoryName,
-
-                       '<div class="contentCenter">' +
-
-                       '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(item) + '\'></i>' +
-
-                       '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(item.itemId) + '\'></i>' +
-
-                       '</div>'
-
-                   ]).draw();
-
-                   });
-
-                       },
-                   error: function (xhr, status, error) {
-                       alert('An error occurred: ' + error);
-                   }
-               });
-
-           }
-
-           //function to delete Inventory Item
-           function deleteInventoryItem(id) {
-
-       $.ajax({
-           url: '/Configuration/DeleteInventoryItems',
-           type: 'POST',
-           data: {
-               id : id
-           },
-           success: function (response) {
-
-               if(response)
-               {
-                   msgPopup('success', 'data deleted successfully');
-               }
-               else
-               {
-                   msgPopup('error', response.toString());
-               }
-
-               getInventoryItems();
-               },
-           error: function (xhr, status, error) {
-               alert('An error occurred: ' + error);
-           }
-       });
-           }
-
-           function editInventoryItem(data) {
-               $('#selectedInventoryItemID').val(data.itemId);
-               $('#ingrediantNameInput').val(data.itemName);
-               $('#descriptionInput').val(data.itemDescription);
-               $('#itemType').val(data.itemType);
-               $('#categoryType').val(data.fkCategoryId);
-               $('#unit').val(data.unit);
-               $('#itemPrice').val(data.pricePerUnit);
-               $('#quantityUnit').val(data.priceQuantity);
-
-               $('#inventoryItemModal').modal('toggle');
-
-           }
-
-
-           //function to save or update SupplierDetails
-           function saveSupplierDetails() {
-               if(CheckEmptyFields('Sup')){
-               var supplierdata = {};
-               supplierdata.supplierId = $('#selectedSupplierID').val();
-               supplierdata.supplierName = $('#supplierNameInput').val();
-               supplierdata.phoneNumber = $('#supplierContactInput').val();
-               supplierdata.address = $('#supplierAddressInput').val();
-               supplierdata.state = "Karnataka";//HardCoded Values
-               supplierdata.city = "Belgaum";
-               var url = '/Configuration/AddOrEditSupplierDetails'
-
-               $.ajax({
-               url: url,
-               type: 'POST',
-               data: {
-                   supplier : supplierdata
-               },
-               success: function (response) {
-                   if (response) {
-                       msgPopup('success', 'data saved successfully');
-                       $('#supplierDtsModal').modal('toggle');
-                       getSupplierDts();
-                   } else {
-                       alert('Failed to ' + (id ? 'update' : 'add') + ' data.');
-                   }
-               },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-           });
-           }
-       }
-
-       //Get Supplier Details
-       function getSupplierDts() {
-               var table = InitializeDatatableWithSlNo('SupplierTable',"Suppliers");
-              $.ajax({
-                   url: '/Configuration/GetSupplierDts',
-                   type: 'POST',
-                   success: function (response) {
-                           response.forEach(function (supplier) {
-
-                   table.row.add([
-                       '',
-                       supplier.supplierName,
-
-                       supplier.phoneNumber,
-
-                       supplier.address,
-
-                       '<div class="contentCenter">' +
-
-                       '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(supplier) + '\'></i>' +
-
-                       '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(supplier.supplierId) + '\'></i>' +
-
-                       '</div>'
-
-                   ]).draw();
-
-                   });
-
-                       },
-                   error: function (xhr, status, error) {
-                       alert('An error occurred: ' + error);
-                   }
-               });
-
-           }
-
-           function editSupplierdts(data)
-           {
-               $('#selectedSupplierID').val(data.supplierId);
-               $('#supplierNameInput').val(data.supplierName);
-               $('#supplierContactInput').val(data.phoneNumber);
-               $('#supplierAddressInput').val(data.address);
-               $('#supplierStateInput').val(data.state);
-               $('#supplierCityInput').val(data.city);
-               $('#supplierDtsModal').modal('toggle');
-
-
-           }
-
-           // function to delete Supplier details
-               function deleteSupplierdts(id) {
-
-               $.ajax({
-                   url: '/Configuration/DeleteSupplier',
-                   type: 'POST',
-                   data: {
-                       id : id
-                   },
-                   success: function (response) {
-
-                       if(response)
-                       {
-                           msgPopup('success', 'data deleted successfully');
-                       }
-                       else
-                       {
-                           msgPopup('error', response.toString());
-                       }
-
-                       getSupplierDts();
-                       },
-                   error: function (xhr, status, error) {
-                       alert('An error occurred: ' + error);
-                   }
-               });
-           }
-
-           //function to save category
-            function saveCategory() {
-            if(CheckEmptyFields('Cat')){
-           var catdata = {};
-           catdata.id = $('#selectedCategoryID').val(); // Retrieve ID from hidden input
-           catdata.categoryName = $('#txtCategoryName').val(); // Retrieve ingredientName from input
-           catdata.description = $('#txtCategoryDesc').val(); // Retrieve description from input
-
-           $.ajax({
-               url: '/Configuration/AddorEditCategory',
-               type: 'POST',
-               data: {
-                   cat : catdata
-               },
-               success: function (response) {
-                   if (response) {
-                       msgPopup('success', 'data saved successfully');
-                       $('#categoryModal').modal('toggle');
-                       getCategory();
-                   } else {
-                       alert('Failed to ' + (id ? 'update' : 'add') + ' data.');
-                   }
-               },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-           });
-           }
-       }
-
-           function getCategory() {
-            //var table = $('#CategoryTable').DataTable();
-            var table = InitializeDatatableWithSlNo('CategoryTable',"Category");
-              $.ajax({
-                   url: '/Configuration/GetCategory',
-                   type: 'POST',
-                   success: function (response) {
-                           response.forEach(function (cat) {
-
-                   table.row.add([
-
-                       '',
-
-                       cat.categoryName,
-
-                       cat.description,
-
-                       '<div class="contentCenter">' +
-
-                       '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(cat) + '\'></i>' +
-
-                       '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(cat.id) + '\'></i>' +
-
-                       '</div>'
-
-                   ]).draw();
-
-                   });
-
-                   let categoryDropdown = document.getElementById('categoryType');
-
-                   response.forEach(category => {
-                       let option = document.createElement('option');
-                       option.value = category.id; // Assuming 'id' is the primary key
-                       option.textContent = category.categoryName;
-                       categoryDropdown.appendChild(option);
-                   });
-
-
-
-                       },
-                   error: function (xhr, status, error) {
-                       alert('An error occurred: ' + error);
-                   }
-               });
-
-           }
-
-           function editCategory(data) {
-               $('#selectedCategoryID').val(data.id);
-               $('#txtCategoryName').val(data.categoryName);
-               $('#txtCategoryDesc').val(data.description);
-               $('#categoryModal').modal('toggle');
-
-           }
-
-           function deleteCategory(id) {
-
-           $.ajax({
-               url: '/Configuration/DeleteCategory',
-               type: 'POST',
-               data: {
-                   id : id
-               },
-               success: function (response) {
-
-                   if(response)
-                   {
-                       msgPopup('success', 'data deleted successfully');
-                   }
-                   else
-                   {
-                       msgPopup('error', response.toString());
-                   }
-
-                   getCategory();
-                   },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-       });
-           }
-
-           //function to save Customer
-           function saveCustomer() {
-            if(CheckEmptyFields('Cust')){
-           var customerData = {};
-            customerData.customerId = $('#selectedcustomerID').val(); // Retrieve ID from hidden input
-            customerData.customerName = $('#txtCustomerName').val(); // Retrieve customerName from hidden input
-            customerData.phoneNo = $('#txtCustomerPhone').val(); // Retrieve phoneNo from input
-            customerData.address = $('#txtCustomerAddress').val(); // Retrieve address from input
-           var url = '/Configuration/AddorEditCustomer' ; // Determine if updating or adding
-
-           $.ajax({
-               url: url,
-               type: 'POST',
-               data: {
-                   cust : customerData
-               },
-               success: function (response) {
-                   if (response) {
-                       msgPopup('success', 'data saved successfully');
-                       $('#customerModal').modal('toggle');
-                       getCustomerDts();
-                   } else {
-                       alert('Failed to ' + (id ? 'update' : 'add') + ' data.');
-                   }
-               },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-           });
-           }
-       }
-
-       function getCustomerDts() {
-            var table = InitializeDatatableWithSlNo('CustomerTable','Customers');
-              $.ajax({
-                   url: '/Configuration/GetCustomer',
-                   type: 'POST',
-                   success: function (response) {
-                           response.forEach(function (customer) {
-
-                   table.row.add([
-
-                       '',
-
-                       customer.customerName,
-
-                       customer.address,
-
-                       customer.phoneNo,
-
-                       '<div class="contentCenter">' +
-
-                       '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-full-data=\'' + JSON.stringify(customer) + '\'></i>' +
-
-                       '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + JSON.stringify(customer.customerId) + '\'></i>' +
-
-                       '</div>'
-
-                   ]).draw();
-
-                   });
-
-                       },
-                   error: function (xhr, status, error) {
-                       alert('An error occurred: ' + error);
-                   }
-               });
-
-           }
-
-           function deleteCustomer(id) {
-
-           $.ajax({
-               url: '/Configuration/DeleteCustomer',
-               type: 'POST',
-               data: {
-                   id : id
-               },
-               success: function (response) {
-
-                   if(response)
-                   {
-                       msgPopup('success', 'data deleted successfully');
-                   }
-                   else
-                   {
-                       msgPopup('error', response.toString());
-                   }
-
-                   getCustomerDts();
-                   },
-               error: function (xhr, status, error) {
-                   alert('An error occurred: ' + error);
-               }
-       });
-           }
-
-    function editCustomerDts(data) {
-        $('#selectedcustomerID').val(data.customerId);
-        $('#txtCustomerName').val(data.customerName);
-        $('#txtCustomerAddress').val(data.address);
-        $('#txtCustomerPhone').val(data.phoneNo);
-        $('#customerModal').modal('toggle');
-
-    }
-
-
-           //validations
-    function CheckNameAlreadyExist(input,tblId,messageTextId,buttonId){
-           const enteredName = input.value.trim().toLowerCase();
-
-           const table = $('#'+tblId).DataTable();
-
-           const nameExists = table
-               .column(1)
-               .data()
-               .toArray()
-               .some(name => name.trim().toLowerCase() === enteredName);
-           if(nameExists){
-                $('#'+messageTextId).text('Name already exists!').css('color', 'red');
-                $('#'+ buttonId).prop('disabled',true);
-           }else{
-                $('#'+messageTextId).text('');
-                 $('#'+ buttonId).prop('disabled',false);
-           }
-    }
-
-
-</script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/bootstrap.bundle.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        // Helper functions
+        function msgPopup(type, message) { alert(message); }
+        function DeleteWarning(deleteFunction, id) { if (confirm('Are you sure?')) deleteFunction(id); }
+
+        // Initialize DataTable with Serial Numbers
+        function InitializeDatatableWithSlNo(tableId, tableName) {
+            if ($.fn.DataTable.isDataTable('#' + tableId)) $('#' + tableId).DataTable().destroy();
+            var table = $('#' + tableId).DataTable({
+                responsive: true, lengthChange: false, autoWidth: false, searching: true, ordering: true,
+                info: true, paging: true, pageLength: 10,
+                columnDefs: [{ targets: 0, data: null, defaultContent: "", orderable: false, searchable: false, className: "text-center", width: "50px" }],
+                order: [[1, 'asc']],
+                drawCallback: function(settings) {
+                    var api = this.api(), start = api.page.info().start;
+                    api.column(0, {page: 'current'}).nodes().each(function(cell, i) { cell.innerHTML = start + i + 1; });
+                }
+            });
+            return table;
+        }
+
+        $(document).ready(function () {
+            // Event handlers
+            $('#TransmissionTable').on('click', '.btn-edit', function () { editTransmission(JSON.parse($(this).attr('data-full-data'))); });
+            $('#TransmissionTable').on('click', '.btn-delete', function () { DeleteWarning(deleteTransmissionType, JSON.parse($(this).attr('data-id'))); });
+            $('#CarBrandTable').on('click', '.btn-edit', function () { editCarBrand(JSON.parse($(this).attr('data-full-data'))); });
+            $('#CarBrandTable').on('click', '.btn-delete', function () { DeleteWarning(deleteCarBrand, JSON.parse($(this).attr('data-id'))); });
+            $('#CarModelTable').on('click', '.btn-edit', function () { editCarModel(JSON.parse($(this).attr('data-full-data'))); });
+            $('#CarModelTable').on('click', '.btn-delete', function () { DeleteWarning(deleteCarModel, JSON.parse($(this).attr('data-id'))); });
+            $('#CarVariantTable').on('click', '.btn-edit', function () { editCarVariant(JSON.parse($(this).attr('data-full-data'))); });
+            $('#CarVariantTable').on('click', '.btn-delete', function () { DeleteWarning(deleteCarVariant, JSON.parse($(this).attr('data-id'))); });
+            $('#VehicleCategoryTable').on('click', '.btn-edit', function() { editVehicleCategory(JSON.parse($(this).attr('data-full-data'))); });
+            $('#VehicleCategoryTable').on('click', '.btn-delete', function() { DeleteWarning(deleteVehicleCategory, JSON.parse($(this).attr('data-id'))); });
+            $('#FuelTypeTable').on('click', '.btn-edit', function () { editFuelType(JSON.parse($(this).attr('data-full-data'))); });
+            $('#FuelTypeTable').on('click', '.btn-delete', function () { DeleteWarning(deleteFuelType, JSON.parse($(this).attr('data-id'))); });
+            $('#variantBrandDropdown').on('change', loadModelsByBrand);
+            $('#transmission-tab').on('shown.bs.tab', getTransmissionTypes);
+
+            // Initial loads
+            populateVariantBrandDropdown();
+            populateBrandDropdown();
+            getCarBrands();
+            getCarModels();
+            getCarVariants();
+            getVehicleCategories();
+            getFuelTypes();
+            getTransmissionTypes();
+        });
+
+        // CAR BRAND FUNCTIONS
+        function ClearCarBrandModalFields() {
+            $('#selectedCarBrandID').val('');
+            $('#brandNameInput').val('');
+            $('#brandCountryInput').val('');
+            $('#brandWebsiteInput').val('');
+            $('#isLuxuryBrandInput').prop('checked', false);
+            $('#isActiveBrandInput').prop('checked', true);
+            $('#brandNotesInput').val('');
+            $('#brandNameMessage').text('');
+            $('#btnCarBrandSave').prop('disabled', false);
+            $('#carBrandModal').modal('show');
+        }
+
+        function saveCarBrand() {
+            if (CheckEmptyFields('CarBrand')) {
+                var brandData = {
+                    BrandId: $('#selectedCarBrandID').val() || 0,
+                    BrandName: $('#brandNameInput').val().trim(),
+                    BrandCountryOfOrigin: $('#brandCountryInput').val().trim(),
+                    BrandWebsite: $('#brandWebsiteInput').val().trim(),
+                    IsLuxuryBrand: $('#isLuxuryBrandInput').is(':checked'),
+                    IsActiveBrand: $('#isActiveBrandInput').is(':checked'),
+                    BrandNotes: $('#brandNotesInput').val().trim()
+                };
+                $.ajax({
+                    url: '/Configuration/AddOrEditCarBrand',
+                    type: 'POST',
+                    data: brandData,
+                    success: function (response) {
+                        if (response) {
+                            msgPopup('success', 'Car Brand saved successfully');
+                            $('#carBrandModal').modal('hide');
+                            getCarBrands();
+                            populateBrandDropdown();
+                            populateVariantBrandDropdown();
+                        } else alert('Failed to save Car Brand.');
+                    },
+                    error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+                });
+            }
+        }
+
+        function getCarBrands() {
+            var table = InitializeDatatableWithSlNo('CarBrandTable', 'CarBrands');
+            $.ajax({
+                url: '/Configuration/GetCarBrands',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (brand) {
+                        table.row.add([
+                            '', brand.brandName, brand.brandCountryOfOrigin, brand.brandWebsite,
+                            brand.isLuxuryBrand ? 'Yes' : 'No', brand.isActiveBrand ? 'Yes' : 'No', brand.brandNotes,
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(brand) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(brand.brandId) + '\'></i></div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        function editCarBrand(data) {
+            $('#selectedCarBrandID').val(data.brandId);
+            $('#brandNameInput').val(data.brandName);
+            $('#brandCountryInput').val(data.brandCountryOfOrigin);
+            $('#brandWebsiteInput').val(data.brandWebsite);
+            $('#isLuxuryBrandInput').prop('checked', data.isLuxuryBrand);
+            $('#isActiveBrandInput').prop('checked', data.isActiveBrand);
+            $('#brandNotesInput').val(data.brandNotes);
+            $('#brandNameMessage').text('');
+            $('#btnCarBrandSave').prop('disabled', false);
+            $('#carBrandModal').modal('show');
+        }
+
+        function deleteCarBrand(id) {
+            $.ajax({
+                url: '/Configuration/DeleteCarBrand',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response) msgPopup('success', 'Car Brand deleted successfully');
+                    else msgPopup('error', response.toString());
+                    getCarBrands();
+                    populateBrandDropdown();
+                    populateVariantBrandDropdown();
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        // CAR MODEL FUNCTIONS
+        function ClearCarModelModalFields() {
+            $('#selectedCarModelID').val('');
+            $('#modelBrandDropdown').val('');
+            $('#modelNameInput').val('');
+            $('#modelLaunchYearInput').val('');
+            $('#modelDiscontinuedYearInput').val('');
+            $('#modelGenerationInput').val('');
+            $('#modelBodyTypeInput').val('');
+            $('#isActiveModelInput').prop('checked', true);
+            $('#modelDescriptionInput').val('');
+            $('#modelNameMessage').text('');
+            $('#btnCarModelSave').prop('disabled', false);
+            $('#carModelModal').modal('show');
+        }
+
+        function populateBrandDropdown() {
+            $.ajax({
+                url: '/Configuration/GetCarBrands',
+                type: 'GET',
+                success: function (brands) {
+                    var dropdown = $('#modelBrandDropdown');
+                    dropdown.empty().append('<option value="">Select Brand</option>');
+                    brands.forEach(function (brand) {
+                        dropdown.append(`<option value="${brand.brandId}">${brand.brandName}</option>`);
+                    });
+                },
+                error: function () { alert('Failed to load brands'); }
+            });
+        }
+
+        function saveCarModel() {
+            if (CheckEmptyFields('CarModel')) {
+                var modelData = {
+                    ModelId: $('#selectedCarModelID').val() || 0,
+                    BrandId: $('#modelBrandDropdown').val(),
+                    ModelName: $('#modelNameInput').val().trim(),
+                    ModelLaunchYear: $('#modelLaunchYearInput').val(),
+                    ModelDiscontinuedYear: $('#modelDiscontinuedYearInput').val(),
+                    ModelGeneration: $('#modelGenerationInput').val().trim(),
+                    ModelBodyType: $('#modelBodyTypeInput').val().trim(),
+                    IsActiveModel: $('#isActiveModelInput').is(':checked'),
+                    ModelDescription: $('#modelDescriptionInput').val().trim()
+                };
+                $.ajax({
+                    url: '/Configuration/AddOrEditCarModel',
+                    type: 'POST',
+                    data: modelData,
+                    success: function (response) {
+                        if (response) {
+                            msgPopup('success', 'Car Model saved successfully');
+                            $('#carModelModal').modal('hide');
+                            getCarModels();
+                        } else alert('Failed to save Car Model.');
+                    },
+                    error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+                });
+            }
+        }
+
+        function getCarModels() {
+            var table = InitializeDatatableWithSlNo('CarModelTable', 'CarModels');
+            $.ajax({
+                url: '/Configuration/GetCarModels',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (model) {
+                        table.row.add([
+                            '', model.brandName, model.modelName, model.modelLaunchYear || '', model.modelDiscontinuedYear || '',
+                            model.modelGeneration || '', model.modelBodyType || '', model.isActiveModel ? 'Yes' : 'No', model.modelDescription || '',
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(model) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(model.modelId) + '\'></i></div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        function editCarModel(data) {
+            $('#selectedCarModelID').val(data.modelId);
+            $('#modelBrandDropdown').val(data.brandId);
+            $('#modelNameInput').val(data.modelName);
+            $('#modelLaunchYearInput').val(data.modelLaunchYear);
+            $('#modelDiscontinuedYearInput').val(data.modelDiscontinuedYear);
+            $('#modelGenerationInput').val(data.modelGeneration);
+            $('#modelBodyTypeInput').val(data.modelBodyType);
+            $('#isActiveModelInput').prop('checked', data.isActiveModel);
+            $('#modelDescriptionInput').val(data.modelDescription);
+            $('#modelNameMessage').text('');
+            $('#btnCarModelSave').prop('disabled', false);
+            $('#carModelModal').modal('show');
+        }
+
+        function deleteCarModel(id) {
+            $.ajax({
+                url: '/Configuration/DeleteCarModel',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response) msgPopup('success', 'Car Model deleted successfully');
+                    else msgPopup('error', response.toString());
+                    getCarModels();
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        // CAR VARIANT FUNCTIONS
+        function clearCarVariantModalFields() {
+            $('#selectedCarVariantID').val('');
+            $('#variantBrandDropdown').val('');
+            $('#variantModelDropdown').empty().append('<option value="">Select Model</option>');
+            $('#variantNameInput').val('');
+            $('#variantTrimLevelInput').val('');
+            $('#variantLaunchPriceInput').val('');
+            $('#variantCurrentPriceInput').val('');
+            $('#isActiveVariantInput').prop('checked', true);
+            $('#variantFeaturesInput').val('');
+            $('#btnCarVariantSave').prop('disabled', false);
+            $('#carVariantModal').modal('show');
+        }
+
+        function populateVariantBrandDropdown() {
+            $.ajax({
+                url: '/Configuration/GetCarBrands',
+                type: 'GET',
+                success: function (brands) {
+                    var dropdown = $('#variantBrandDropdown');
+                    dropdown.empty().append('<option value="">Select Brand</option>');
+                    brands.forEach(function (brand) {
+                        dropdown.append(`<option value="${brand.brandId}">${brand.brandName}</option>`);
+                    });
+                },
+                error: function () { alert('Failed to load brands'); }
+            });
+        }
+
+        function loadModelsByBrand() {
+            var brandId = $('#variantBrandDropdown').val();
+            var dropdown = $('#variantModelDropdown');
+            dropdown.empty().append('<option value="">Select Model</option>');
+            if (!brandId) return;
+            $.ajax({
+                url: '/Configuration/GetCarModelsByBrand',
+                type: 'GET',
+                data: { brandId: brandId },
+                success: function (models) {
+                    models.forEach(function (model) {
+                        dropdown.append(`<option value="${model.modelId}">${model.modelName}</option>`);
+                    });
+                },
+                error: function () { alert('Failed to load models'); }
+            });
+        }
+
+        function saveCarVariant() {
+            if (CheckEmptyFields('CarVariant')) {
+                var variantData = {
+                    VariantId: $('#selectedCarVariantID').val() || 0,
+                    ModelId: $('#variantModelDropdown').val(),
+                    VariantName: $('#variantNameInput').val().trim(),
+                    VariantTrimLevel: $('#variantTrimLevelInput').val().trim(),
+                    VariantLaunchPrice: $('#variantLaunchPriceInput').val(),
+                    VariantCurrentPrice: $('#variantCurrentPriceInput').val(),
+                    IsActiveVariant: $('#isActiveVariantInput').is(':checked'),
+                    VariantFeatures: $('#variantFeaturesInput').val().trim()
+                };
+                $.ajax({
+                    url: '/Configuration/AddOrEditCarVariant',
+                    type: 'POST',
+                    data: variantData,
+                    success: function (response) {
+                        if (response) {
+                            msgPopup('success', 'Car Variant saved successfully');
+                            $('#carVariantModal').modal('hide');
+                            getCarVariants();
+                        } else alert('Failed to save Car Variant.');
+                    },
+                    error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+                });
+            }
+        }
+
+        function getCarVariants() {
+            var table = InitializeDatatableWithSlNo('CarVariantTable', 'CarVariants');
+            $.ajax({
+                url: '/Configuration/GetCarVariants',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (variant) {
+                        table.row.add([
+                            '', variant.brandName, variant.modelName, variant.variantName, variant.variantTrimLevel || '',
+                            variant.variantLaunchPrice || '', variant.variantCurrentPrice || '', variant.isActiveVariant ? 'Yes' : 'No', variant.variantFeatures || '',
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(variant) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(variant.variantId) + '\'></i></div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        function editCarVariant(data) {
+            $('#selectedCarVariantID').val(data.variantId);
+            $('#variantBrandDropdown').val(data.brandId);
+            loadModelsByBrand();
+            setTimeout(function () { $('#variantModelDropdown').val(data.modelId); }, 300);
+            $('#variantNameInput').val(data.variantName);
+            $('#variantTrimLevelInput').val(data.variantTrimLevel);
+            $('#variantLaunchPriceInput').val(data.variantLaunchPrice);
+            $('#variantCurrentPriceInput').val(data.variantCurrentPrice);
+            $('#isActiveVariantInput').prop('checked', data.isActiveVariant);
+            $('#variantFeaturesInput').val(data.variantFeatures);
+            $('#btnCarVariantSave').prop('disabled', false);
+            $('#carVariantModal').modal('show');
+        }
+
+        function deleteCarVariant(id) {
+            $.ajax({
+                url: '/Configuration/DeleteCarVariant',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response) msgPopup('success', 'Car Variant deleted successfully');
+                    else msgPopup('error', response.toString());
+                    getCarVariants();
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        // VEHICLE CATEGORY FUNCTIONS
+        function clearVehicleCategoryModalFields() {
+            $('#selectedVehicleCategoryID').val('');
+            $('#categoryNameInput').val('');
+            $('#categoryDescriptionInput').val('');
+            $('#typicalSeatingCapacityInput').val('');
+            $('#typicalPriceRangeInput').val('');
+            $('#popularityRankInput').val('');
+            $('#isActiveCategoryInput').prop('checked', true);
+            $('#btnVehicleCategorySave').prop('disabled', false);
+            $('#vehicleCategoryModal').modal('show');
+        }
+
+        function saveVehicleCategory() {
+            if (CheckEmptyFields('VehicleCategory')) {
+                var categoryData = {
+                    categoryId: $('#selectedVehicleCategoryID').val() || 0,
+                    categoryName: $('#categoryNameInput').val().trim(),
+                    categoryDescription: $('#categoryDescriptionInput').val().trim(),
+                    typicalSeatingCapacity: $('#typicalSeatingCapacityInput').val().trim(),
+                    typicalPriceRange: $('#typicalPriceRangeInput').val().trim(),
+                    popularityRank: $('#popularityRankInput').val(),
+                    isActiveCategory: $('#isActiveCategoryInput').is(':checked')
+                };
+                $.ajax({
+                    url: '/Configuration/AddOrEditVehicleCategory',
+                    type: 'POST',
+                    data: categoryData,
+                    success: function(response) {
+                        if (response) {
+                            msgPopup('success', 'Vehicle Category saved successfully');
+                            $('#vehicleCategoryModal').modal('hide');
+                            getVehicleCategories();
+                        } else alert('Failed to save Vehicle Category.');
+                    },
+                    error: function(xhr, status, error) { alert('An error occurred: ' + error); }
+                });
+            }
+        }
+
+        function getVehicleCategories() {
+            var table = InitializeDatatableWithSlNo('VehicleCategoryTable', 'VehicleCategories');
+            $.ajax({
+                url: '/Configuration/GetVehicleCategories',
+                type: 'GET',
+                success: function(response) {
+                    table.clear();
+                    response.forEach(function(category) {
+                        table.row.add([
+                            '', category.categoryName, category.categoryDescription || '', category.typicalSeatingCapacity || '',
+                            category.typicalPriceRange || '', category.popularityRank || '', category.isActiveCategory ? 'Yes' : 'No',
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(category) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(category.categoryId) + '\'></i></div>'
+                        ]).draw();
+                    });
+                },
+                error: function(xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        function editVehicleCategory(data) {
+            $('#selectedVehicleCategoryID').val(data.categoryId);
+            $('#categoryNameInput').val(data.categoryName);
+            $('#categoryDescriptionInput').val(data.categoryDescription);
+            $('#typicalSeatingCapacityInput').val(data.typicalSeatingCapacity);
+            $('#typicalPriceRangeInput').val(data.typicalPriceRange);
+            $('#popularityRankInput').val(data.popularityRank);
+            $('#isActiveCategoryInput').prop('checked', data.isActiveCategory);
+            $('#btnVehicleCategorySave').prop('disabled', false);
+            $('#vehicleCategoryModal').modal('show');
+        }
+
+        function deleteVehicleCategory(id) {
+            $.ajax({
+                url: '/Configuration/DeleteVehicleCategory',
+                type: 'POST',
+                data: { id: id },
+                success: function(response) {
+                    if (response) msgPopup('success', 'Vehicle Category deleted successfully');
+                    else msgPopup('error', response.toString());
+                    getVehicleCategories();
+                },
+                error: function(xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        // FUEL TYPE FUNCTIONS
+        function clearFuelTypeModalFields() {
+            $('#selectedFuelTypeID').val('');
+            $('#fuelTypeNameInput').val('');
+            $('#fuelTypeDescriptionInput').val('');
+            $('#isEcoFriendlyInput').prop('checked', false);
+            $('#typicalFuelPriceInput').val('');
+            $('#fuelEfficiencyRatingInput').val('');
+            $('#maintenanceCostLevelInput').val('');
+            $('#availabilityLevelInput').val('');
+            $('#isActiveFuelTypeInput').prop('checked', true);
+            $('#fuelTypeNameMessage').text('');
+            $('#btnFuelTypeSave').prop('disabled', false);
+            $('#fuelTypeModal').modal('show');
+        }
+
+        function saveFuelType() {
+            if (CheckEmptyFields('FuelType')) {
+                var fuelTypeData = {
+                    fuelTypeId: $('#selectedFuelTypeID').val() || 0,
+                    fuelTypeName: $('#fuelTypeNameInput').val().trim(),
+                    fuelTypeDescription: $('#fuelTypeDescriptionInput').val().trim(),
+                    isEcoFriendly: $('#isEcoFriendlyInput').is(':checked'),
+                    typicalFuelPrice: $('#typicalFuelPriceInput').val(),
+                    fuelEfficiencyRating: $('#fuelEfficiencyRatingInput').val().trim(),
+                    maintenanceCostLevel: $('#maintenanceCostLevelInput').val().trim(),
+                    availabilityLevel: $('#availabilityLevelInput').val().trim(),
+                    isActiveFuelType: $('#isActiveFuelTypeInput').is(':checked')
+                };
+                $.ajax({
+                    url: '/Configuration/AddOrEditFuelType',
+                    type: 'POST',
+                    data: fuelTypeData,
+                    success: function (response) {
+                        if (response) {
+                            msgPopup('success', 'Fuel Type saved successfully');
+                            $('#fuelTypeModal').modal('hide');
+                            getFuelTypes();
+                        } else alert('Failed to save Fuel Type.');
+                    },
+                    error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+                });
+            }
+        }
+
+        function getFuelTypes() {
+            var table = InitializeDatatableWithSlNo('FuelTypeTable', 'FuelTypes');
+            $.ajax({
+                url: '/Configuration/GetFuelTypes',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (fuel) {
+                        table.row.add([
+                            '', fuel.fuelTypeName, fuel.fuelTypeDescription || '', fuel.isEcoFriendly ? 'Yes' : 'No',
+                            fuel.typicalFuelPrice || '', fuel.fuelEfficiencyRating || '', fuel.maintenanceCostLevel || '',
+                            fuel.availabilityLevel || '', fuel.isActiveFuelType ? 'Yes' : 'No',
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(fuel) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(fuel.fuelTypeId) + '\'></i></div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        function editFuelType(data) {
+            $('#selectedFuelTypeID').val(data.fuelTypeId);
+            $('#fuelTypeNameInput').val(data.fuelTypeName);
+            $('#fuelTypeDescriptionInput').val(data.fuelTypeDescription);
+            $('#isEcoFriendlyInput').prop('checked', data.isEcoFriendly);
+            $('#typicalFuelPriceInput').val(data.typicalFuelPrice);
+            $('#fuelEfficiencyRatingInput').val(data.fuelEfficiencyRating);
+            $('#maintenanceCostLevelInput').val(data.maintenanceCostLevel);
+            $('#availabilityLevelInput').val(data.availabilityLevel);
+            $('#isActiveFuelTypeInput').prop('checked', data.isActiveFuelType);
+            $('#fuelTypeNameMessage').text('');
+            $('#btnFuelTypeSave').prop('disabled', false);
+            $('#fuelTypeModal').modal('show');
+        }
+
+        function deleteFuelType(id) {
+            $.ajax({
+                url: '/Configuration/DeleteFuelType',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response) msgPopup('success', 'Fuel Type deleted successfully');
+                    else msgPopup('error', response.toString());
+                    getFuelTypes();
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        // TRANSMISSION FUNCTIONS
+        function clearTransmissionModalFields() {
+            $('#selectedTransmissionId').val('');
+            $('#transmissionNameInput').val('');
+            $('#transmissionFullNameInput').val('');
+            $('#transmissionDescriptionInput').val('');
+            $('#easeOfDrivingInput').val('');
+            $('#fuelEfficiencyImpactInput').val('');
+            $('#maintenanceCostInput').val('');
+            $('#isActiveTransmissionInput').prop('checked', true);
+            $('#transmissionNameMessage').text('');
+            $('#btnTransmissionSave').prop('disabled', false);
+            $('#transmissionModal').modal('show');
+        }
+
+        function saveTransmissionType() {
+            if (CheckEmptyFields('Transmission')) {
+                var transmissionData = {
+                    transmissionId: $('#selectedTransmissionId').val() || 0,
+                    transmissionName: $('#transmissionNameInput').val().trim(),
+                    transmissionFullName: $('#transmissionFullNameInput').val().trim(),
+                    transmissionDescription: $('#transmissionDescriptionInput').val().trim(),
+                    easeOfDriving: $('#easeOfDrivingInput').val().trim(),
+                    fuelEfficiencyImpact: $('#fuelEfficiencyImpactInput').val().trim(),
+                    maintenanceCost: $('#maintenanceCostInput').val().trim(),
+                    isActiveTransmission: $('#isActiveTransmissionInput').is(':checked')
+                };
+                $.ajax({
+                    url: '/Configuration/AddOrEditTransmissionType',
+                    type: 'POST',
+                    data: transmissionData,
+                    success: function (response) {
+                        if (response) {
+                            msgPopup('success', 'Transmission Type saved successfully');
+                            $('#transmissionModal').modal('hide');
+                            getTransmissionTypes();
+                        } else alert('Failed to save Transmission Type.');
+                    },
+                    error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+                });
+            }
+        }
+
+        function getTransmissionTypes() {
+            var table = InitializeDatatableWithSlNo('TransmissionTable', 'TransmissionTypes');
+            $.ajax({
+                url: '/Configuration/GetTransmissionTypes',
+                type: 'GET',
+                success: function (response) {
+                    table.clear();
+                    response.forEach(function (transmission) {
+                        table.row.add([
+                            '', transmission.transmissionName, transmission.transmissionFullName || '', transmission.transmissionDescription || '',
+                            transmission.easeOfDriving || '', transmission.fuelEfficiencyImpact || '', transmission.maintenanceCost || '',
+                            transmission.isActiveTransmission ? 'Yes' : 'No',
+                            '<div class="text-center"><i class="fa fa-edit me-2 btn-edit" style="color:green; cursor:pointer;" data-full-data=\'' + JSON.stringify(transmission) + '\'></i>' +
+                            '<i class="fa fa-trash btn-delete" style="color:red; cursor:pointer;" data-id=\'' + JSON.stringify(transmission.transmissionId) + '\'></i></div>'
+                        ]).draw();
+                    });
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        function editTransmission(data) {
+            $('#selectedTransmissionId').val(data.transmissionId);
+            $('#transmissionNameInput').val(data.transmissionName);
+            $('#transmissionFullNameInput').val(data.transmissionFullName);
+            $('#transmissionDescriptionInput').val(data.transmissionDescription);
+            $('#easeOfDrivingInput').val(data.easeOfDriving);
+            $('#fuelEfficiencyImpactInput').val(data.fuelEfficiencyImpact);
+            $('#maintenanceCostInput').val(data.maintenanceCost);
+            $('#isActiveTransmissionInput').prop('checked', data.isActiveTransmission);
+            $('#transmissionNameMessage').text('');
+            $('#btnTransmissionSave').prop('disabled', false);
+            $('#transmissionModal').modal('show');
+        }
+
+        function deleteTransmissionType(id) {
+            $.ajax({
+                url: '/Configuration/DeleteTransmissionType',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response) msgPopup('success', 'Transmission Type deleted successfully');
+                    else msgPopup('error', response.toString());
+                    getTransmissionTypes();
+                },
+                error: function (xhr, status, error) { alert('An error occurred: ' + error); }
+            });
+        }
+
+        // VALIDATION FUNCTIONS
+        function CheckNameAlreadyExist(input, tblId, messageTextId, buttonId) {
+            const enteredName = input.value.trim().toLowerCase();
+            const table = $('#' + tblId).DataTable();
+            const nameExists = table.column(1).data().toArray().some(name => name.trim().toLowerCase() === enteredName);
+            if (nameExists) {
+                $('#' + messageTextId).text('Name already exists!').css('color', 'red');
+                $('#' + buttonId).prop('disabled', true);
+            } else {
+                $('#' + messageTextId).text('');
+                $('#' + buttonId).prop('disabled', false);
+            }
+        }
+
+        function CheckNameAlreadyExistModel(input, tblId, messageTextId, buttonId) {
+            const enteredName = input.value.trim().toLowerCase();
+            const table = $('#' + tblId).DataTable();
+            const nameExists = table.column(2).data().toArray().some(name => name.trim().toLowerCase() === enteredName);
+            if (nameExists) {
+                $('#' + messageTextId).text('Model name already exists!').css('color', 'red');
+                $('#' + buttonId).prop('disabled', true);
+            } else {
+                $('#' + messageTextId).text('');
+                $('#' + buttonId).prop('disabled', false);
+            }
+        }
+
+        function CheckEmptyFields(prefix) {
+            let valid = true;
+            $('.requiredfield_' + prefix).each(function () {
+                if ($(this).val() === '') {
+                    $(this).css('border', '1px solid red');
+                    valid = false;
+                } else {
+                    $(this).css('border', '');
+                }
+            });
+            return valid;
+        }
+
+        function checkFuelTypeNameExists(input) {
+            const enteredName = input.value.trim().toLowerCase();
+            const table = $('#FuelTypeTable').DataTable();
+            const nameExists = table.column(1).data().toArray().some(name => name.trim().toLowerCase() === enteredName);
+            if (nameExists) {
+                $('#fuelTypeNameMessage').text('Fuel Type name already exists!').css('color', 'red');
+                $('#btnFuelTypeSave').prop('disabled', true);
+            } else {
+                $('#fuelTypeNameMessage').text('');
+                $('#btnFuelTypeSave').prop('disabled', false);
+            }
+        }
+
+        function checkTransmissionNameExists(input) {
+            const enteredName = input.value.trim().toLowerCase();
+            const table = $('#TransmissionTable').DataTable();
+            const nameExists = table.column(1).data().toArray().some(name => name.trim().toLowerCase() === enteredName);
+            if (nameExists) {
+                $('#transmissionNameMessage').text('Transmission name already exists!').css('color', 'red');
+                $('#btnTransmissionSave').prop('disabled', true);
+            } else {
+                $('#transmissionNameMessage').text('');
+                $('#btnTransmissionSave').prop('disabled', false);
+            }
+        }
+
+    </script>
+
+</body>
+</html>

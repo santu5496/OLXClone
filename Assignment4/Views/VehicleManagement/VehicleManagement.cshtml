@@ -1,0 +1,1271 @@
+﻿<div class="container-fluid mt-3">
+
+    <ul class="nav nav-tabs" id="carTab" role="tablist">
+    
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="brand-tab" data-bs-toggle="tab" data-bs-target="#CarListingTab" type="button" role="tab">CarListingTab</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="model-tab" data-bs-toggle="tab" data-bs-target="#CarImageListing" type="button" role="tab">Car Models</button>
+        </li>
+     
+    </ul>
+
+    <div class="tab-content mt-3" id="carTabContent">
+        <div class="tab-pane fade show active" id="CarListingTab" role="tabpanel">
+            <button class="customBtn mb-2" onclick="clearFeatureModal()">Add Feature</button>
+            <table id="tblCarListings" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Listing ID</th>
+                        <th>Feature</th>
+                        <th>Available</th>
+                        <th>DateCreated</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            
+        </div>
+       
+
+    </div>
+
+</div>
+
+
+<!-- Enhanced Car Listing Modal -->
+<div class="modal fade" id="listingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add / Edit Car Listing</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Nav tabs for different sections -->
+                <ul class="nav nav-pills mb-3" id="listingTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="basic-tab" data-bs-toggle="pill" data-bs-target="#basic-info" type="button" role="tab">Basic Info</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="technical-tab" data-bs-toggle="pill" data-bs-target="#technical-info" type="button" role="tab">Technical Details</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="condition-tab" data-bs-toggle="pill" data-bs-target="#condition-info" type="button" role="tab">Condition & History</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pricing-tab" data-bs-toggle="pill" data-bs-target="#pricing-info" type="button" role="tab">Pricing & Registration</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="seller-tab" data-bs-toggle="pill" data-bs-target="#seller-info" type="button" role="tab">Seller & Location</button>
+                    </li>
+                </ul>
+                <!-- Tab content -->
+                <div class="tab-content" id="listingTabsContent">
+                    <!-- BASIC INFORMATION TAB -->
+                    <div class="tab-pane fade show active" id="basic-info" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Listing Title *</label>
+                                    <input type="text" class="form-control ClearListingModalData requiredfield requiredfield_Listing" id="listingTitle" placeholder="Enter listing title">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Brand *</label>
+                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" required id="brandId">
+                                        <option value="">Select Brand</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Model *</label>
+                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" required id="modelId">
+                                        <option value="">Select Model</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Variant</label>
+                                    <select class="form-select ClearListingModalData" required id="variantId">
+                                        <option value="">Select Variant</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Category</label>
+                                    <select class="form-select ClearListingModalData" required id="categoryId">
+                                        <option value="">Select Category</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Manufacturing Year *</label>
+                                    <input type="number" class="form-control ClearListingModalData requiredfield requiredfield_Listing" required id="manufacturingYear" min="1990" max="2025">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Manufacturing Month</label>
+                                    <select class="form-select ClearListingModalData" required id="manufacturingMonth">
+                                        <option value="">Select Month</option>
+                                        <option value="1">January</option>
+                                        <option value="2">February</option>
+                                        <option value="3">March</option>
+                                        <option value="4">April</option>
+                                        <option value="5">May</option>
+                                        <option value="6">June</option>
+                                        <option value="7">July</option>
+                                        <option value="8">August</option>
+                                        <option value="9">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Registration Year *</label>
+                                    <input type="number" class="form-control ClearListingModalData requiredfield requiredfield_Listing" required id="registrationYear" min="1990" max="2025">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Registration Month</label>
+                                    <select class="form-select ClearListingModalData" required id="registrationMonth">
+                                        <option value="">Select Month</option>
+                                        <option value="1">January</option>
+                                        <option value="2">February</option>
+                                        <option value="3">March</option>
+                                        <option value="4">April</option>
+                                        <option value="5">May</option>
+                                        <option value="6">June</option>
+                                        <option value="7">July</option>
+                                        <option value="8">August</option>
+                                        <option value="9">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Vehicle Age (Years)</label>
+                                    <input type="number" class="form-control ClearListingModalData" id="vehicleAge" min="0" max="50">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- TECHNICAL DETAILS TAB -->
+                    <div class="tab-pane fade" id="technical-info" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Engine Specifications</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Engine Capacity (CC)</label>
+                                    <input type="number" class="form-control ClearListingModalData" required id="engineCapacityInCC" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Engine Capacity (Liters)</label>
+                                    <input type="number" step="0.1" class="form-control ClearListingModalData" id="engineCapacityInLiters" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Engine Power (BHP)</label>
+                                    <input type="number" class="form-control ClearListingModalData" id="enginePowerInBHP" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Engine Power (KW)</label>
+                                    <input type="number" step="0.1" class="form-control ClearListingModalData" id="enginePowerInKW" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Engine Torque (Nm)</label>
+                                    <input type="number" class="form-control ClearListingModalData" id="engineTorqueInNm" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Engine Specification</label>
+                                    <select class="form-select ClearListing ModalData" id="engineSpecId">
+                                        <option value="">Select Engine Spec</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Vehicle Specifications</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Fuel Type *</label>
+                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" required id="fuelTypeId">
+                                        <option value="">Select Fuel Type</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Transmission *</label>
+                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing"  id="transmissionId">
+                                        <option value="">Select Transmission</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Number of Gears</label>
+                                    <input type="number" class="form-control ClearListingModalData" id="numberOfGears" min="1" max="10">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Color</label>
+                                    <select class="form-select ClearListingModalData" id="colorId">
+                                        <option value="">Select Color</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Number of Doors</label>
+                                    <input type="number" class="form-control ClearListingModalData" required id="numberOfDoors" min="2" max="6">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Seating Capacity</label>
+                                    <input type="number" class="form-control ClearListingModalData" required id="seatingCapacity" min="2" max="10">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Boot Space (Liters)</label>
+                                    <input type="number" class="form-control ClearListingModalData" id="bootSpaceInLiters" min="0">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Kerb Weight (KG)</label>
+                                    <input type="number" class="form-control ClearListingModalData" id="kerbWeightInKG" min="0">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Ground Clearance (MM)</label>
+                                    <input type="number" class="form-control ClearListingModalData" id="groundClearanceInMM" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- CONDITION & HISTORY TAB -->
+                    <div class="tab-pane fade" id="condition-info" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Ownership & Usage</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Total Previous Owners</label>
+                                    <input type="number" class="form-control ClearListingModalData" required id="totalPreviousOwners" min="0" max="10">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Current Ownership Duration (Years)</label>
+                                    <input type="number" class="form-control ClearListingModalData" required id="currentOwnershipDuration" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Kilometers on Odometer *</label>
+                                    <input type="number" class="form-control ClearListingModalData requiredfield requiredfield_Listing" required id="kilometersOnOdometer" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Average Monthly Kilometers</label>
+                                    <input type="number" class="form-control ClearListingModalData" id="averageMonthlyKilometers" min="0">
+                                </div>
+                                <h6 class="text-primary mb-3 mt-4">Mileage Information</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">City Mileage (KMPL)</label>
+                                    <input type="number" step="0.1" class="form-control ClearListingModalData" required id="mileageInCityKMPL" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Highway Mileage (KMPL)</label>
+                                    <input type="number" step="0.1" class="form-control ClearListingModalData" id="mileageOnHighwayKMPL" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Combined Mileage (KMPL)</label>
+                                    <input type="number" step="0.1" class="form-control ClearListingModalData" id="combinedMileageKMPL" min="0">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Condition Ratings</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Overall Condition</label>
+                                    <select class="form-select ClearListingModalData" id="overallConditionId">
+                                        <option value="">Select Condition</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Exterior Condition (1-10)</label>
+                                    <input type="number" class="form-control ClearListingModalData" id="exteriorConditionRating" min="1" max="10">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Interior Condition (1-10)</label>
+                                    <input type="number" class="form-control ClearListingModalData" id="interiorConditionRating" min="1" max="10">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Engine Condition (1-10)</label>
+                                    <input type="number" class="form-control ClearListingModalData" id="engineConditionRating" min="1" max="10">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Tyre Condition (1-10)</label>
+                                    <input type="number" class="form-control ClearListingModalData"  id="tyreConditionRating" min="1" max="10">
+                                </div>
+                                <h6 class="text-primary mb-3 mt-4">Vehicle History</h6>
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input ClearListingModalData" id="hasAccidentHistory">
+                                    <label class="form-check-label">Has Accident History</label>
+                                </div>
+                                <div class="mb-3" id="accidentSeverityDiv" style="display: none;">
+                                    <label class="form-label">Accident Severity Level</label>
+                                    <select class="form-select ClearListingModalData" id="accidentSeverityLevel">
+                                        <option value="">Select Severity</option>
+                                        <option value="Minor">Minor</option>
+                                        <option value="Moderate">Moderate</option>
+                                        <option value="Major">Major</option>
+                                        <option value="Severe">Severe</option>
+                                    </select>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input ClearListingModalData" required id="isFloodAffected">
+                                    <label class="form-check-label">Is Flood Affected</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input ClearListingModalData" required id="hasElectricalIssues">
+                                    <label class="form-check-label">Has Electrical Issues</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input ClearListingModalData" required id="hasMechanicalIssues">
+                                    <label class="form-check-label">Has Mechanical Issues</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input ClearListingModalData" id="requiresImmediateRepairs">
+                                    <label class="form-check-label">Requires Immediate Repairs</label>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Estimated Repair Cost</label>
+                                    <input type="number" step="0.01" class="form-control ClearListingModalData" id="estimatedRepairCost" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- PRICING & REGISTRATION TAB -->
+                    <div class="tab-pane fade" id="pricing-info" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text mb-3">Pricing Information</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Original Purchase Price</label>
+                                    <input type="number" step="0.01" class="form-control ClearListingModalData" required id="originalPurchasePrice" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Current Market Price</label>
+                                    <input type="number" step="0.01" class="form-control ClearListingModalData"  id="currentMarketPrice" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Selling Price Asked *</label>
+                                    <input type="number" step="0.01" class="form-control ClearListingModalData requiredfield requiredfield_Listing" required id="sellingPriceAsked" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Minimum Acceptable Price</label>
+                                    <input type="number" step="0.01" class="form-control ClearListingModalData" required id="minimumAcceptablePrice" min="0">
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input ClearListingModalData" id="isPriceNegotiable">
+                                    <label class="form-check-label">Is Price Negotiable?</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input ClearListingModalData" id="priceIncludesTransfer">
+                                    <label class="form-check-label">Price Includes Transfer</label>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Price Valid Until Date</label>
+                                    <input type="date" class="form-control ClearListingModalData" id="priceValidUntilDate">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Registration & Documentation</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Registration Number</label>
+                                    <input type="text" class="form-control ClearListingModalData" required id="registrationNumber" placeholder="e.g., KA01AB1234">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">RTO Code</label>
+                                    <select class="form-select ClearListingModalData" required id="rtoId">
+                                        <option value="">Select RTO</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Chassis Number</label>
+                                    <input type="text" class="form-control  ClearListingModalData" id="chassisNumber">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Engine Number</label>
+                                    <input type="text" class="form-control ClearListingModalData" id="engineNumber">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Insurance Provider</label>
+                                    <select class="form-select ClearListingModalData" id="insuranceProviderId">
+                                        <option value="">Select Insurance Provider</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label  class="form-label"> Insurance Type</label>
+                                    <select required class="form-select ClearListingModalData" id="insuranceType">
+                                        <option value="">Select Type</option>
+                                        <option value="Comprehensive">Comprehensive</option>
+                                        <option value="Third Party">Third Party</option>
+                                        <option value="Expired">Expired</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Insurance Policy Number</label>
+                                    <input type="text" class="form-control ClearListingModalData" id="insurancePolicyNumber">
+                                </div>
+                                <div class="mb-3">
+                                    <label  class="form-label">Insurance Expiry Date</label>
+                                    <input required type="date" class="form-control ClearListingModalData" id="insuranceExpiryDate">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- SELLER & LOCATION TAB -->
+                    <div class="tab-pane fade" id="seller-info" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Location Information</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">State *</label>
+                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" id="stateId">
+                                        <option value="">Select State</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">City *</label>
+                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" id="cityId">
+                                        <option value="">Select City</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Area / Locality</label>
+                                    <input type="text" class="form-control ClearListingModalData" id="areaOrLocality" placeholder="Enter area or locality">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Pin Code</label>
+                                    <input type="text" class="form-control ClearListingModalData" id="pinCode" pattern="[0-9]{6}" placeholder="6-digit pin code">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Exact Address</label>
+                                    <textarea class="form-control ClearListingModalData" id="exactAddress" rows="3" placeholder="Enter complete address"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Seller Information</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Seller Type *</label>
+                                    <select class="form-select ClearListingModalData requiredfield requiredfield_Listing" id="sellerType">
+                                        <option value="">Select</option>
+                                        <option value="Individual">Individual</option>
+                                        <option value="Dealer">Dealer</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Seller Name *</label>
+                                    <input type="text" class="form-control ClearListingModalData requiredfield requiredfield_Listing" id="sellerName" placeholder="Enter seller name">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Primary Phone *</label>
+                                    <input type="text" class="form-control ClearListingModalData requiredfield requiredfield_Listing" id="sellerPrimaryPhone" pattern="[0-9]{10}" placeholder="10-digit phone number">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Secondary Phone</label>
+                                    <input type="text" class="form-control ClearListingModalData" id="sellerSecondaryPhone" pattern="[0-9]{10}" placeholder="10-digit phone number">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email Address</label>
+                                    <input type="email" class="form-control ClearListingModalData" id="sellerEmailAddress" placeholder="Enter email address">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">WhatsApp Number</label>
+                                    <input type="text" class="form-control ClearListingModalData" id="sellerWhatsAppNumber" pattern="[0-9]{10}" placeholder="10-digit WhatsApp number">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Preferred Contact Method</label>
+                                    <select class="form-select ClearListingModalData" id="preferredContactMethod">
+                                        <option value="">Select Method</option>
+                                        <option value="Phone">Phone</option>
+                                        <option value="WhatsApp">WhatsApp</option>
+                                        <option value="Email">Email</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12">
+                                <h6 class="text-primary mb-3">Additional Information</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Detailed Description</label>
+                                    <textarea class="form-control ClearListingModalData" id="detailedDescription" rows="3" placeholder="Enter detailed description of the vehicle"></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input type="checkbox" class="form-check-input ClearListingModalData" id="isPromotedListing">
+                                            <label class="form-check-label">Promoted Listing</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input type="checkbox" class="form-check-input ClearListingModalData" id="isFeaturedListing">
+                                            <label class="form-check-label">Featured Listing</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input type="checkbox" class="form-check-input ClearListingModalData" id="isUrgentSale">
+                                            <label class="form-check-label">Urgent Sale</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Preferred Viewing Location</label>
+                                            <input type="text" class="form-control ClearListingModalData" id="preferredViewingLocation" placeholder="Where can buyers view the car">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Viewing Instructions</label>
+                                            <input type="text" class="form-control ClearListingModalData" id="viewingInstructions" placeholder="Special instructions for viewing">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="listingId" />
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="saveListing()" class="btn btn-primary">Save Listing</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+       
+
+    $(document).ready(function () {
+        initCarListings();
+            $('#stateId').on('change', function () {
+        var stateID = $('#stateId').val();
+        if (stateID !== null && stateID !== "") {
+            loadCities(stateID);
+        }
+    });
+
+         loadAllDropdownData();
+  
+    });
+    
+        // Main function to load all dropdown data
+    function loadAllDropdownData() {
+        loadCarBrands();
+        loadCarModels();
+        loadCarVariants();
+        loadVehicleCategories();
+        loadFuelTypes();
+        loadTransmissionTypes();
+        loadCarColors();
+        loadCarConditions();
+        loadStates();
+        //loadCities();
+        
+        //loadCitiesBystate()
+        loadEngineSpecs();
+        loadCarFeatures();
+        loadInsuranceProviders();
+        loadRTOCodes();
+    }
+
+    // =================== CAR BRANDS ===================
+    function loadCarBrands() {
+        $.ajax({
+            url: '/Configuration/GetCarBrands', // You'll need to add this endpoint
+            type: 'GET',
+            success: function(response) {
+                populateDropdown('#brandId', response, 'brandId', 'brandName', 'Select Brand');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading car brands:', error);
+                showError('Failed to load car brands');
+            }
+        });
+    }
+
+    // =================== CAR MODELS ===================
+    function loadCarModels() {
+        $.ajax({
+            url: '/Configuration/GetCarModels', // You'll need to add this endpoint
+            type: 'GET',
+            success: function(response) {
+                populateDropdown('#modelId', response, 'modelId', 'modelName', 'Select Model');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading car models:', error);
+                showError('Failed to load car models');
+            }
+        });
+    }
+
+    // =================== CAR VARIANTS ===================
+    function loadCarVariants() {
+        $.ajax({
+            url: '/Configuration/GetCarVariants', // You'll need to add this endpoint
+            type: 'GET',
+            success: function(response) {
+                populateDropdown('#variantId', response, 'variantId', 'variantName', 'Select Variant');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading car variants:', error);
+                showError('Failed to load car variants');
+            }
+        });
+    }
+
+    // =================== VEHICLE CATEGORIES ===================
+    function loadVehicleCategories() {
+        $.ajax({
+            url: '/Configuration/GetVehicleCategories', // You'll need to add this endpoint
+            type: 'GET',
+            success: function(response) {
+                populateDropdown('#categoryId', response, 'categoryId', 'categoryName', 'Select Category');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading vehicle categories:', error);
+                showError('Failed to load vehicle categories');
+            }
+        });
+    }
+
+    // =================== FUEL TYPES ===================
+    function loadFuelTypes() {
+        $.ajax({
+            url: '/Configuration/GetFuelTypes', // You'll need to add this endpoint
+            type: 'GET',
+            success: function(response) {
+                populateDropdown('#fuelTypeId', response, 'fuelTypeId', 'fuelTypeName', 'Select Fuel Type');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading fuel types:', error);
+                showError('Failed to load fuel types');
+            }
+        });
+    }
+
+    // =================== TRANSMISSION TYPES ===================
+    function loadTransmissionTypes() {
+        $.ajax({
+            url: '/Configuration/GetTransmissionTypes', // You'll need to add this endpoint
+            type: 'GET',
+            success: function(response) {
+                populateDropdown('#transmissionId', response, 'transmissionId', 'transmissionName', 'Select Transmission');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading transmission types:', error);
+                showError('Failed to load transmission types');
+            }
+        });
+    }
+
+    // =================== CAR COLORS ===================
+    function loadCarColors() {
+        $.ajax({
+            url: '/Configuration1/GetCarColors',
+            type: 'GET',
+            success: function(response) {
+                if (response && Array.isArray(response)) {
+                    populateDropdown('#colorId', response, 'colorId', 'colorName', 'Select Color');
+                } else {
+                    console.error('Invalid response format for car colors');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading car colors:', error);
+                showError('Failed to load car colors');
+            }
+        });
+    }
+
+    // =================== CAR CONDITIONS ===================
+    function loadCarConditions() {
+        $.ajax({
+            url: '/Configuration1/GetCarConditions',
+            type: 'GET',
+            success: function(response) {
+                if (response && Array.isArray(response)) {
+                    populateDropdown('#overallConditionId', response, 'conditionId', 'conditionName', 'Select Condition');
+                } else {
+                    console.error('Invalid response format for car conditions');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading car conditions:', error);
+                showError('Failed to load car conditions');
+            }
+        });
+    }
+
+    // =================== STATES ===================
+    function loadStates() {
+        $.ajax({
+            url: '/Configuration1/GetAllStates',
+            type: 'GET',
+            success: function(response) {
+                if (response && Array.isArray(response)) {
+                    populateDropdown('#stateId', response, 'stateId', 'stateName', 'Select State');
+                } else {
+                    console.error('Invalid response format for states');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading states:', error);
+                showError('Failed to load states');
+            }
+        });
+    }
+
+    
+    function loadCities(stateID) {
+        $.ajax({
+            url: '/Configuration1/GetCitiesByState',
+            type: 'GET',
+            data: { stateId: stateID },
+            success: function (response) {
+                if (response && Array.isArray(response)) {
+                    populateDropdown('#cityId', response, 'cityId', 'cityName', 'Select City');
+                } else {
+                    console.error('Invalid response format for cities');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error loading cities:', error);
+                showError('Failed to load cities');
+            }
+        });
+    }
+
+
+
+    // =================== CITIES BY STATE ===================
+    function loadCitiesByState(stateId) {
+        if (!stateId || stateId == '') {
+            $('#cityId').html('<option value="">Select City</option>');
+            return;
+        }
+
+        $.ajax({
+            url: '/Configuration1/GetCitiesByState',
+            type: 'GET',
+            data: { stateId: stateId },
+            success: function(response) {
+                if (response && response.success && response.data) {
+                    populateDropdown('#cityId', response.data, 'cityId', 'cityName', 'Select City');
+                } else {
+                    $('#cityId').html('<option value="">No cities found</option>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading cities by state:', error);
+                $('#cityId').html('<option value="">Error loading cities</option>');
+            }
+        });
+    }
+
+    // =================== ENGINE SPECS ===================
+    function loadEngineSpecs() {
+        $.ajax({
+            url: '/Configuration1/GetAllEngineSpecs',
+            type: 'GET',
+            success: function(response) {
+                if (response && Array.isArray(response)) {
+                    populateDropdown('#engineSpecId', response, 'engineSpecId', 'engineType', 'Select Engine Spec');
+                } else {
+                    console.error('Invalid response format for engine specs');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading engine specs:', error);
+                showError('Failed to load engine specifications');
+            }
+        });
+    }
+
+    // =================== CAR FEATURES ===================
+    function loadCarFeatures() {
+        $.ajax({
+            url: '/Configuration1/GetAllCarFeatures',
+            type: 'GET',
+            success: function(response) {
+                if (response && Array.isArray(response)) {
+                    populateDropdown('#featureId', response, 'featureId', 'featureName', 'Select Feature');
+                } else {
+                    console.error('Invalid response format for car features');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading car features:', error);
+                showError('Failed to load car features');
+            }
+        });
+    }
+
+    // =================== INSURANCE PROVIDERS ===================
+    function loadInsuranceProviders() {
+        $.ajax({
+            url: '/Configuration1/GetAllInsuranceProviders',
+            type: 'GET',
+            success: function(response) {
+                if (response && Array.isArray(response)) {
+                    populateDropdown('#insuranceProviderId', response, 'insuranceProviderId', 'providerName', 'Select Insurance Provider');
+                } else {
+                    console.error('Invalid response format for insurance providers');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading insurance providers:', error);
+                showError('Failed to load insurance providers');
+            }
+        });
+    }
+
+    // =================== RTO CODES ===================
+    function loadRTOCodes() {
+        $.ajax({
+            url: '/Configuration1/GetAllRTOCodes',
+            type: 'GET',
+            success: function(response) {
+                if (response && response.success && response.data) {
+                    populateDropdown('#rtoId', response.data, 'rtoId', 'rtoCode', 'Select RTO Code');
+                } else if (response && Array.isArray(response)) {
+                    populateDropdown('#rtoId', response, 'rtoId', 'rtoCode', 'Select RTO Code');
+                } else {
+                    console.error('Invalid response format for RTO codes');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading RTO codes:', error);
+                showError('Failed to load RTO codes');
+            }
+        });
+    }
+
+    // =================== UTILITY FUNCTIONS ===================
+
+    // Generic function to populate dropdown
+    function populateDropdown(selector, data, valueField, textField, defaultText = 'Select Option') {
+        try {
+            let dropdown = $(selector);
+            dropdown.empty();
+
+            // Add default option
+            dropdown.append(`<option value="">${defaultText}</option>`);
+
+            // Add data options
+            if (data && Array.isArray(data)) {
+                $.each(data, function(index, item) {
+                    if (item && item[valueField] !== undefined && item[textField] !== undefined) {
+                        dropdown.append(`<option value="${item[valueField]}">${item[textField]}</option>`);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error(`Error populating dropdown ${selector}:`, error);
+        }
+    }
+
+    // Error display function
+    function showError(message) {
+        console.error(message);
+        // You can integrate this with your existing msgPopup function
+        if (typeof msgPopup === 'function') {
+            msgPopup('error', message);
+        } else {
+            alert(message);
+        }
+    }
+
+    // Function to refresh specific dropdown
+    function refreshDropdown(dropdownType) {
+        switch(dropdownType.toLowerCase()) {
+            case 'brands':
+                loadCarBrands();
+                break;
+            case 'models':
+                loadCarModels();
+                break;
+            case 'variants':
+                loadCarVariants();
+                break;
+            case 'categories':
+                loadVehicleCategories();
+                break;
+            case 'fueltypes':
+                loadFuelTypes();
+                break;
+            case 'transmissions':
+                loadTransmissionTypes();
+                break;
+            case 'colors':
+                loadCarColors();
+                break;
+            case 'conditions':
+                loadCarConditions();
+                break;
+            case 'states':
+                loadStates();
+                break;
+            case 'cities':
+                loadCities();
+                break;
+            case 'enginespecs':
+                loadEngineSpecs();
+                break;
+            case 'features':
+                loadCarFeatures();
+                break;
+            case 'insurance':
+                loadInsuranceProviders();
+                break;
+            case 'rto':
+                loadRTOCodes();
+                break;
+            default:
+                console.warn('Unknown dropdown type:', dropdownType);
+        }
+    }
+
+    // Function to clear all dropdowns
+    function clearAllDropdowns() {
+        const dropdowns = [
+            '#brandId', '#modelId', '#variantId', '#categoryId', '#fuelTypeId',
+            '#transmissionId', '#colorId', '#overallConditionId', '#stateId',
+            '#cityId', '#engineSpecId', '#featureId', '#insuranceProviderId', '#rtoId'
+        ];
+
+        dropdowns.forEach(function(selector) {
+            $(selector).html('<option value="">Select Option</option>');
+        });
+    }
+
+    // Enhanced saveListing function with all required fields
+    function saveListing() {
+        if (CheckEmptyFields('Listing')) {
+            let data = {
+                listingId: parseInt($('#listingId').val()) || 0,
+                listingTitle: $('#listingTitle').val(),
+                brandId: parseInt($('#brandId').val()) || 0,
+                modelId: parseInt($('#modelId').val()) || 0,
+                variantId: parseInt($('#variantId').val()) || null,
+                categoryId: parseInt($('#categoryId').val()) || null,
+                manufacturingYear: parseInt($('#manufacturingYear').val()) || 0,
+                manufacturingMonth: parseInt($('#manufacturingMonth').val()) || null,
+                registrationYear: parseInt($('#registrationYear').val()) || 0,
+                registrationMonth: parseInt($('#registrationMonth').val()) || null,
+                vehicleAge: parseInt($('#vehicleAge').val()) || null,
+
+                // Engine specifications
+                engineCapacityInCC: parseInt($('#engineCapacityInCC').val()) || null,
+                engineCapacityInLiters: parseFloat($('#engineCapacityInLiters').val()) || null,
+                enginePowerInBHP: parseInt($('#enginePowerInBHP').val()) || null,
+                enginePowerInKW: parseFloat($('#enginePowerInKW').val()) || null,
+                engineTorqueInNm: parseInt($('#engineTorqueInNm').val()) || null,
+                engineSpecId: parseInt($('#engineSpecId').val()) || null,
+
+                // Vehicle specifications
+                fuelTypeId: parseInt($('#fuelTypeId').val()) || 0,
+                transmissionId: parseInt($('#transmissionId').val()) || 0,
+                numberOfGears: parseInt($('#numberOfGears').val()) || null,
+                colorId: parseInt($('#colorId').val()) || null,
+                numberOfDoors: parseInt($('#numberOfDoors').val()) || null,
+                seatingCapacity: parseInt($('#seatingCapacity').val()) || null,
+                bootSpaceInLiters: parseInt($('#bootSpaceInLiters').val()) || null,
+                kerbWeightInKG: parseInt($('#kerbWeightInKG').val()) || null,
+                groundClearanceInMM: parseInt($('#groundClearanceInMM').val()) || null,
+
+                // Ownership and usage
+                totalPreviousOwners: parseInt($('#totalPreviousOwners').val()) || null,
+                currentOwnershipDuration: parseInt($('#currentOwnershipDuration').val()) || null,
+                kilometersOnOdometer: parseInt($('#kilometersOnOdometer').val()) || 0,
+                averageMonthlyKilometers: parseInt($('#averageMonthlyKilometers').val()) || null,
+
+                // Mileage
+                mileageInCityKMPL: parseFloat($('#mileageInCityKMPL').val()) || null,
+                mileageOnHighwayKMPL: parseFloat($('#mileageOnHighwayKMPL').val()) || null,
+                combinedMileageKMPL: parseFloat($('#combinedMileageKMPL').val()) || null,
+
+                // Condition ratings
+                overallConditionId: parseInt($('#overallConditionId').val()) || null,
+                exteriorConditionRating: parseInt($('#exteriorConditionRating').val()) || null,
+                interiorConditionRating: parseInt($('#interiorConditionRating').val()) || null,
+                engineConditionRating: parseInt($('#engineConditionRating').val()) || null,
+                tyreConditionRating: parseInt($('#tyreConditionRating').val()) || null,
+
+                // Vehicle history
+                hasAccidentHistory: $('#hasAccidentHistory').is(':checked'),
+                accidentSeverityLevel: $('#accidentSeverityLevel').val() || null,
+                isFloodAffected: $('#isFloodAffected').is(':checked'),
+                hasElectricalIssues: $('#hasElectricalIssues').is(':checked'),
+                hasMechanicalIssues: $('#hasMechanicalIssues').is(':checked'),
+                requiresImmediateRepairs: $('#requiresImmediateRepairs').is(':checked'),
+                estimatedRepairCost: parseFloat($('#estimatedRepairCost').val()) || null,
+
+                // Pricing
+                originalPurchasePrice: parseFloat($('#originalPurchasePrice').val()) || null,
+                currentMarketPrice: parseFloat($('#currentMarketPrice').val()) || null,
+                sellingPriceAsked: parseFloat($('#sellingPriceAsked').val()) || 0,
+                minimumAcceptablePrice: parseFloat($('#minimumAcceptablePrice').val()) || null,
+                isPriceNegotiable: $('#isPriceNegotiable').is(':checked'),
+                priceIncludesTransfer: $('#priceIncludesTransfer').is(':checked'),
+                priceValidUntilDate: $('#priceValidUntilDate').val() || null,
+
+                // Registration and documentation
+                registrationNumber: $('#registrationNumber').val() || null,
+                rtoId: parseInt($('#rtoId').val()) || null,
+                chassisNumber: $('#chassisNumber').val() || null,
+                engineNumber: $('#engineNumber').val() || null,
+                insuranceProviderId: parseInt($('#insuranceProviderId').val()) || null,
+                insuranceType: $('#insuranceType').val() || null,
+                insurancePolicyNumber: $('#insurancePolicyNumber').val() || null,
+                insuranceExpiryDate: $('#insuranceExpiryDate').val() || null,
+
+                // Location
+                stateId: parseInt($('#stateId').val()) || 0,
+                cityId: parseInt($('#cityId').val()) || 0,
+                areaOrLocality: $('#areaOrLocality').val() || null,
+                pinCode: $('#pinCode').val() || null,
+                exactAddress: $('#exactAddress').val() || null,
+
+                // Seller information
+                sellerType: $('#sellerType').val(),
+                sellerName: $('#sellerName').val(),
+                sellerPrimaryPhone: $('#sellerPrimaryPhone').val(),
+                sellerSecondaryPhone: $('#sellerSecondaryPhone').val() || null,
+                sellerEmailAddress: $('#sellerEmailAddress').val() || null,
+                sellerWhatsAppNumber: $('#sellerWhatsAppNumber').val() || null,
+                preferredContactMethod: $('#preferredContactMethod').val() || null,
+
+                // Additional information
+                detailedDescription: $('#detailedDescription').val() || null,
+                sellingReason: $('#sellingReason').val() || null,
+                specialHighlights: $('#specialHighlights').val() || null,
+                knownIssuesOrProblems: $('#knownIssuesOrProblems').val() || null,
+                availableForPhysicalInspection: $('#availableForPhysicalInspection').is(':checked'),
+                availableForTestDrive: $('#availableForTestDrive').is(':checked'),
+                preferredViewingLocation: $('#preferredViewingLocation').val() || null,
+                viewingInstructions: $('#viewingInstructions').val() || null,
+
+                // Listing options
+                isPromotedListing: $('#isPromotedListing').is(':checked'),
+                isFeaturedListing: $('#isFeaturedListing').is(':checked'),
+                isUrgentSale: $('#isUrgentSale').is(':checked')
+            };
+
+            $.post('/VehicleManagement/AddOrUpdateCarListing', data, function (res) {
+                if (res) {
+                    msgPopup('success', 'Listing saved successfully');
+                    $('#listingModal').modal('hide');
+                    initCarListings();
+                } else {
+                    msgPopup('error', 'Failed to save listing');
+                }
+            }).fail(function(xhr, status, error) {
+                console.error('Error saving listing:', error);
+                msgPopup('error', 'Error occurred while saving: ' + error);
+            });
+        }
+    }
+    // Enhanced edit listing function to populate all fields
+    function editListing(data) {
+        // Basic Information
+        $('#listingId').val(data.listingId || '');
+        $('#listingTitle').val(data.listingTitle || '');
+        $('#brandId').val(data.brandId || '');
+        $('#modelId').val(data.modelId || '');
+        $('#variantId').val(data.variantId || '');
+        $('#categoryId').val(data.categoryId || '');
+        $('#manufacturingYear').val(data.manufacturingYear || '');
+        $('#manufacturingMonth').val(data.manufacturingMonth || '');
+        $('#registrationYear').val(data.registrationYear || '');
+        $('#registrationMonth').val(data.registrationMonth || '');
+        $('#vehicleAge').val(data.vehicleAge || '');
+
+        // Engine specifications
+        $('#engineCapacityInCC').val(data.engineCapacityInCC || '');
+      $('#engineCapacityInLiters').val(data.engineCapacityInLiters || '');
+        $('#enginePowerInBHP').val(data.enginePowerInBHP || '');
+        $('#enginePowerInKW').val(data.enginePowerInKW || '');
+        $('#engineTorqueInNm').val(data.engineTorqueInNm || '');
+        $('#engineSpecId').val(data.engineSpecId || '');
+
+        // Vehicle specifications
+        $('#fuelTypeId').val(data.fuelTypeId || '');
+        $('#transmissionId').val(data.transmissionId || '');
+        $('#numberOfGears').val(data.numberOfGears || '');
+        $('#colorId').val(data.colorId || '');
+        $('#numberOfDoors').val(data.numberOfDoors || '');
+        $('#seatingCapacity').val(data.seatingCapacity || '');
+        $('#bootSpaceInLiters').val(data.bootSpaceInLiters || '');
+        $('#kerbWeightInKG').val(data.kerbWeightInKG || '');
+        $('#groundClearanceInMM').val(data.groundClearanceInMM || '');
+
+        // Ownership and usage
+        $('#totalPreviousOwners').val(data.totalPreviousOwners || '');
+        $('#currentOwnershipDuration').val(data.currentOwnershipDuration || '');
+        $('#kilometersOnOdometer').val(data.kilometersOnOdometer || '');
+        $('#averageMonthlyKilometers').val(data.averageMonthlyKilometers || '');
+
+        // Mileage
+        $('#mileageInCityKMPL').val(data.mileageInCityKMPL || '');
+        $('#mileageOnHighwayKMPL').val(data.mileageOnHighwayKMPL || '');
+        $('#combinedMileageKMPL').val(data.combinedMileageKMPL || '');
+
+        // Condition ratings
+        $('#overallConditionId').val(data.overallConditionId || '');
+        $('#exteriorConditionRating').val(data.exteriorConditionRating || '');
+        $('#interiorConditionRating').val(data.interiorConditionRating || '');
+        $('#engineConditionRating').val(data.engineConditionRating || '');
+        $('#tyreConditionRating').val(data.tyreConditionRating || '');
+
+        // Vehicle history
+        $('#hasAccidentHistory').prop('checked', data.hasAccidentHistory || false);
+        $('#accidentSeverityLevel').val(data.accidentSeverityLevel || '');
+        $('#isFloodAffected').prop('checked', data.isFloodAffected || false);
+        $('#hasElectricalIssues').prop('checked', data.hasElectricalIssues || false);
+        $('#hasMechanicalIssues').prop('checked', data.hasMechanicalIssues || false);
+        $('#requiresImmediateRepairs').prop('checked', data.requiresImmediateRepairs || false);
+        $('#estimatedRepairCost').val(data.estimatedRepairCost || '');
+
+        // Show/hide accident severity div
+        if (data.hasAccidentHistory) {
+            $('#accidentSeverityDiv').show();
+        } else {
+            $('#accidentSeverityDiv').hide();
+        }
+
+        // Pricing
+        $('#originalPurchasePrice').val(data.originalPurchasePrice || '');
+        $('#currentMarketPrice').val(data.currentMarketPrice || '');
+        $('#sellingPriceAsked').val(data.sellingPriceAsked || '');
+        $('#minimumAcceptablePrice').val(data.minimumAcceptablePrice || '');
+        $('#isPriceNegotiable').prop('checked', data.isPriceNegotiable || false);
+        $('#priceIncludesTransfer').prop('checked', data.priceIncludesTransfer || false);
+        $('#priceValidUntilDate').val(data.priceValidUntilDate ? data.priceValidUntilDate.split('T')[0] : '');
+
+        // Registration and documentation
+        $('#registrationNumber').val(data.registrationNumber || '');
+        $('#rtoId').val(data.rtoId || '');
+        $('#chassisNumber').val(data.chassisNumber || '');
+        $('#engineNumber').val(data.engineNumber || '');
+        $('#insuranceProviderId').val(data.insuranceProviderId || '');
+        $('#insuranceType').val(data.insuranceType || '');
+        $('#insurancePolicyNumber').val(data.insurancePolicyNumber || '');
+        $('#insuranceExpiryDate').val(data.insuranceExpiryDate ? data.insuranceExpiryDate.split('T')[0] : '');
+
+        // Location
+        $('#stateId').val(data.stateId || '');
+        $('#cityId').val(data.cityId || '');
+        $('#areaOrLocality').val(data.areaOrLocality || '');
+        $('#pinCode').val(data.pinCode || '');
+        $('#exactAddress').val(data.exactAddress || '');
+
+        // Seller information
+        $('#sellerType').val(data.sellerType || '');
+        $('#sellerName').val(data.sellerName || '');
+        $('#sellerPrimaryPhone').val(data.sellerPrimaryPhone || '');
+        $('#sellerSecondaryPhone').val(data.sellerSecondaryPhone || '');
+        $('#sellerEmailAddress').val(data.sellerEmailAddress || '');
+        $('#sellerWhatsAppNumber').val(data.sellerWhatsAppNumber || '');
+        $('#preferredContactMethod').val(data.preferredContactMethod || '');
+
+        // Additional information
+        $('#detailedDescription').val(data.detailedDescription || '');
+        $('#sellingReason').val(data.sellingReason || '');
+        $('#specialHighlights').val(data.specialHighlights || '');
+        $('#knownIssuesOrProblems').val(data.knownIssuesOrProblems || '');
+        $('#availableForPhysicalInspection').prop('checked', data.availableForPhysicalInspection || false);
+        $('#availableForTestDrive').prop('checked', data.availableForTestDrive || false);
+        $('#preferredViewingLocation').val(data.preferredViewingLocation || '');
+        $('#viewingInstructions').val(data.viewingInstructions || '');
+
+        // Listing options
+        $('#isPromotedListing').prop('checked', data.isPromotedListing || false);
+        $('#isFeaturedListing').prop('checked', data.isFeaturedListing || false);
+        $('#isUrgentSale').prop('checked', data.isUrgentSale || false);
+
+        $('#listingModal').modal('show');
+    }
+
+    function Validation()
+    {
+
+    }
+
+    // =================== CAR LISTINGS ===================
+    function initCarListings() 
+ 
+    {
+          
+        var table = $('#tblCarListings').DataTable();
+        table.clear().draw();
+
+        $.get('/VehicleManagement/GetCarListings', function (data) {
+
+            data.forEach(function (item) {
+                table.row.add([
+                    item.listingId,
+                    item.listingTitle,
+                    item.brandId,
+                    item.sellingPriceAsked,
+                    FormatDateInReadableFormat(item.listingCreatedDate),
+                    `<i class='fa fa-edit btn-edit' style='color:green' data-full='${JSON.stringify(item)}'></i>
+                     <i class='fa fa-trash btn-delete' style='color:red' data-id='${item.listingId}'></i>`
+                ]).draw();
+            });
+        });
+
+        $('#tblCarListings').on('click', '.btn-edit', function () {
+            var data = JSON.parse($(this).attr('data-full'));
+            editListing(data);
+        });
+
+        $('#tblCarListings').on('click', '.btn-delete', function () {
+            var id = $(this).data('id');
+            DeleteWarning(deleteListing, id);
+        });
+    }
+
+    function clearFeatureModal() {
+     
+        $('.ClearListingModalData').val('');
+        $('#listingModal').modal('show');
+    }
+
+    function saveListingold() {
+        if (CheckEmptyFields('Listing')) {
+            let data = {
+                listingId: $('#listingId').val(),
+                listingTitle: $('#listingTitle').val(),
+                brandId: $('#brandId').val(),
+                sellingPriceAsked: $('#sellingPrice').val()
+            };
+            $.post('/VehicleManagement/AddOrUpdateCarListing', data, function (res) {
+                msgPopup('success', 'Saved successfully');
+                $('#listingModal').modal('hide');
+                initCarListings();
+            });
+        }
+    }
+
+    function editListing(data) {
+        $('#listingId').val(data.listingId);
+        $('#listingTitle').val(data.listingTitle);
+        $('#brandId').val(data.brandId);
+        $('#sellingPrice').val(data.sellingPriceAsked);
+        $('#listingModal').modal('show');
+    }
+
+    function deleteListing(id) {
+        $.post('/VehicleManagement/DeleteCarListing', { id: id }, function (res) {
+            msgPopup('success', 'Deleted');
+            initCarListings();
+        });
+    }
+
+</script>

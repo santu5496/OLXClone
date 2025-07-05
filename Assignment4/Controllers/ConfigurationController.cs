@@ -1,36 +1,40 @@
-using System.Diagnostics;
-using Assignment4.Models;
 using DbOperation.Interface;
 using DbOperation.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+
 namespace Assignment4.Controllers
 {
     public class ConfigurationController : Controller
     {
         private readonly IConfigurationService _dbConn;
+
         public ConfigurationController(IConfigurationService conn)
         {
             _dbConn = conn;
         }
 
+        // Return the main CarBrands view page (optional)
         public IActionResult Configuration()
         {
             return View();
         }
 
-        public IActionResult AddOrEditInventoryItem(InventoryItems item)
+        // Add or Edit CarBrand
+        public IActionResult AddOrEditCarBrand(CarBrands brand)
         {
             try
             {
-                if (item.itemId == 0)
+                if (brand.brandId == 0)
                 {
-                    var addedItem = _dbConn.AddInventoryItem(item);
-                    return Json(addedItem);
+                    var addedBrand = _dbConn.AddCarBrand(brand);
+                    return Json(addedBrand);
                 }
                 else
                 {
-                    var updatedInventoryItem = _dbConn.UpdateInventoryItem(item);
-                    return Json(updatedInventoryItem);
+                    var updatedBrand = _dbConn.UpdateCarBrand(brand);
+                    return Json(updatedBrand);
                 }
             }
             catch (Exception ex)
@@ -39,11 +43,13 @@ namespace Assignment4.Controllers
             }
         }
 
-        public IActionResult GetInventoryItems()
+        // Get all CarBrands (optionally with search, implement in service if needed)
+        public IActionResult GetCarBrands(string? search)
         {
             try
             {
-                return Json(_dbConn.GetInventoryItems());
+                var brands = _dbConn.GetCarBrands(search);
+                return Json(brands);
             }
             catch (Exception ex)
             {
@@ -51,11 +57,13 @@ namespace Assignment4.Controllers
             }
         }
 
-        public IActionResult DeleteInventoryItems(int id)
+        // Get single CarBrand by Id (optional helper)
+        public IActionResult GetCarBrandById(int id)
         {
             try
             {
-                return Json(_dbConn.DeleteInventoryItem(id));
+                var brand = _dbConn.GetCarBrandById(id);
+                return Json(brand);
             }
             catch (Exception ex)
             {
@@ -63,80 +71,267 @@ namespace Assignment4.Controllers
             }
         }
 
-        public IActionResult AddOrEditSupplierDetails(Suppliers supplier)
+        // Delete CarBrand by Id
+        public IActionResult DeleteCarBrand(int id)
         {
             try
             {
-                if (supplier.supplierId == 0)
+                var deleted = _dbConn.DeleteCarBrand(id);
+                return Json(deleted);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
+
+
+
+        // Add or Edit Car Model
+        [HttpPost]
+        public IActionResult AddOrEditCarModel(CarModels model)
+        {
+            try
+            {
+                bool result;
+                if (model.modelId == 0)
                 {
-                    var addedSupplier = _dbConn.AddSupplier(supplier);
-                    return Json(addedSupplier);
-
+                    result = _dbConn.AddCarModel(model);
                 }
                 else
                 {
-                    var updatedSupplier = _dbConn.UpdateSupplier(supplier);
-                    return Json(updatedSupplier);
+                    result = _dbConn.UpdateCarModel(model);
                 }
-            }
-
-            catch (Exception ex)
-            {
-                return Json(ex.Message);
-            }
-        }
-
-        public IActionResult GetSupplierDts()
-        {
-            try
-            {
-                return Json(_dbConn.GetSupplierDts());
+                return Json(result);
             }
             catch (Exception ex)
             {
-                return Json(ex.Message);
+                return Json(new { success = false, error = ex.Message });
             }
         }
 
-        public IActionResult DeleteSupplier(int id)
+        // Get all C [HttpGet]
+        public IActionResult GetCarModels(string? search)
         {
             try
             {
-                return Json(_dbConn.DeleteSupplier(id));
+                var models = _dbConn.GetCarModels(search);
+                return Json(models);
             }
             catch (Exception ex)
             {
-                return Json(ex.Message);
+                return Json(new { success = false, error = ex.Message });
             }
         }
 
-        public IActionResult AddorEditCategory(Category cat)
+        // Get single Car Model by Id
+        [HttpGet]
+        public IActionResult GetCarModelById(int id)
         {
             try
             {
-                if (cat.id == 0)
+                var model = _dbConn.GetCarModelById(id);
+                if (model == null)
+                    return Json(new { success = false, error = "Model not found" });
+                return Json(model);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        // Delete Car Model by Id
+        [HttpPost]
+        public IActionResult DeleteCarModel(int id)
+        {
+            try
+            {
+                var deleted = _dbConn.DeleteCarModel(id);
+                return Json(deleted);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        // Get all Car Brands for dropdown (optional helper method)
+      
+        #region Car Variant CRUD
+
+        [HttpPost]
+        public IActionResult AddOrEditCarVariant(CarVariants variant)
+        {
+            try
+            {
+                bool result;
+                if (variant.variantId == 0)
                 {
-                    var addedCategory = _dbConn.AddCategory(cat);
-                    return Json(addedCategory);
-
+                    variant.variantCreatedDate = DateTime.Now;
+                    result = _dbConn.AddCarVariant(variant);
                 }
                 else
                 {
-                    var updatedCategory = _dbConn.UpdateCategory(cat);
-                    return Json(updatedCategory);
+                    result = _dbConn.UpdateCarVariant(variant);
                 }
+                return Json(new { success = result });
             }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
 
+        [HttpGet]
+        public IActionResult GetCarVariants(string? search)
+        {
+            try
+            {
+                var variants = _dbConn.GetCarVariants(search);
+                return Json(variants);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetCarVariantById(int id)
+        {
+            try
+            {
+                var variant = _dbConn.GetCarVariantById(id);
+                if (variant == null)
+                    return Json(new { success = false, error = "Variant not found" });
+
+                return Json(variant);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteCarVariant(int id)
+        {
+            try
+            {
+                var deleted = _dbConn.DeleteCarVariant(id);
+                return Json(new { success = deleted });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [HttpGet]
+        public IActionResult GetCarModelsByBrand(int brandId)
+        {
+            try
+            {
+                var models = _dbConn.GetCarModelsByBrand(brandId);
+                return Json(models);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        #endregion
+
+        #region VehicleCategories CRUD
+
+        [HttpGet]
+        public IActionResult GetVehicleCategories(string? search)
+        {
+            try
+            {
+                var list = _dbConn.GetVehicleCategories(search);
+                return Json(list);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetVehicleCategoryById(int id)
+        {
+            try
+            {
+                var category = _dbConn.GetVehicleCategoryById(id);
+                if (category == null)
+                    return Json(new { success = false, error = "Category not found" });
+                return Json(category);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddOrEditVehicleCategory(VehicleCategories category)
+        {
+            try
+            {
+                bool result;
+                if (category.categoryId == 0)
+                    result = _dbConn.AddVehicleCategory(category);
+                else
+                    result = _dbConn.UpdateVehicleCategory(category);
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteVehicleCategory(int id)
+        {
+            try
+            {
+                var result = _dbConn.DeleteVehicleCategory(id);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        #endregion
+        [HttpGet]
+        public IActionResult GetFuelTypes(string? search)
+        {
+            try
+            {
+                var list = _dbConn.GetFuelTypes(search);
+                return Json(list);
+            }
             catch (Exception ex)
             {
                 return Json(ex.Message);
             }
         }
-        public IActionResult GetCategory()
+
+        [HttpGet]
+        public IActionResult GetFuelTypeById(int id)
         {
             try
             {
-                return Json(_dbConn.GetCategory());
+                var item = _dbConn.GetFuelTypeById(id);
+                return Json(item);
             }
             catch (Exception ex)
             {
@@ -144,47 +339,35 @@ namespace Assignment4.Controllers
             }
         }
 
-
-        public IActionResult DeleteCategory(int id)
+        [HttpPost]
+        public IActionResult AddOrEditFuelType(FuelTypes fuelType)
         {
             try
             {
-                return Json(_dbConn.DeleteCategory(id));
-            }
-            catch (Exception ex)
-            {
-                return Json(ex.Message);
-            }
-        }
-
-        public IActionResult AddorEditCustomer(Customers cust)
-        {
-            try
-            {
-                if (cust.customerId == 0)
+                if (fuelType.fuelTypeId == 0)
                 {
-                    var addedCustomer = _dbConn.AddCustomer(cust);
-                    return Json(addedCustomer);
-
+                    var added = _dbConn.AddFuelType(fuelType);
+                    return Json(added);
                 }
                 else
                 {
-                    var updatedCustomer = _dbConn.UpdateCustomer(cust);
-                    return Json(updatedCustomer);
+                    var updated = _dbConn.UpdateFuelType(fuelType);
+                    return Json(updated);
                 }
             }
-
             catch (Exception ex)
             {
                 return Json(ex.Message);
             }
         }
 
-        public IActionResult GetCustomer()
+        [HttpPost]
+        public IActionResult DeleteFuelType(int id)
         {
             try
             {
-                return Json(_dbConn.GetCustomers());
+                var deleted = _dbConn.DeleteFuelType(id);
+                return Json(deleted);
             }
             catch (Exception ex)
             {
@@ -192,16 +375,67 @@ namespace Assignment4.Controllers
             }
         }
 
-        public IActionResult DeleteCustomer(int id)
+        public IActionResult GetTransmissionTypes(string? search)
         {
             try
             {
-                return Json(_dbConn.DeleteCustomer(id));
+                var result = _dbConn.GetTransmissionTypes(search);
+                return Json(result);
             }
             catch (Exception ex)
             {
                 return Json(ex.Message);
             }
         }
+
+        public IActionResult GetTransmissionTypeById(int id)
+        {
+            try
+            {
+                var transmission = _dbConn.GetTransmissionTypeById(id);
+                return Json(transmission);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddOrEditTransmissionType(TransmissionTypes transmission)
+        {
+            try
+            {
+                if (transmission.transmissionId == 0)
+                {
+                    var added = _dbConn.AddTransmissionType(transmission);
+                    return Json(added);
+                }
+                else
+                {
+                    var updated = _dbConn.UpdateTransmissionType(transmission);
+                    return Json(updated);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteTransmissionType(int id)
+        {
+            try
+            {
+                var deleted = _dbConn.DeleteTransmissionType(id);
+                return Json(deleted);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+        }
+
     }
 }

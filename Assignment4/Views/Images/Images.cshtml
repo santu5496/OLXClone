@@ -1,0 +1,1044 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Images Management - 10 Images Version</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        .customBtn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .customBtn:hover {
+                background-color: #0056b3;
+                color: white;
+            }
+
+        .image-preview {
+            max-width: 80px;
+            max-height: 60px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .image-slot {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+            .image-slot:hover {
+                border-color: #007bff;
+                background-color: #e7f3ff;
+            }
+
+            .image-slot.has-image {
+                border-color: #28a745;
+                background-color: #fff;
+                padding: 5px;
+            }
+
+            .image-slot .upload-placeholder {
+                color: #6c757d;
+                pointer-events: none;
+            }
+
+                .image-slot .upload-placeholder i {
+                    font-size: 1.5rem;
+                    margin-bottom: 8px;
+                }
+
+        .btn-loading {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .upload-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+        }
+
+        .col-md-2-4 {
+            flex: 0 0 20%;
+            max-width: 20%;
+        }
+
+        @@media (max-width: 768px) {
+            .col-md-2-4 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+        /* Table scroll for many columns */
+        .table-responsive {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid mt-3">
+        <ul class="nav nav-tabs" id="carImageTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="image-listing-tab" data-bs-toggle="tab" data-bs-target="#CarImageListingTab" type="button" role="tab">Car Images Listing</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-3" id="carImageTabContent">
+            <div class="tab-pane fade show active" id="CarImageListingTab" role="tabpanel">
+                <button class="customBtn mb-2" onclick="clearImageModal()">Add Car Images</button>
+                <div class="table-responsive">
+                    <table id="tblCarImages" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Registration</th>
+                                <th>Front</th>
+                                <th>Rear</th>
+                                <th>Left</th>
+                                <th>Right</th>
+                                <th>Dashboard</th>
+                                <th>Interior</th>
+                                <th>Engine</th>
+                                <th>Wheels</th>
+                                <th>Documents</th>
+                                <th>Other</th>
+                                <th>Upload Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be loaded via AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Car Images Modal -->
+    <div class="modal fade" id="carImageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add / Edit Car Images (10 Images)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Car Selection Section -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Car Registration Number *</label>
+                                <select class="form-select ClearImageModalData requiredfield" id="carRegistrationId" onchange="DataExistInTheTable()">
+                                    <option value="">Select Car Registration</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Car Details</label>
+                                <div id="carDetails" class="form-control-plaintext text-muted">
+                                    Select a car to view details
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Image Upload Slots -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text-primary mb-3">Upload Images (10 Slots Available)</h6>
+                            <!-- Exterior Images - Row 1 (Slots 1-5) -->
+                            <h6 class="text-secondary mb-2">Exterior Images</h6>
+                            <div class="row">
+                                <div class="col-md-2-4">
+                                    <div class="image-slot" id="slot1">
+                                        <div class="slot-number">1</div>
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-plus"></i>
+                                            <div style="font-weight: bold; font-size: 12px;">Front View</div>
+                                            <small>Click to upload</small>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control ClearImageModalData" id="description1" placeholder="Front view description" style="margin-top: 5px;">
+                                </div>
+                                <div class="col-md-2-4">
+                                    <div class="image-slot" id="slot2">
+                                        <div class="slot-number">2</div>
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-plus"></i>
+                                            <div style="font-weight: bold; font-size: 12px;">Rear View</div>
+                                            <small>Click to upload</small>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control ClearImageModalData" id="description2" placeholder="Rear view description" style="margin-top: 5px;">
+                                </div>
+                                <div class="col-md-2-4">
+                                    <div class="image-slot" id="slot3">
+                                        <div class="slot-number">3</div>
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-plus"></i>
+                                            <div style="font-weight: bold; font-size: 12px;">Left Side</div>
+                                            <small>Click to upload</small>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control ClearImageModalData" id="description3" placeholder="Left side description" style="margin-top: 5px;">
+                                </div>
+                                <div class="col-md-2-4">
+                                    <div class="image-slot" id="slot4">
+                                        <div class="slot-number">4</div>
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-plus"></i>
+                                            <div style="font-weight: bold; font-size: 12px;">Right Side</div>
+                                            <small>Click to upload</small>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control ClearImageModalData" id="description4" placeholder="Right side description" style="margin-top: 5px;">
+                                </div>
+                                <div class="col-md-2-4">
+                                    <div class="image-slot" id="slot5">
+                                        <div class="slot-number">5</div>
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-plus"></i>
+                                            <div style="font-weight: bold; font-size: 12px;">Dashboard</div>
+                                            <small>Click to upload</small>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control ClearImageModalData" id="description5" placeholder="Dashboard description" style="margin-top: 5px;">
+                                </div>
+                            </div>
+                            <!-- Interior Images - Row 2 (Slots 6-10) -->
+                            <h6 class="text-secondary mb-2 mt-4">Interior & Other Images</h6>
+                            <div class="row">
+                                <div class="col-md-2-4">
+                                    <div class="image-slot" id="slot6">
+                                        <div class="slot-number">6</div>
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-plus"></i>
+                                            <div style="font-weight: bold; font-size: 12px;">Interior</div>
+                                            <small>Click to upload</small>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control ClearImageModalData" id="description6" placeholder="Interior description" style="margin-top: 5px;">
+                                </div>
+                                <div class="col-md-2-4">
+                                    <div class="image-slot" id="slot7">
+                                        <div class="slot-number">7</div>
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-plus"></i>
+                                            <div style="font-weight: bold; font-size: 12px;">Engine Bay</div>
+                                            <small>Click to upload</small>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control ClearImageModalData" id="description7" placeholder="Engine bay description" style="margin-top: 5px;">
+                                </div>
+                                <div class="col-md-2-4">
+                                    <div class="image-slot" id="slot8">
+                                        <div class="slot-number">8</div>
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-plus"></i>
+                                            <div style="font-weight: bold; font-size: 12px;">Wheels</div>
+                                            <small>Click to upload</small>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control ClearImageModalData" id="description8" placeholder="Wheels description" style="margin-top: 5px;">
+                                </div>
+                                <div class="col-md-2-4">
+                                    <div class="image-slot" id="slot9">
+                                        <div class="slot-number">9</div>
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-plus"></i>
+                                            <div style="font-weight: bold; font-size: 12px;">Documents</div>
+                                            <small>Click to upload</small>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control ClearImageModalData" id="description9" placeholder="Documents description" style="margin-top: 5px;">
+                                </div>
+                                <div class="col-md-2-4">
+                                    <div class="image-slot" id="slot10">
+                                        <div class="slot-number">10</div>
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-plus"></i>
+                                            <div style="font-weight: bold; font-size: 12px;">Other</div>
+                                            <small>Click to upload</small>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control ClearImageModalData" id="description10" placeholder="Other description" style="margin-top: 5px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="carImageId" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" onclick="saveCarImages()" class="btn btn-primary" id="saveImagesBtn">Save Images</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Image Preview Modal -->
+    <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Image Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="previewImage" src="" alt="Preview" class="img-fluid">
+                    <div class="mt-3">
+                        <p><strong>Slot:</strong> <span id="previewSlot"></span></p>
+                        <p><strong>Description:</strong> <span id="previewImageDescription"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+            // Updated Car Images Management JavaScript - Fixed for 10 Images with Duplicate Check
+        let imageSlots = {
+            1: null, 2: null, 3: null, 4: null, 5: null,
+            6: null, 7: null, 8: null, 9: null, 10: null
+        };
+
+        const slotLabels = {
+            1: 'Front View',
+            2: 'Rear View',
+            3: 'Left Side',
+            4: 'Right Side',
+            5: 'Dashboard',
+            6: 'Interior',
+            7: 'Engine Bay',
+            8: 'Wheels',
+            9: 'Documents',
+            10: 'Other'
+        };
+
+        // Initialize when document is ready
+        $(document).ready(function() {
+            console.log('Initializing car images management system - 10 images...');
+            initCarImages();
+            loadCarRegistrations();
+            setupImageUploads();
+
+            // Car selection change event - SINGLE EVENT BINDING
+            $('#carRegistrationId').on('change', function () {
+                var carId = $(this).val();
+                if (carId) {
+                    // First check if data exists in table
+                    if (!DataExistInTheTable()) {
+                        // Only load car details if no duplicate found
+                        loadCarDetails(carId);
+                    }
+                } else {
+                    $('#carDetails').text('Select a car to view details');
+                }
+            });
+        });
+
+        function setupImageUploads() {
+            // Setup click handlers for all 10 slots
+            for (let i = 1; i <= 10; i++) {
+                setupSlotUpload(i);
+            }
+        }
+
+        function setupSlotUpload(slotNumber) {
+            const slotId = `#slot${slotNumber}`;
+            const slot = $(slotId);
+            if (slot.length === 0) {
+                console.log(`Slot ${slotNumber} not found in HTML`);
+                return;
+            }
+
+            // Remove existing click handlers
+            slot.off('click');
+
+            // Add click handler to open file browser
+            slot.on('click', function(e) {
+                // Don't trigger if clicking remove button
+                if (!$(e.target).closest('button').length) {
+                    openFileBrowser(slotNumber);
+                }
+            });
+
+            console.log(`Setup complete for slot ${slotNumber}`);
+        }
+
+        function openFileBrowser(slotNumber) {
+            console.log(`Opening file browser for slot ${slotNumber}`);
+
+            // Create a file input element
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.style.display = 'none';
+
+            // Add event listener for file selection
+            fileInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    handleFileUpload(slotNumber, file);
+                }
+                // Clean up
+                document.body.removeChild(fileInput);
+            });
+
+            // Add to DOM and trigger click
+            document.body.appendChild(fileInput);
+
+            // Small delay to ensure element is in DOM
+            setTimeout(() => {
+                fileInput.click();
+            }, 100);
+        }
+
+        function handleFileUpload(slotNumber, file) {
+            console.log(`File selected for slot ${slotNumber}:`, file.name);
+
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                showMessage('Please select an image file (JPG, PNG, GIF, etc.)', 'error');
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                showMessage('File size should not exceed 5MB', 'error');
+                return;
+            }
+
+            // Show loading state
+            const slot = $(`#slot${slotNumber}`);
+            slot.css({
+                'border': '3px solid #007bff',
+                'background-color': '#e7f3ff'
+            });
+
+            slot.html(`
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: #007bff; text-align: center; padding: 8px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 1.8rem; margin-bottom: 8px; color: #007bff;"></i>
+                    <div style="font-weight: bold; margin-bottom: 5px; font-size: 11px;">Processing...</div>
+                    <small style="word-break: break-word; max-width: 150px; color: #6c757d; font-size: 10px;">${file.name}</small>
+                </div>
+            `);
+
+            // Read and convert file to base64
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Store the base64 string (without data URL prefix)
+                const base64Data = e.target.result.split(',')[1];
+                imageSlots[slotNumber] = base64Data;
+
+                // Display the image
+                displayImage(slotNumber, e.target.result);
+            };
+
+            reader.onerror = function(e) {
+                console.error('Error reading file:', e);
+                showMessage('Error reading file', 'error');
+                removeImage(slotNumber);
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function displayImage(slotNumber, imageDataUrl) {
+            const slot = $(`#slot${slotNumber}`);
+
+            // Update slot with image
+            slot.addClass('has-image');
+            slot.css({
+                'border': '3px solid #28a745',
+                'background-color': '#fff',
+                'padding': '5px',
+                'border-radius': '8px'
+            });
+
+            slot.html(`
+                <div style="position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.8); color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: bold; z-index: 15;">
+                    ${slotNumber}
+                </div>
+                <img src="${imageDataUrl}" alt="Uploaded Image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px; display: block;">
+                <button type="button" onclick="removeImage(${slotNumber})" style="position: absolute; top: 5px; right: 5px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 15;">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div style="position: absolute; bottom: 5px; left: 5px; right: 5px; background: rgba(40,167,69,0.9); color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px; text-align: center; font-weight: bold;">
+                    ✅ ${slotLabels[slotNumber]}
+                </div>
+            `);
+
+            slot.off('click').on('click', function(e) {
+                if (!$(e.target).closest('button').length) {
+                    showImagePreview(imageDataUrl, slotNumber);
+                }
+            });
+
+            showMessage(`${slotLabels[slotNumber]} uploaded successfully!`, 'success');
+        }
+
+        function removeImage(slotNumber) {
+            const slot = $(`#slot${slotNumber}`);
+
+            // Reset slot to empty state
+            slot.removeClass('has-image');
+            slot.css({
+                'border': '2px dashed #ddd',
+                'background-color': '#f8f9fa',
+                'padding': '15px'
+            });
+
+            slot.html(`
+                <div class="slot-number" style="position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; z-index: 5;">${slotNumber}</div>
+                <div style="color: #6c757d; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                    <i class="fas fa-plus" style="font-size: 1.5rem; margin-bottom: 8px;"></i>
+                    <div style="font-weight: bold; margin-bottom: 5px; font-size: 12px;">${slotLabels[slotNumber]}</div>
+                    <small>Click to upload</small>
+                </div>
+            `);
+
+            // Clear stored data
+            imageSlots[slotNumber] = null;
+            $(`#description${slotNumber}`).val('');
+
+            // Re-setup upload handler
+            setupSlotUpload(slotNumber);
+
+            showMessage(`${slotLabels[slotNumber]} removed`, 'info');
+        }
+
+        // Message display function
+        function showMessage(message, type = 'info') {
+            $('.upload-message').remove();
+
+            const messageClass = type === 'error' ? 'alert-danger' :
+                                type === 'success' ? 'alert-success' :
+                                type === 'warning' ? 'alert-warning' : 'alert-info';
+
+            const messageHtml = `
+                <div class="alert ${messageClass} upload-message">
+                    <button type="button" class="btn-close" onclick="$(this).parent().remove()"></button>
+                    ${message}
+                </div>
+            `;
+
+            $('body').append(messageHtml);
+
+            setTimeout(() => {
+                $('.upload-message').fadeOut(500, function() {
+                    $(this).remove();
+                });
+            }, 3000);
+        }
+
+        function showImagePreview(imageDataUrl, slotNumber) {
+            $('#previewImage').attr('src', imageDataUrl);
+            $('#previewSlot').text(`Slot ${slotNumber} - ${slotLabels[slotNumber]}`);
+            $('#previewImageDescription').text($(`#description${slotNumber}`).val() || 'No description');
+            $('#imagePreviewModal').modal('show');
+        }
+
+        // =================== API FUNCTIONS ===================
+
+        function initCarImages() {
+            console.log('Loading car images data...');
+
+            // Destroy existing DataTable if it exists
+            if ($.fn.DataTable.isDataTable('#tblCarImages')) {
+                $('#tblCarImages').DataTable().destroy();
+            }
+
+            const table = $('#tblCarImages').DataTable({
+                "pageLength": 10,
+                "ordering": true,
+                "searching": true,
+                "responsive": true,
+                "processing": true,
+                "scrollX": true
+            });
+
+            // Load data from server with updated endpoint
+            $.ajax({
+                url: '/Images/GetCarImages',
+                type: 'GET',
+                success: function (data) {
+                    console.log('Car images data loaded:', data);
+                    table.clear();
+
+                    if (data && Array.isArray(data)) {
+                        data.forEach(function (item) {
+                            // Create image cells for all 10 slots
+                            const images = [];
+                            for (let i = 1; i <= 10; i++) {
+                                images.push(createImageCell(item[`slot${i}ImagePath`], i.toString(), item[`slot${i}Description`]));
+                            }
+
+                            table.row.add([
+                                item.carImageId,
+                                item.registrationNumber,
+                                ...images,
+                                formatDate(item.uploadDate),
+                                createActionButtons(item)
+                            ]);
+                        });
+                    }
+
+                    table.draw();
+                    setupTableEventHandlers();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading car images:', error);
+                    showMessage('Failed to load car images data', 'error');
+                }
+            });
+        }
+
+        function createImageCell(imagePath, slot, description) {
+            if (!imagePath) return '-';
+
+            const escapedDesc = (description || '').replace(/'/g, '&apos;');
+            return `<img src="${imagePath}" class="image-preview" onclick="showImagePreview('${imagePath}', '${slot}', '${escapedDesc}')" title="${description || 'No description'}">`;
+        }
+
+        function createActionButtons(item) {
+            const itemData = JSON.stringify(item).replace(/'/g, '&apos;');
+            const itemId = item.carImageId;
+
+            return `
+                <i class='fa fa-edit btn-edit' style='color:green; cursor:pointer; margin-right:10px;'
+                   data-full='${itemData}' title='Edit'></i>
+                <i class='fa fa-trash btn-delete' style='color:red; cursor:pointer;'
+                   data-id='${itemId}' title='Delete'></i>
+            `;
+        }
+
+        function setupTableEventHandlers() {
+            // Edit button handler
+            $('#tblCarImages').off('click', '.btn-edit').on('click', '.btn-edit', function () {
+                try {
+                    const dataStr = $(this).attr('data-full').replace(/&apos;/g, "'");
+                    const data = JSON.parse(dataStr);
+                    editCarImage(data);
+                } catch (e) {
+                    console.error('Error parsing edit data:', e);
+                    showMessage('Error loading image data for editing', 'error');
+                }
+            });
+
+            // Delete button handler
+            $('#tblCarImages').off('click', '.btn-delete').on('click', '.btn-delete', function () {
+                const id = $(this).data('id');
+                if (confirm('Are you sure you want to delete this car image record? This action cannot be undone.')) {
+                    deleteCarImage(id);
+                }
+            });
+        }
+
+        function saveCarImages() {
+            const carRegistrationId = $('#carRegistrationId').val();
+            if (!carRegistrationId) {
+                showMessage('Please select a car registration', 'warning');
+                $('#carRegistrationId').focus();
+                return;
+            }
+
+            // Count how many images we have
+            const imageCount = Object.values(imageSlots).filter(val => val !== null).length;
+            if (imageCount === 0) {
+                showMessage('Please upload at least one image', 'warning');
+                return;
+            }
+
+            const imageData = {
+                carImageId: parseInt($('#carImageId').val()) || 0,
+                carRegistrationId: parseInt(carRegistrationId),
+                registrationNumber: $('#carRegistrationId option:selected').text(),
+
+                // Only include slots 1-10 (matching the UI)
+                slot1ImageData: imageSlots[1],
+                slot1Description: $('#description1').val() || '',
+                slot2ImageData: imageSlots[2],
+                slot2Description: $('#description2').val() || '',
+                slot3ImageData: imageSlots[3],
+                slot3Description: $('#description3').val() || '',
+                slot4ImageData: imageSlots[4],
+                slot4Description: $('#description4').val() || '',
+                slot5ImageData: imageSlots[5],
+                slot5Description: $('#description5').val() || '',
+                slot6ImageData: imageSlots[6],
+                slot6Description: $('#description6').val() || '',
+                slot7ImageData: imageSlots[7],
+                slot7Description: $('#description7').val() || '',
+                slot8ImageData: imageSlots[8],
+                slot8Description: $('#description8').val() || '',
+                slot9ImageData: imageSlots[9],
+                slot9Description: $('#description9').val() || '',
+                slot10ImageData: imageSlots[10],
+                slot10Description: $('#description10').val() || '',
+
+                isActive: true
+            };
+
+            const saveBtn = $('#saveImagesBtn');
+            const originalText = saveBtn.text();
+            saveBtn.prop('disabled', true).text(`Uploading ${imageCount} images...`);
+
+            $.ajax({
+                url: '/Images/AddOrUpdateCarImages',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(imageData),
+                success: function (response) {
+                    saveBtn.prop('disabled', false).text(originalText);
+
+                    if (response && response.success) {
+                        showMessage(response.message || `Successfully uploaded ${imageCount} image${imageCount > 1 ? 's' : ''}!`, 'success');
+                        setTimeout(() => {
+                            $('#carImageModal').modal('hide');
+                            initCarImages();
+                        }, 1500);
+                    } else {
+                        const errorMsg = response.message || 'Failed to save images';
+                        showMessage('Upload failed: ' + errorMsg, 'error');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    saveBtn.prop('disabled', false).text(originalText);
+
+                    let errorMessage = 'Error uploading images';
+                    if (status === 'timeout') {
+                        errorMessage = 'Upload timed out. Please try with smaller images.';
+                    } else if (xhr.status === 413) {
+                        errorMessage = 'Files too large. Please reduce image sizes.';
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        try {
+                            const errorResponse = JSON.parse(xhr.responseText);
+                            errorMessage = errorResponse.message || errorMessage;
+                        } catch (e) {
+                            errorMessage += ': ' + xhr.responseText.substring(0, 100);
+                        }
+                    }
+
+                    showMessage(errorMessage, 'error');
+                    console.error('Upload error:', xhr.responseText);
+                }
+            });
+        }
+
+        function editCarImage(data) {
+            console.log('Editing car image:', data);
+
+            $('#carImageId').val(data.carImageId);
+            $('#carRegistrationId').val(data.carRegistrationId);
+            loadCarDetails(data.carRegistrationId);
+
+            // Clear all slots first
+            clearAllSlots();
+
+            // Load existing images into slots
+            setTimeout(() => {
+                for (let i = 1; i <= 10; i++) {
+                    const imagePath = data[`slot${i}ImagePath`];
+                    const description = data[`slot${i}Description`] || '';
+
+                    $(`#description${i}`).val(description);
+
+                    if (imagePath) {
+                        loadExistingImageToSlot(i, imagePath, description);
+                    }
+                }
+            }, 200);
+
+            $('#carImageModal').modal('show');
+        }
+
+        function loadExistingImageToSlot(slotNumber, imagePath, description) {
+            const slot = $(`#slot${slotNumber}`);
+
+            slot.addClass('has-image');
+            slot.css({
+                'border': '3px solid #28a745',
+                'background-color': '#fff',
+                'padding': '5px',
+                'border-radius': '8px'
+            });
+
+            slot.html(`
+                <div style="position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; z-index: 5;">${slotNumber}</div>
+                <img src="${imagePath}" alt="Existing Image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px; display: block;">
+                <button type="button" onclick="removeImage(${slotNumber})" style="position: absolute; top: 5px; right: 5px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 15;">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div style="position: absolute; bottom: 5px; left: 5px; right: 5px; background: rgba(40,167,69,0.9); color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px; text-align: center; font-weight: bold;">
+                    ✅ ${slotLabels[slotNumber]}
+                </div>
+            `);
+
+            // For existing images, we need to convert back to base64 for editing
+            // The imagePath is already a data URL, so extract the base64 part
+            if (imagePath.startsWith('data:image')) {
+                const base64Data = imagePath.split(',')[1];
+                imageSlots[slotNumber] = base64Data;
+            }
+
+            slot.off('click').on('click', function(e) {
+                if (!$(e.target).closest('button').length) {
+                    showImagePreview(imagePath, slotNumber);
+                }
+            });
+        }
+
+        function deleteCarImage(id) {
+            console.log('Deleting car image with ID:', id);
+
+            $.ajax({
+                url: '/Images/DeleteCarImage',
+                type: 'POST',
+                data: { id: id },
+                success: function(response) {
+                    if (response && response.success) {
+                        showMessage(response.message || 'Images deleted successfully', 'success');
+                        initCarImages(); // Refresh the table
+                    } else {
+                        const errorMsg = response.message || 'Failed to delete images';
+                        showMessage('Delete failed: ' + errorMsg, 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error deleting images:', error);
+                    showMessage('Error occurred while deleting images', 'error');
+                }
+            });
+        }
+
+        function clearImageModal() {
+            console.log('Clearing image modal...');
+
+            // Clear all 10 slots
+            clearAllSlots();
+
+            // Clear form fields
+            $('#carRegistrationId').val('');
+            $('#carImageId').val('');
+            $('.ClearImageModalData').val('');
+            $('#carDetails').text('Select a car to view details');
+
+            // Show modal
+            $('#carImageModal').modal('show');
+        }
+
+        function clearAllSlots() {
+            for (let i = 1; i <= 10; i++) {
+                imageSlots[i] = null;
+                const slot = $(`#slot${i}`);
+
+                if (slot.length > 0) {
+                    slot.removeClass('has-image');
+                    slot.css({
+                        'border': '2px dashed #ddd',
+                        'background-color': '#f8f9fa',
+                        'padding': '15px'
+                    });
+
+                    slot.html(`
+                        <div class="slot-number" style="position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; z-index: 5;">${i}</div>
+                        <div style="color: #6c757d; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                            <i class="fas fa-plus" style="font-size: 1.5rem; margin-bottom: 8px;"></i>
+                            <div style="font-weight: bold; margin-bottom: 5px; font-size: 12px;">${slotLabels[i]}</div>
+                            <small>Click to upload</small>
+                        </div>
+                    `);
+
+                    setupSlotUpload(i);
+                }
+            }
+        }
+
+        function loadCarRegistrations() {
+            console.log('Loading car registrations...');
+
+            $.ajax({
+                url: '/VehicleManagement/GetCarListings',
+                type: 'GET',
+                success: function(response) {
+                    console.log('Car registrations loaded successfully');
+                    populateDropdown('#carRegistrationId', response, 'listingId', 'registrationNumber', 'Select Car Registration');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading car registrations:', error);
+                    showMessage('Failed to load car registrations', 'error');
+                }
+            });
+        }
+
+        function loadCarDetails(carId) {
+            if (!carId) return;
+
+            console.log('Loading car details for ID:', carId);
+
+            $.ajax({
+                url: '/VehicleManagement/GetCarListings',
+                type: 'GET',
+                data: { id: carId },
+                success: function(response) {
+                    if (response) {
+                        $('#carDetails').html(`
+                            <strong>${response.brandName || 'N/A'} ${response.modelName || 'N/A'}</strong><br>
+                            <small>Year: ${response.manufacturingYear || 'N/A'} | Fuel: ${response.fuelType || 'N/A'} | ${response.kilometersOnOdometer || 'N/A'} km</small>
+                        `);
+                    } else {
+                        $('#carDetails').text('No details available');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading car details:', error);
+                    $('#carDetails').text('Error loading car details');
+                }
+            });
+        }
+
+        // =================== DUPLICATE CHECK FUNCTION ===================
+
+        function DataExistInTheTable() {
+            console.log('Checking if data exists in table...');
+
+            const enteredRegNo = $('#carRegistrationId').val();
+
+            // Early return if nothing selected
+            if (!enteredRegNo || enteredRegNo.trim() === '') {
+                $('#carDetails').text('Select a car to view details');
+                return false;
+            }
+
+            // Check if DataTable is initialized
+            if (!$.fn.DataTable.isDataTable('#tblCarImages')) {
+                console.log('DataTable not yet initialized');
+                return false;
+            }
+
+            const table = $('#tblCarImages').DataTable();
+
+            // Check if table has any data
+            if (table.rows().count() === 0) {
+                console.log('No data in table to check against');
+                return false; // No data to check against
+            }
+
+            // Get the selected registration number text (not the ID)
+            const selectedRegText = $('#carRegistrationId option:selected').text().trim();
+
+            // Safely check against the registration number from the table data
+            const exists = table.rows().data().toArray().some(row => {
+                // The registration number is in column index 1 (0-based indexing)
+                const tableRegNumber = row[1]; // This gets the registration number from the table
+                return tableRegNumber && tableRegNumber.trim().toLowerCase() === selectedRegText.toLowerCase();
+            });
+
+            if (exists) {
+                // Show styled alert message
+                showMessage('Images for this car registration already exist in the table. Please select a different vehicle or edit the existing record.', 'warning');
+
+                // Reset dropdown and details
+                $('#carRegistrationId').val('');
+                $('#carDetails').text('Select a car to view details');
+
+                // Optional: Focus back to dropdown for better UX
+                setTimeout(() => {
+                    $('#carRegistrationId').focus();
+                }, 100);
+
+                return true;
+            }
+
+            console.log('No duplicate found, registration is available');
+            return false;
+        }
+
+        // Alternative styled alert function (if you prefer using SweetAlert or custom modal)
+        function showStyledAlert(type, message) {
+            // Using the existing showMessage function for consistency
+            showMessage(message, type);
+
+            // Alternative: If you want to use browser alert (not recommended for production)
+            // alert(message);
+
+            // Alternative: If you have SweetAlert2 library
+            // Swal.fire({
+            //     icon: type,
+            //     title: type === 'warning' ? 'Warning!' : 'Information',
+            //     text: message,
+            //     confirmButtonText: 'OK'
+            // });
+        }
+
+        // Utility Functions
+        function populateDropdown(selector, data, valueField, textField, defaultText = 'Select Option') {
+            try {
+                const dropdown = $(selector);
+                dropdown.empty();
+                dropdown.append(`<option value="">${defaultText}</option>`);
+
+                if (data && Array.isArray(data)) {
+                    $.each(data, function(index, item) {
+                        if (item && item[valueField] !== undefined && item[textField] !== undefined) {
+                            dropdown.append(`<option value="${item[valueField]}">${item[textField]}</option>`);
+                        }
+                    });
+                } else {
+                    console.log('Invalid data provided for dropdown', selector);
+                }
+            } catch (error) {
+                console.error(`Error populating dropdown ${selector}:`, error);
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return dateString;
+
+                const options = {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+
+                return date.toLocaleDateString('en-US', options);
+            } catch (error) {
+                console.error('Error formatting date:', error);
+                return dateString;
+            }
+        }
+</script>
+</body>
+</html>
