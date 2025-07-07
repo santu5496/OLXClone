@@ -1,6 +1,4 @@
-﻿// =====================================================
-// Part 2: ISearchViewService Interface
-// =====================================================
+﻿
 
 using DbOperation.Models;
 using DbOperation.ViewModels;

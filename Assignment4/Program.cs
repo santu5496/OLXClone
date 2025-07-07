@@ -26,6 +26,10 @@ builder.Services.AddSingleton<IImageServices, ImageServices>(provider =>
 {
     return new ImageServices(builder.Configuration.GetConnectionString("Assignment4"));
 });
+builder.Services.AddSingleton<ISearchViewService, SearchViewService>(provider =>
+{
+    return new SearchViewService(builder.Configuration.GetConnectionString("Assignment4"));
+});
 
 //builder.Services.AddSingleton<IInventoryMaterialLog, InventoryMaterialLogService>(provider =>
 //{
@@ -81,6 +85,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Configuration1}/{action=Configuration1}/{id?}");
-  //  pattern: "{controller=Login}/{action=Login}/{id?}");
+
+
+//  pattern: "{controller=Login}/{action=Login}/{id?}");
 
 app.Run();

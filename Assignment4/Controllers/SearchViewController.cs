@@ -1,5 +1,5 @@
 ﻿// =====================================================
-// Part 4: Updated SearchViewController
+// Updated SearchViewController for JavaScript Frontend
 // =====================================================
 
 using DbOperation.Interface;
@@ -7,6 +7,7 @@ using DbOperation.Models;
 using DbOperation.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Assignment4.Controllers
@@ -20,66 +21,100 @@ namespace Assignment4.Controllers
             _searchViewService = searchViewService;
         }
 
-        // Main search page view
-        public async Task<IActionResult> SearchView(CustomerCarSearchDto searchRequest = null)
+        // Main search page - no model binding, all data loaded via JavaScript
+        public IActionResult SearchView()
         {
-            try
-            {
-                // If no search request, show default page with initial data
-                if (searchRequest == null || string.IsNullOrEmpty(searchRequest.searchKeyword))
-                {
-                    var homePageData = await _searchViewService.GetHomePageDataAsync();
-                    ViewBag.HomePageData = homePageData;
-
-                    // Get filter options for dropdowns
-                    ViewBag.PopularBrands = await _searchViewService.GetBrandsByPopularityAsync();
-                    ViewBag.PopularCities = await _searchViewService.GetCitiesByCarCountAsync();
-                    ViewBag.Categories = await _searchViewService.GetCategoriesAsync();
-                    ViewBag.FuelTypes = await _searchViewService.GetFuelTypesAsync();
-                    ViewBag.Transmissions = await _searchViewService.GetTransmissionTypesAsync();
-
-                    return View("SearchView", new CustomerCarSearchResultDto());
-                }
-
-                // Perform search
-                var searchResults = await _searchViewService.SearchCarsAsync(searchRequest);
-                ViewBag.SearchRequest = searchRequest;
-
-                return View("SearchView", searchResults);
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error loading search page: {ex.Message}";
-                return View("SearchView", new CustomerCarSearchResultDto());
-            }
+            return View();
         }
 
-        // Car detail page
-        public async Task<IActionResult> CarDetail(int id)
+        // Car detail page - now returns the HTML view for JavaScript loading
+        public IActionResult CarDetail(int? id)
+        {
+            // Return the HTML view that will load data via JavaScript
+            return View();
+        }
+
+        // =====================================================
+        // CRITICAL MISSING ENDPOINT - ADDED HERE
+        // =====================================================
+
+        /// <summary>
+        /// Get car detail data for JavaScript frontend
+        /// This is the endpoint your JavaScript is calling
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetCarDetail(int listingId)
         {
             try
             {
-                // Record the view
+                // Record the view first
                 var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-                await _searchViewService.RecordCarViewAsync(id, ipAddress);
+                await _searchViewService.RecordCarViewAsync(listingId, ipAddress);
 
                 // Get car details
-                var carDetail = await _searchViewService.GetCarDetailAsync(id);
+                var carDetail = await _searchViewService.GetCarDetailAsync(listingId);
+
                 if (carDetail == null)
                 {
-                    return NotFound("Car not found");
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Car not found"
+                    });
                 }
 
-                return View("CarDetail", carDetail);
+                return Json(new
+                {
+                    success = true,
+                    data = carDetail
+                });
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = $"Error loading car details: {ex.Message}";
-                return View("Error");
+                return Json(new
+                {
+                    success = false,
+                    message = $"Error loading car details: {ex.Message}"
+                });
             }
         }
 
-        // AJAX endpoints for search functionality
+        // Alternative endpoint that supports both path parameter and query parameter
+        [HttpGet]
+        [Route("SearchView/GetCarDetail/{listingId:int}")]
+        public async Task<JsonResult> GetCarDetailByPath(int listingId)
+        {
+            return await GetCarDetail(listingId);
+        }
+
+        // =====================================================
+        // PRIMARY ENDPOINTS FOR JAVASCRIPT FRONTEND
+        // =====================================================
+
+        // Get all filter data in one call (required by frontend)
+        [HttpGet]
+        public async Task<JsonResult> GetFilterData()
+        {
+            try
+            {
+                var filterData = new
+                {
+                    brands = await _searchViewService.GetBrandsByPopularityAsync(),
+                    cities = await _searchViewService.GetCitiesByCarCountAsync(),
+                    categories = await _searchViewService.GetCategoriesAsync(),
+                    fuelTypes = await _searchViewService.GetFuelTypesAsync(),
+                    transmissions = await _searchViewService.GetTransmissionTypesAsync()
+                };
+
+                return Json(new { success = true, data = filterData });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // Main search endpoint
         [HttpPost]
         public async Task<JsonResult> SearchCars([FromBody] CustomerCarSearchDto searchRequest)
         {
@@ -94,13 +129,24 @@ namespace Assignment4.Controllers
             }
         }
 
+        // Get car statistics for dashboard
         [HttpGet]
-        public async Task<JsonResult> GetFeaturedCars(int count = 10)
+        public async Task<JsonResult> GetCarStatistics()
         {
             try
             {
-                var result = await _searchViewService.GetFeaturedCarsAsync(count);
-                return Json(new { success = true, data = result });
+                var totalActive = await _searchViewService.GetTotalActiveListingsAsync();
+                var totalVerified = await _searchViewService.GetTotalVerifiedListingsAsync();
+                var totalFeatured = await _searchViewService.GetTotalFeaturedListingsAsync();
+
+                var statistics = new
+                {
+                    totalActive,
+                    totalVerified,
+                    totalFeatured
+                };
+
+                return Json(new { success = true, data = statistics });
             }
             catch (Exception ex)
             {
@@ -108,34 +154,7 @@ namespace Assignment4.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetRecentCars(int count = 10)
-        {
-            try
-            {
-                var result = await _searchViewService.GetRecentCarsAsync(count);
-                return Json(new { success = true, data = result });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> GetSimilarCars(int listingId, int count = 5)
-        {
-            try
-            {
-                var result = await _searchViewService.GetSimilarCarsAsync(listingId, count);
-                return Json(new { success = true, data = result });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
-
+        // Get models by brand (required for dependent dropdown)
         [HttpGet]
         public async Task<JsonResult> GetModelsByBrand(int brandId)
         {
@@ -150,6 +169,7 @@ namespace Assignment4.Controllers
             }
         }
 
+        // Get search suggestions for autocomplete
         [HttpGet]
         public async Task<JsonResult> GetSearchSuggestions(string keyword)
         {
@@ -164,6 +184,7 @@ namespace Assignment4.Controllers
             }
         }
 
+        // Submit customer inquiry
         [HttpPost]
         public async Task<JsonResult> SubmitInquiry([FromBody] CustomerInquiryDto inquiry)
         {
@@ -178,6 +199,7 @@ namespace Assignment4.Controllers
             }
         }
 
+        // Record car view for analytics
         [HttpPost]
         public async Task<JsonResult> RecordCarView(int listingId)
         {
@@ -193,6 +215,7 @@ namespace Assignment4.Controllers
             }
         }
 
+        // Calculate EMI for cars
         [HttpGet]
         public async Task<JsonResult> CalculateEMI(decimal amount, decimal rate, int months)
         {
@@ -200,6 +223,55 @@ namespace Assignment4.Controllers
             {
                 var result = await _searchViewService.CalculateEMIAsync(amount, rate, months);
                 return Json(new { success = true, emi = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // =====================================================
+        // ADDITIONAL ENDPOINTS (OPTIONAL/FUTURE USE)
+        // =====================================================
+
+        // Featured cars
+        [HttpGet]
+        public async Task<JsonResult> GetFeaturedCars(int count = 10)
+        {
+            try
+            {
+                var result = await _searchViewService.GetFeaturedCarsAsync(count);
+                return Json(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // Recent cars
+        [HttpGet]
+        public async Task<JsonResult> GetRecentCars(int count = 10)
+        {
+            try
+            {
+                var result = await _searchViewService.GetRecentCarsAsync(count);
+                return Json(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // Similar cars (for car detail page)
+        [HttpGet]
+        public async Task<JsonResult> GetSimilarCars(int listingId, int count = 5)
+        {
+            try
+            {
+                var result = await _searchViewService.GetSimilarCarsAsync(listingId, count);
+                return Json(new { success = true, data = result });
             }
             catch (Exception ex)
             {
@@ -281,7 +353,7 @@ namespace Assignment4.Controllers
             }
         }
 
-        // Filter options endpoints
+        // Individual filter endpoints (kept for flexibility)
         [HttpGet]
         public async Task<JsonResult> GetPopularBrands()
         {
@@ -352,9 +424,9 @@ namespace Assignment4.Controllers
             }
         }
 
-        // Statistics endpoints
+        // Extended statistics endpoint
         [HttpGet]
-        public async Task<JsonResult> GetCarStatistics()
+        public async Task<JsonResult> GetDetailedStatistics()
         {
             try
             {
@@ -405,6 +477,52 @@ namespace Assignment4.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        // Batch operations for better performance
+        [HttpPost]
+        public async Task<JsonResult> GetMultipleFilterData([FromBody] string[] filterTypes)
+        {
+            try
+            {
+                var result = new Dictionary<string, object>();
+
+                foreach (var filterType in filterTypes)
+                {
+                    switch (filterType.ToLower())
+                    {
+                        case "brands":
+                            result["brands"] = await _searchViewService.GetBrandsByPopularityAsync();
+                            break;
+                        case "cities":
+                            result["cities"] = await _searchViewService.GetCitiesByCarCountAsync();
+                            break;
+                        case "categories":
+                            result["categories"] = await _searchViewService.GetCategoriesAsync();
+                            break;
+                        case "fueltypes":
+                            result["fuelTypes"] = await _searchViewService.GetFuelTypesAsync();
+                            break;
+                        case "transmissions":
+                            result["transmissions"] = await _searchViewService.GetTransmissionTypesAsync();
+                            break;
+                    }
+                }
+
+                return Json(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // Health check endpoint
+        [HttpGet]
+        public JsonResult HealthCheck()
+        {
+            return Json(new { success = true, message = "SearchViewController is healthy", timestamp = DateTime.UtcNow });
+        }
+
 
         // Error handling
         public IActionResult Error()

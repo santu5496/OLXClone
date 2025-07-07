@@ -107,7 +107,7 @@ namespace DbOperation.ViewModels
         public decimal? emiAmount { get; set; }
         public decimal? savingsAmount { get; set; }
         public List<string> badges { get; set; } = new List<string>();
-        public string priceLabel { get; set; } // "Great Deal", "Fair Price", etc.
+        public string priceLabel { get; set; } // "Great Deal", 'FirstOrDefault'"}Fair Price", etc.
     }
 
     // Search Results Response

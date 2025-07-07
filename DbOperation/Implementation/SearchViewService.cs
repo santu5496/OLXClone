@@ -6,6 +6,7 @@ using DbOperation.Interface;
 using DbOperation.Models;
 using DbOperation.ViewModels;
 using DbOperation.ViewModels.DbOperation.ViewModels;
+using iText.IO.Image;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,8 @@ namespace DbOperation.Implementation
         public async Task<CustomerCarSearchResultDto> SearchCarsAsync(CustomerCarSearchDto request)
         {
             using var db = new Assignment4Context(_dbConn);
-
+            // Step 3: Load images from CarImages table
+            var carImages = await db.CarImages.FirstOrDefaultAsync();
             try
             {
                 IQueryable<CarListingDto> query = from listing in db.CarListings
@@ -50,21 +52,28 @@ namespace DbOperation.Implementation
                                                   {
                                                       listingId = listing.listingId,
                                                       listingTitle = listing.listingTitle,
+                                                      brandId = listing.brandId,
                                                       brandName = brand.brandName,
+                                                      modelId = listing.modelId,
                                                       modelName = model.modelName,
                                                       variantName = variant != null ? variant.variantName : null,
-                                                      manufacturingYear = listing.manufacturingYear,
+                                                      categoryId = listing.categoryId,
+                                                      fuelTypeId = listing.fuelTypeId,
                                                       fuelType = fuelType.fuelTypeName,
+                                                      transmissionId = listing.transmissionId,
                                                       transmission = transmission.transmissionName,
-                                                      kilometersOnOdometer = listing.kilometersOnOdometer,
-                                                      totalPreviousOwners = listing.totalPreviousOwners,
+                                                      cityId = listing.cityId,
                                                       cityName = city.cityName,
+                                                      stateId = listing.stateId,
                                                       stateName = state.stateName,
                                                       areaOrLocality = listing.areaOrLocality,
                                                       sellingPriceAsked = listing.sellingPriceAsked,
                                                       originalPurchasePrice = listing.originalPurchasePrice,
                                                       currentMarketPrice = listing.currentMarketPrice,
                                                       isPriceNegotiable = listing.isPriceNegotiable,
+                                                      manufacturingYear = listing.manufacturingYear,
+                                                      kilometersOnOdometer = listing.kilometersOnOdometer,
+                                                      totalPreviousOwners = listing.totalPreviousOwners,
                                                       exteriorConditionRating = listing.exteriorConditionRating,
                                                       interiorConditionRating = listing.interiorConditionRating,
                                                       engineConditionRating = listing.engineConditionRating,
@@ -78,26 +87,16 @@ namespace DbOperation.Implementation
                                                       sellerPrimaryPhone = listing.sellerPrimaryPhone,
                                                       totalViews = listing.totalViews,
                                                       totalInquiries = listing.totalInquiries,
-                                                      listingCreatedDate = (DateTime)listing.listingCreatedDate,
-                                                      brandId = listing.brandId,
-                                                      modelId = listing.modelId,
-                                                      categoryId = listing.categoryId,
-                                                      fuelTypeId = listing.fuelTypeId,
-                                                      transmissionId = listing.transmissionId,
-                                                      cityId = listing.cityId,
-                                                      stateId = listing.stateId
+                                                      listingCreatedDate = (DateTime)listing.listingCreatedDate
                                                   };
 
-                // Apply filters and sorting
                 query = ApplyFilters(query, request);
                 var totalCount = await query.CountAsync();
                 query = ApplySorting(query, request);
 
-                // Pagination
                 var skip = (request.page - 1) * request.pageSize;
                 var results = await query.Skip(skip).Take(request.pageSize).ToListAsync();
 
-                // Convert to detailed DTOs
                 var carDtos = new List<CustomerCarDto>();
                 foreach (var car in results)
                 {
@@ -136,9 +135,6 @@ namespace DbOperation.Implementation
                 throw new Exception($"Error searching cars: {ex.Message}", ex);
             }
         }
-
-
-
 
         private IQueryable<CarListingDto> ApplyFilters(IQueryable<CarListingDto> query, CustomerCarSearchDto request)
         {
@@ -204,9 +200,6 @@ namespace DbOperation.Implementation
             return query;
         }
 
-
-
-
         private IQueryable<CarListingDto> ApplySorting(IQueryable<CarListingDto> query, CustomerCarSearchDto request)
         {
             return request.sortBy?.ToLower() switch
@@ -222,53 +215,50 @@ namespace DbOperation.Implementation
             };
         }
 
-
-
-        private async Task<CustomerCarDto> MapToCustomerCarDto(dynamic car)
+        private async Task<CustomerCarDto> MapToCustomerCarDto(CarListingDto car)
         {
             var carDto = new CustomerCarDto
             {
-                listingId = car.ListingId,
-                title = car.ListingTitle,
-                brandName = car.BrandName,
-                modelName = car.ModelName,
-                variantName = car.VariantName,
-                year = car.ManufacturingYear,
-                fuelType = car.FuelType,
-                transmission = car.Transmission,
-                kilometersOnOdometer = car.KilometersOnOdometer,
-                totalPreviousOwners = car.TotalPreviousOwners,
-                cityName = car.CityName,
-                stateName = car.StateName,
-                areaOrLocality = car.AreaOrLocality,
-                sellingPrice = car.SellingPriceAsked,
-                originalPrice = car.OriginalPurchasePrice,
-                marketPrice = car.CurrentMarketPrice,
-                isPriceNegotiable = car.IsPriceNegotiable ?? false,
-                exteriorRating = car.ExteriorConditionRating,
-                interiorRating = car.InteriorConditionRating,
-                engineRating = car.EngineConditionRating,
-                overallCondition = car.OverallCondition,
-                isVerified = car.IsVerifiedListing ?? false,
-                isFeatured = car.IsFeaturedListing ?? false,
-                isUrgentSale = car.IsUrgentSale ?? false,
-                hasAccidentHistory = car.HasAccidentHistory ?? false,
-                sellerName = car.SellerName,
-                sellerType = car.SellerType,
-                sellerPhone = car.SellerPrimaryPhone,
-                totalViews = car.TotalViews,
-                totalInquiries = car.TotalInquiries,
-                listingDate = car.ListingCreatedDate
+                listingId = car.listingId,
+                title = car.listingTitle,
+                brandName = car.brandName,
+                modelName = car.modelName,
+                variantName = car.variantName,
+                year = car.manufacturingYear,
+                fuelType = car.fuelType,
+                transmission = car.transmission,
+                kilometersOnOdometer = car.kilometersOnOdometer,
+                totalPreviousOwners = car.totalPreviousOwners,
+                cityName = car.cityName,
+                stateName = car.stateName,
+                areaOrLocality = car.areaOrLocality,
+                sellingPrice = car.sellingPriceAsked,
+                originalPrice = car.originalPurchasePrice,
+                marketPrice = car.currentMarketPrice,
+                isPriceNegotiable = car.isPriceNegotiable ?? false,
+                exteriorRating = car.exteriorConditionRating,
+                interiorRating = car.interiorConditionRating,
+                engineRating = car.engineConditionRating,
+                overallCondition = car.overallCondition,
+                isVerified = car.isVerifiedListing ?? false,
+                isFeatured = car.isFeaturedListing ?? false,
+                isUrgentSale = car.isUrgentSale ?? false,
+                hasAccidentHistory = car.hasAccidentHistory ?? false,
+                sellerName = car.sellerName,
+                sellerType = car.sellerType,
+                sellerPhone = car.sellerPrimaryPhone,
+                totalViews = car.totalViews,
+                totalInquiries = car.totalInquiries,
+                listingDate = car.listingCreatedDate
             };
 
             // Get images
-            var images = await GetCarImagesAsync(car.ListingId);
-            carDto.primaryImage = images.FirstOrDefault();
-            carDto.additionalImages = images.Skip(1).ToList();
+            var images = await GetCarImagesAsync(car.listingId);
             carDto.totalImages = images.Count;
 
+
             // Get key features
-            carDto.keyFeatures = await GetKeyFeaturesAsync(car.ListingId);
+            carDto.keyFeatures = await GetKeyFeaturesAsync(car.listingId);
 
             // Calculate EMI
             carDto.emiAmount = await CalculateEMIAsync(carDto.sellingPrice * 0.8m, 8.5m, 60);
@@ -285,140 +275,113 @@ namespace DbOperation.Implementation
 
             return carDto;
         }
-
         public async Task<CustomerCarDetailDto> GetCarDetailAsync(int listingId)
         {
             using var db = new Assignment4Context(_dbConn);
+            // Step 3: Load images from CarImages table
+            var carImages = await db.CarImages.FirstOrDefaultAsync(i => i.listingId == listingId);
+            // Step 1: Get the car listing with all required joined data
+            var car = await (from listing in db.CarListings
+                             join brand in db.CarBrands on listing.brandId equals brand.brandId
+                             join model in db.CarModels on listing.modelId equals model.modelId
+                             join fuel in db.FuelTypes on listing.fuelTypeId equals fuel.fuelTypeId
+                             join trans in db.TransmissionTypes on listing.transmissionId equals trans.transmissionId
+                             join city in db.GeographicCities on listing.cityId equals city.cityId
+                             join state in db.GeographicStates on listing.stateId equals state.stateId
+                             where listing.listingId == listingId
+                             select new CustomerCarDetailDto
+                             {
+                                 listingId = listing.listingId,
+                                 title = listing.listingTitle,
 
-            try
+                                 brandName = brand.brandName,
+                                 modelName = model.modelName,
+                                 variantName = listing.sellerName,
+
+                                 fuelType = fuel.fuelTypeName,
+                                 transmission = trans.transmissionName,
+                                 year = listing.manufacturingYear,
+                                 kilometersOnOdometer = listing.kilometersOnOdometer,
+                                 totalPreviousOwners = listing.totalPreviousOwners,
+
+                                 cityName = city.cityName,
+                                 stateName = state.stateName,
+                                 areaOrLocality = listing.areaOrLocality,
+
+                                 sellingPrice = listing.sellingPriceAsked,
+                                 originalPrice = listing.originalPurchasePrice,
+                                 marketPrice = listing.currentMarketPrice,
+                                 isPriceNegotiable = listing.isPriceNegotiable ?? false,
+
+                                 exteriorRating = listing.exteriorConditionRating,
+                                 interiorRating = listing.interiorConditionRating,
+                                 engineRating = listing.engineConditionRating,
+                                // overallCondition = listing.overallCondition,
+
+                                 isVerified = listing.isVerifiedListing ?? false,
+                                 isFeatured = listing.isFeaturedListing ?? false,
+                                 isUrgentSale = listing.isUrgentSale ?? false,
+                                 hasAccidentHistory = listing.hasAccidentHistory ?? false,
+
+                                 sellerName = listing.sellerName,
+                                 sellerType = listing.sellerType,
+                                 sellerPhone = listing.sellerPrimaryPhone,
+
+                                 totalViews = listing.totalViews,
+                                 totalInquiries = listing.totalInquiries,
+                                 listingDate = listing.listingCreatedDate,
+                                 primaryImage= carImages.slot1ImageData.ToString()
+
+        }).FirstOrDefaultAsync();
+
+            if (car == null)
+                return null;
+
+            // Step 2: Load additional details (from other sources if needed, like service, features, etc.)
+            // Placeholder for optional data: car.featureGroups, car.similarCars, etc.
+
+          
+        
+
+            if (carImages != null)
             {
-                var carQuery = from listing in db.CarListings
-                               join brand in db.CarBrands on listing.brandId equals brand.brandId
-                               join model in db.CarModels on listing.modelId equals model.modelId
-                               join fuelType in db.FuelTypes on listing.fuelTypeId equals fuelType.fuelTypeId
-                               join transmission in db.TransmissionTypes on listing.transmissionId equals transmission.transmissionId
-                               join city in db.GeographicCities on listing.cityId equals city.cityId
-                               join state in db.GeographicStates on listing.stateId equals state.stateId
-                               join variant in db.CarVariants on listing.variantId equals variant.variantId into variantGroup
-                               from variant in variantGroup.DefaultIfEmpty()
-                               join color in db.CarColors on listing.colorId equals color.colorId into colorGroup
-                               from color in colorGroup.DefaultIfEmpty()
-                               join rto in db.RTOCodes on listing.rtoId equals rto.rtoId into rtoGroup
-                               from rto in rtoGroup.DefaultIfEmpty()
-                               where listing.listingId == listingId
-                               select new
-                               {
-                                   car = listing, // renamed to avoid conflict
-                                   brandName = brand.brandName,
-                                   modelName = model.modelName,
-                                   variantName = variant != null ? variant.variantName : null,
-                                   fuelType = fuelType.fuelTypeName,
-                                   transmission = transmission.transmissionName,
-                                   cityName = city.cityName,
-                                   stateName = state.stateName,
-                                   colorName = color != null ? color.colorName : null,
-                                   rtoCode = rto != null ? rto.rtoCode : null
-                               };
-
-                var carData = await carQuery.FirstOrDefaultAsync();
-                if (carData == null) return null;
-
-                var car = carData.car;
-
-                var detailDto = new CustomerCarDetailDto
+                // Primary image from slot1
+                if (carImages.slot1ImageData != null && carImages.slot1ImageData.Length > 0)
                 {
-                    listingId = car.listingId,
-                    title = car.listingTitle,
-                    brandName = carData.brandName,
-                    modelName = carData.modelName,
-                    variantName = carData.variantName,
-                    year = car.manufacturingYear,
-                    fuelType = carData.fuelType,
-                    transmission = carData.transmission,
-                    kilometersOnOdometer = car.kilometersOnOdometer,
-                    totalPreviousOwners = car.totalPreviousOwners,
-                    cityName = carData.cityName,
-                    stateName = carData.stateName,
-                    areaOrLocality = car.areaOrLocality,
-                    sellingPrice = car.sellingPriceAsked,
-                    originalPrice = car.originalPurchasePrice,
-                    marketPrice = car.currentMarketPrice,
-                    isPriceNegotiable = car.isPriceNegotiable ?? false,
+                    car.primaryImage = "data:image/jpeg;base64," + Convert.ToBase64String(carImages.slot1ImageData);
+                }
 
-                    detailedDescription = car.detailedDescription,
-                    sellingReason = car.sellingReason,
-                    specialHighlights = car.specialHighlights,
-                    knownIssues = car.knownIssuesOrProblems,
+                var additionalImages = new List<string>();
 
-                    engineCC = car.engineCapacityInCC,
-                    engineBHP = car.enginePowerInBHP,
-                    mileage = car.combinedMileageKMPL,
-                    seatingCapacity = car.seatingCapacity,
-                    bootSpace = car.bootSpaceInLiters,
-                    color = carData.colorName,
+                void AddSlotImage(byte[] imageData)
+                {
+                    if (imageData != null && imageData.Length > 0)
+                    {
+                        additionalImages.Add("data:image/jpeg;base64," + Convert.ToBase64String(imageData));
+                    }
+                }
 
-                    registrationNumber = car.registrationNumber,
-                    rtoCode = carData.rtoCode,
-                    insuranceType = car.insuranceType,
-                    insuranceExpiry = car.insuranceExpiryDate?.ToDateTime(TimeOnly.MinValue),
-                    pucExpiry = car.pollutionCertificateExpiryDate?.ToDateTime(TimeOnly.MinValue),
-                    lastServiceDate = car.lastServiceDate?.ToDateTime(TimeOnly.MinValue),
+                AddSlotImage(carImages.slot2ImageData);
+                AddSlotImage(carImages.slot3ImageData);
+                AddSlotImage(carImages.slot4ImageData);
+                AddSlotImage(carImages.slot5ImageData);
+                AddSlotImage(carImages.slot6ImageData);
+                AddSlotImage(carImages.slot7ImageData);
+                AddSlotImage(carImages.slot8ImageData);
+                AddSlotImage(carImages.slot9ImageData);
+                AddSlotImage(carImages.slot10ImageData);
+                AddSlotImage(carImages.slot11ImageData);
+                AddSlotImage(carImages.slot12ImageData);
+                AddSlotImage(carImages.slot13ImageData);
+                AddSlotImage(carImages.slot14ImageData);
+                AddSlotImage(carImages.slot15ImageData);
 
-                    hasCompleteServiceHistory = car.hasCompleteServiceHistory ?? false,
-                    servicedAtAuthorized = car.servicedAtAuthorizedCenter ?? false,
-                    lastServiceKM = car.lastServiceKilometers,
-
-                    availableForInspection = car.availableForPhysicalInspection ?? false,
-                    availableForTestDrive = car.availableForTestDrive ?? false,
-                    preferredContactMethod = car.preferredContactMethod,
-                    contactDays = car.availableForContactDays,
-                    contactHours = car.availableForContactHours,
-
-                    sellerName = car.sellerName,
-                    sellerType = car.sellerType,
-                    sellerPhone = car.sellerPrimaryPhone,
-
-                    isVerified = car.isVerifiedListing ?? false,
-                    isFeatured = car.isFeaturedListing ?? false,
-                    isUrgentSale = car.isUrgentSale ?? false,
-                    hasAccidentHistory = car.hasAccidentHistory ?? false,
-
-                    exteriorRating = car.exteriorConditionRating,
-                    interiorRating = car.interiorConditionRating,
-                    engineRating = car.engineConditionRating,
-
-                    totalViews = car.totalViews,
-                    totalInquiries = car.totalInquiries,
-                    listingDate = car.listingCreatedDate
-                };
-
-                // Images
-                var images = await GetCarImagesAsync(listingId);
-                detailDto.primaryImage = images.FirstOrDefault();
-                detailDto.additionalImages = images.Skip(1).ToList();
-                detailDto.totalImages = images.Count;
-
-                // Features, Similar Cars, EMI, etc.
-                detailDto.featureGroups = await GetCarFeatureGroupsAsync(listingId);
-                detailDto.similarCars = await GetSimilarCarsAsync(listingId, 4);
-                detailDto.emiAmount = await CalculateEMIAsync(detailDto.sellingPrice * 0.8m, 8.5m, 60);
-                if (detailDto.originalPrice.HasValue)
-                    detailDto.savingsAmount = detailDto.originalPrice.Value - detailDto.sellingPrice;
-
-                detailDto.badges = GenerateBadges(detailDto);
-                detailDto.priceLabel = GeneratePriceLabel(detailDto);
-
-                return detailDto;
+                car.additionalImages = additionalImages;
+                car.totalImages = (string.IsNullOrEmpty(car.primaryImage) ? 0 : 1) + additionalImages.Count;
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error getting car detail: {ex.Message}", ex);
-            }
+
+            return car;
         }
-
-
-    
-
 
 
         public async Task<HomePageDataDto> GetHomePageDataAsync()
@@ -446,6 +409,7 @@ namespace DbOperation.Implementation
                 throw new Exception($"Error getting home page data: {ex.Message}", ex);
             }
         }
+
         public async Task<List<CustomerCarDto>> GetFeaturedCarsAsync(int count = 10)
         {
             using var db = new Assignment4Context(_dbConn);
@@ -504,9 +468,58 @@ namespace DbOperation.Implementation
             }
         }
 
+        // Fixed MapToCustomerCarDto overload for anonymous types
+        private async Task<CustomerCarDto> MapToCustomerCarDto(dynamic car)
+        {
+            var carDto = new CustomerCarDto
+            {
+                listingId = car.listingId,
+                title = car.listingTitle,
+                brandName = car.brandName,
+                modelName = car.modelName,
+                year = car.manufacturingYear,
+                fuelType = car.fuelType,
+                transmission = car.transmission,
+                kilometersOnOdometer = car.kilometersOnOdometer,
+                totalPreviousOwners = car.totalPreviousOwners,
+                cityName = car.cityName,
+                stateName = car.stateName,
+                areaOrLocality = car.areaOrLocality,
+                sellingPrice = car.sellingPriceAsked,
+                originalPrice = car.originalPurchasePrice,
+                isPriceNegotiable = false, // Default value since not available in anonymous type
+                isVerified = car.isVerifiedListing ?? false,
+                isFeatured = car.isFeaturedListing ?? false,
+                hasAccidentHistory = car.hasAccidentHistory ?? false,
+                sellerName = car.sellerName,
+                sellerType = car.sellerType,
+                sellerPhone = car.sellerPrimaryPhone,
+                totalViews = car.totalViews,
+                listingDate = car.listingCreatedDate
+            };
 
+            // Get images
+            var images = await GetCarImagesAsync(car.listingId);
+            carDto.totalImages = images.Count;
 
+            // Get key features
+            carDto.keyFeatures = await GetKeyFeaturesAsync(car.listingId);
 
+            // Calculate EMI
+            carDto.emiAmount = await CalculateEMIAsync(carDto.sellingPrice * 0.8m, 8.5m, 60);
+
+            // Calculate savings
+            if (carDto.originalPrice.HasValue)
+                carDto.savingsAmount = carDto.originalPrice.Value - carDto.sellingPrice;
+
+            // Generate badges
+            carDto.badges = GenerateBadges(carDto);
+
+            // Generate price label
+            carDto.priceLabel = GeneratePriceLabel(carDto);
+
+            return carDto;
+        }
 
         public async Task<List<CustomerCarDto>> GetRecentCarsAsync(int count = 10)
         {
@@ -565,8 +578,6 @@ namespace DbOperation.Implementation
                 throw new Exception($"Error getting recent cars: {ex.Message}", ex);
             }
         }
-
-
 
         public async Task<List<CustomerCarDto>> GetSimilarCarsAsync(int listingId, int count = 5)
         {
@@ -647,49 +658,63 @@ namespace DbOperation.Implementation
                 throw new Exception($"Error getting similar cars: {ex.Message}", ex);
             }
         }
-        public async Task<List<string>> GetCarImagesAsync(int listingId)
+
+     public async Task<List<string>> GetCarImagesAsync(int listingId)
+{
+    using var db = new Assignment4Context(_dbConn);
+
+    try
+    {
+        var images = new List<string>();
+
+        var carImages = await db.CarImages
+            .Where(x => x.listingId == listingId && x.isActive == true)
+            .FirstOrDefaultAsync();
+
+        if (carImages != null)
         {
-            using var db = new Assignment4Context(_dbConn);
-
-            try
+            // Check each slot for image data and convert to base64
+            var imageSlots = new byte[][]
             {
-                var images = new List<string>();
+                carImages.slot1ImageData,
+                carImages.slot2ImageData,
+                carImages.slot3ImageData,
+                carImages.slot4ImageData,
+                carImages.slot5ImageData,
+                carImages.slot6ImageData,
+                carImages.slot7ImageData,
+                carImages.slot8ImageData,
+                carImages.slot9ImageData,
+                carImages.slot10ImageData,
+                carImages.slot11ImageData,
+                carImages.slot12ImageData,
+                carImages.slot13ImageData,
+                carImages.slot14ImageData,
+                carImages.slot15ImageData
+            };
 
-                var carImages = await db.CarImages
-     .Where(x => x.listingId == listingId && x.isActive == true)
-     .FirstOrDefaultAsync();
-
-
-                if (carImages != null)
+            foreach (var imageData in imageSlots)
+            {
+                if (imageData != null && imageData.Length > 0)
                 {
-                    var properties = typeof(CarImages).GetProperties(); // corrected class name
-
-                    for (int i = 1; i <= 15; i++)
-                    {
-                        var prop = properties.FirstOrDefault(p => p.Name == $"Slot{i}ImageData");
-                        var value = prop?.GetValue(carImages);
-                        if (value != null)
-                        {
-                            images.Add($"/images/cars/{listingId}/{i}.jpg");
-                        }
-                    }
+                    // Convert byte array to base64 string
+                    var base64String = Convert.ToBase64String(imageData);
+                    images.Add($"data:image/jpeg;base64,{base64String}");
                 }
-
-                return images;
-            }
-            catch
-            {
-                return new List<string>();
             }
         }
 
-
-
+        return images;
+    }
+    catch (Exception ex)
+    {
+        // Log error if you have logging
+        Console.WriteLine($"Error loading images for listing {listingId}: {ex.Message}");
+        return new List<string>();
+    }
+}
 
         // Helper methods
-
-
-
         private async Task<List<string>> GetKeyFeaturesAsync(int listingId)
         {
             using var db = new Assignment4Context(_dbConn);
@@ -712,46 +737,86 @@ namespace DbOperation.Implementation
             }
         }
 
-
-        private async Task<List<CarFeatureGroupDto>> GetCarFeatureGroupsAsync(int listingId)
+        private async Task<CarFeaturesWithImageDto> GetCarFeatureGroupsAsync(int listingId)
         {
             using var db = new Assignment4Context(_dbConn);
 
             try
             {
+                // 1. Load Features
                 var features = await (from lf in db.CarListingFeatures
                                       join f in db.CarFeaturesList on lf.featureId equals f.featureId
                                       where lf.listingId == listingId
                                       select new
                                       {
-                                          CategoryName = f.featureCategory ?? "Other",
-                                          FeatureName = f.featureDisplayName ?? f.featureName,
-                                          IsAvailable = lf.isFeatureAvailable ?? false,
-                                          Condition = lf.featureCondition
-                                      })
-                                    .ToListAsync();
+                                          categoryName = f.featureCategory ?? "Other",
+                                          featureName = f.featureDisplayName ?? f.featureName,
+                                          isAvailable = lf.isFeatureAvailable ?? false,
+                                          condition = lf.featureCondition
+                                      }).ToListAsync();
 
                 var featureGroups = features
-                    .GroupBy(x => x.CategoryName)
+                    .GroupBy(x => x.categoryName)
                     .Select(g => new CarFeatureGroupDto
                     {
                         categoryName = g.Key,
                         features = g.Select(f => new CarFeatureItemDto
                         {
-                            featureName = f.FeatureName,
-                            isAvailable = f.IsAvailable,
-                            condition = f.Condition
+                            featureName = f.featureName,
+                            isAvailable = f.isAvailable,
+                            condition = f.condition
                         }).ToList()
-                    })
-                    .ToList();
+                    }).ToList();
 
-                return featureGroups;
+                // 2. Load primary image from first non-null slot
+                var carImage = await db.CarImages
+                    .Where(img => img.listingId == listingId)
+                    .FirstOrDefaultAsync();
+
+                byte[] imageBytes = carImage?.slot1ImageData
+                    ?? carImage?.slot2ImageData
+                    ?? carImage?.slot3ImageData
+                    ?? carImage?.slot4ImageData
+                    ?? carImage?.slot5ImageData
+                    ?? carImage?.slot6ImageData
+                    ?? carImage?.slot7ImageData
+                    ?? carImage?.slot8ImageData
+                    ?? carImage?.slot9ImageData
+                    ?? carImage?.slot10ImageData
+                    ?? carImage?.slot11ImageData
+                    ?? carImage?.slot12ImageData
+                    ?? carImage?.slot13ImageData
+                    ?? carImage?.slot14ImageData
+                    ?? carImage?.slot15ImageData;
+
+                string base64Image = imageBytes != null
+                    ? $"data:image/jpeg;base64,{Convert.ToBase64String(imageBytes)}"
+                    : null;
+
+                // 3. Return combined result
+                return new CarFeaturesWithImageDto
+                {
+                    Base64Image = base64Image,
+                    FeatureGroups = featureGroups
+                };
             }
             catch
             {
-                return new List<CarFeatureGroupDto>();
+                return new CarFeaturesWithImageDto(); // empty fallback
             }
         }
+
+        public class CarFeaturesWithImageDto
+        {
+            public string? Base64Image { get; set; } // or use byte[] ImageData;
+            public List<CarFeatureGroupDto> FeatureGroups { get; set; } = new List<CarFeatureGroupDto>();
+
+            public static implicit operator List<object>(CarFeaturesWithImageDto v)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
 
         private List<string> GenerateBadges(CustomerCarDto car)
         {
@@ -767,7 +832,40 @@ namespace DbOperation.Implementation
             return badges;
         }
 
+        // Overloaded method for CustomerCarDetailDto
+        private List<string> GenerateBadges(CustomerCarDetailDto car)
+        {
+            var badges = new List<string>();
+
+            if (car.isVerified) badges.Add("Verified");
+            if (car.isFeatured) badges.Add("Featured");
+            if (car.isUrgentSale) badges.Add("Urgent");
+            if (car.totalPreviousOwners == 1) badges.Add("First Owner");
+            if (!car.hasAccidentHistory) badges.Add("No Accident");
+            if (car.savingsAmount > 50000) badges.Add("Great Deal");
+
+            return badges;
+        }
+
         private string GeneratePriceLabel(CustomerCarDto car)
+        {
+            if (!car.marketPrice.HasValue) return "Fair Price";
+
+            var priceDiff = car.marketPrice.Value - car.sellingPrice;
+            var percentDiff = (priceDiff / car.marketPrice.Value) * 100;
+
+            return percentDiff switch
+            {
+                > 15 => "Excellent Deal",
+                > 8 => "Great Deal",
+                > 3 => "Good Deal",
+                > -3 => "Fair Price",
+                _ => "Above Market"
+            };
+        }
+
+        // Overloaded method for CustomerCarDetailDto
+        private string GeneratePriceLabel(CustomerCarDetailDto car)
         {
             if (!car.marketPrice.HasValue) return "Fair Price";
 
@@ -809,6 +907,7 @@ namespace DbOperation.Implementation
                 throw new Exception($"Error getting cities by car count: {ex.Message}", ex);
             }
         }
+
         public async Task<List<FilterOption>> GetModelsByBrandAsync(int brandId)
         {
             using var db = new Assignment4Context(_dbConn);
@@ -859,6 +958,7 @@ namespace DbOperation.Implementation
                 throw new Exception($"Error getting categories: {ex.Message}", ex);
             }
         }
+
         public async Task<List<FilterOption>> GetBrandsByPopularityAsync()
         {
             using var db = new Assignment4Context(_dbConn);
@@ -909,6 +1009,7 @@ namespace DbOperation.Implementation
                 throw new Exception($"Error getting fuel types: {ex.Message}", ex);
             }
         }
+
         public async Task<List<FilterOption>> GetTransmissionTypesAsync()
         {
             using var db = new Assignment4Context(_dbConn);
@@ -1010,7 +1111,6 @@ namespace DbOperation.Implementation
             }
         }
 
-
         public async Task<decimal> CalculateEMIAsync(decimal amount, decimal rate, int months)
         {
             await Task.CompletedTask;
@@ -1042,6 +1142,7 @@ namespace DbOperation.Implementation
             using var db = new Assignment4Context(_dbConn);
             return await db.CarListings.Where(x => x.listingStatus == "Active" && x.isFeaturedListing == true).CountAsync();
         }
+
         public async Task<Dictionary<string, int>> GetCarCountByCategoryAsync()
         {
             using var db = new Assignment4Context(_dbConn);
@@ -1068,8 +1169,9 @@ namespace DbOperation.Implementation
 
             try
             {
+                // Fixed: Use ToListAsync() to execute query before client-side operations
                 var prices = await db.CarListings
-                    .Where(x => x.listingStatus == "Active")
+                    .Where(x => x.listingStatus == "Active" && x.sellingPriceAsked > 0)
                     .Select(x => x.sellingPriceAsked)
                     .ToListAsync();
 
@@ -1089,7 +1191,6 @@ namespace DbOperation.Implementation
                 throw new Exception($"Error getting car count by price range: {ex.Message}", ex);
             }
         }
-
 
         public async Task<Dictionary<string, int>> GetCarCountByLocationAsync()
         {
@@ -1111,7 +1212,6 @@ namespace DbOperation.Implementation
                 throw new Exception($"Error getting car count by location: {ex.Message}", ex);
             }
         }
-
 
         // Additional interface methods implementation
         public async Task<List<CustomerCarDto>> GetCarsByBrandAsync(int brandId, int count = 20)
@@ -1141,6 +1241,7 @@ namespace DbOperation.Implementation
                 new PopularSearchDto { searchTerm = "First Owner", searchCount = 689, category = "Ownership" }
             };
         }
+
         public async Task<FilterStatisticsDto> GetFilterStatisticsAsync(CustomerCarSearchDto request)
         {
             using var db = new Assignment4Context(_dbConn);
@@ -1171,7 +1272,6 @@ namespace DbOperation.Implementation
                 throw new Exception($"Error getting filter statistics: {ex.Message}", ex);
             }
         }
-
 
         public async Task<bool> AddToFavoritesAsync(int listingId, string userId)
         {
@@ -1216,7 +1316,6 @@ namespace DbOperation.Implementation
             }
         }
 
-
         public async Task<List<CustomerCarDto>> QuickSearchAsync(string keyword, int? cityId = null, int count = 10)
         {
             var request = new CustomerCarSearchDto
@@ -1228,6 +1327,7 @@ namespace DbOperation.Implementation
             var result = await SearchCarsAsync(request);
             return result.cars;
         }
+
         public async Task<List<string>> GetSearchSuggestionsAsync(string keyword)
         {
             using var db = new Assignment4Context(_dbConn);
@@ -1276,7 +1376,6 @@ namespace DbOperation.Implementation
             }
         }
 
-
         public async Task<CustomerCarSearchResultDto> GetCarsByFiltersAsync(
             int? brandId = null,
             int? categoryId = null,
@@ -1300,18 +1399,18 @@ namespace DbOperation.Implementation
             return await SearchCarsAsync(request);
         }
 
-
-     private async Task<(
-    List<FilterOption> brands,
-    List<FilterOption> models,
-    List<FilterOption> categories,
-    List<FilterOption> fuelTypes,
-    List<FilterOption> transmissions,
-    List<FilterOption> cities,
-    decimal minPrice,
-    decimal maxPrice,
-    int minYear,
-    int maxYear)> GetFilterOptionsAsync(Assignment4Context db, CustomerCarSearchDto request)
+        // Fixed GetFilterOptionsAsync method
+        private async Task<(
+            List<FilterOption> brands,
+            List<FilterOption> models,
+            List<FilterOption> categories,
+            List<FilterOption> fuelTypes,
+            List<FilterOption> transmissions,
+            List<FilterOption> cities,
+            decimal minPrice,
+            decimal maxPrice,
+            int minYear,
+            int maxYear)> GetFilterOptionsAsync(Assignment4Context db, CustomerCarSearchDto request)
         {
             var activeListings = db.CarListings.Where(x => x.listingStatus == "Active");
 
@@ -1394,13 +1493,13 @@ namespace DbOperation.Implementation
                                     count = g.Count()
                                 }).Take(20).ToListAsync();
 
-            var priceRange = await activeListings
+            // Fixed: Execute query and get results, then calculate min/max
+            var priceData = await activeListings
                 .Where(x => x.sellingPriceAsked > 0)
                 .Select(x => x.sellingPriceAsked)
-                .DefaultIfEmpty(0)
                 .ToListAsync();
 
-            var yearRange = await activeListings
+            var yearData = await activeListings
                 .Select(x => x.manufacturingYear)
                 .ToListAsync();
 
@@ -1411,25 +1510,11 @@ namespace DbOperation.Implementation
                 fuelTypes,
                 transmissions,
                 cities,
-                priceRange.Any() ? priceRange.Min() : 0,
-                priceRange.Any() ? priceRange.Max() : 0,
-                yearRange.Any() ? yearRange.Min() : DateTime.Now.Year - 20,
-                yearRange.Any() ? yearRange.Max() : DateTime.Now.Year
+                priceData.Any() ? priceData.Min() : 0,
+                priceData.Any() ? priceData.Max() : 0,
+                yearData.Any() ? yearData.Min() : DateTime.Now.Year - 20,
+                yearData.Any() ? yearData.Max() : DateTime.Now.Year
             );
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
