@@ -457,7 +457,216 @@
             border-radius: 20px 20px 0 0;
         }
 
-        /* Responsive adjustments */
+        /* Desktop & Laptop Styles */
+        @@media (min-width: 992px) {
+            .container-fluid
+
+        {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .mobile-header {
+            padding: 15px 30px;
+        }
+
+            .mobile-header h1 {
+                font-size: 1.8rem;
+            }
+
+        .search-section {
+            padding: 30px 30px 40px;
+        }
+
+        .search-input-group {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .quick-stats {
+            margin: -20px 30px 30px;
+            padding: 30px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            padding: 0 30px;
+        }
+
+        .filters-container {
+            margin: 0;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .filters-toggle {
+            display: none;
+        }
+
+        .filters-content {
+            display: block !important;
+            padding: 20px;
+        }
+
+        .cars-section {
+            min-height: 100vh;
+        }
+
+        .cars-container {
+            padding: 0;
+        }
+
+        .sort-container {
+            margin: 0 0 30px 0;
+        }
+
+        #carListings {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .car-card {
+            margin-bottom: 0;
+        }
+
+        .car-image {
+            height: 220px;
+        }
+
+        .pagination-container {
+            justify-content: center;
+            padding: 40px 0;
+        }
+
+        .no-results {
+            padding: 80px 20px;
+        }
+
+        .loading-spinner {
+            padding: 80px 20px;
+        }
+
+        }
+
+        /* Tablet Styles */
+        @@media (min-width: 768px) and (max-width: 991px) {
+            .mobile-header
+
+        {
+            padding: 12px 25px;
+        }
+
+        .mobile-header h1 {
+            font-size: 1.6rem;
+        }
+
+        .search-section {
+            padding: 25px 25px 35px;
+        }
+
+        .search-input-group {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .quick-stats {
+            margin: -18px 25px 25px;
+            padding: 25px;
+        }
+
+        .stat-number {
+            font-size: 1.7rem;
+        }
+
+        .filters-container {
+            margin: 0 25px 25px;
+        }
+
+        .sort-container {
+            margin: 0 25px 25px;
+        }
+
+        .cars-container {
+            padding: 0 25px;
+        }
+
+        #carListings {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .car-card {
+            margin-bottom: 0;
+        }
+
+        .car-image {
+            height: 200px;
+        }
+
+        .fuel-type-checkboxes, .transmission-checkboxes {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        }
+
+        /* Small tablets and large phones */
+        @@media (min-width: 577px) and (max-width: 767px) {
+            .mobile-header h1
+
+        {
+            font-size: 1.5rem;
+        }
+
+        .search-section {
+            padding: 20px 20px 30px;
+        }
+
+        .quick-stats {
+            margin: -15px 20px 20px;
+        }
+
+        .filters-container {
+            margin: 0 20px 20px;
+        }
+
+        .sort-container {
+            margin: 0 20px 20px;
+        }
+
+        .cars-container {
+            padding: 0 20px;
+        }
+
+        #carListings {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .car-card {
+            margin-bottom: 0;
+        }
+
+        .fuel-type-checkboxes, .transmission-checkboxes {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        }
+
+        /* Mobile Styles */
         @@media (max-width: 576px) {
             .mobile-header
 
@@ -483,6 +692,14 @@
 
         .fuel-type-checkboxes, .transmission-checkboxes {
             grid-template-columns: 1fr;
+        }
+
+        #carListings {
+            display: block;
+        }
+
+        .car-card {
+            margin-bottom: 20px;
         }
 
         }
@@ -544,176 +761,186 @@
         </div>
     </div>
 
-    <!-- Filters - Collapsible -->
-    <div class="filters-container">
-        <button class="filters-toggle" onclick="toggleFilters()">
-            <span><i class="fas fa-filter me-2"></i>Filters</span>
-            <i class="fas fa-chevron-down" id="filterIcon"></i>
-        </button>
-        <div class="filters-content" id="filtersContent">
-            <!-- Price Range Filter -->
-            <div class="row">
-                <div class="col-6">
-                    <div class="filter-group">
-                        <label class="filter-label">Min Price</label>
-                        <input type="number" class="form-control" id="minPrice" placeholder="Min Price">
+    <!-- Main Content Container -->
+    <div class="main-content">
+        <!-- Filters Sidebar (Desktop) / Collapsible (Mobile) -->
+        <div class="filters-container">
+            <button class="filters-toggle" onclick="toggleFilters()">
+                <span><i class="fas fa-filter me-2"></i>Filters</span>
+                <i class="fas fa-chevron-down" id="filterIcon"></i>
+            </button>
+            <div class="filters-content" id="filtersContent">
+                <!-- Price Range Filter -->
+                <div class="row">
+                    <div class="col-6">
+                        <div class="filter-group">
+                            <label class="filter-label">Min Price</label>
+                            <input type="number" class="form-control" id="minPrice" placeholder="Min Price">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="filter-group">
+                            <label class="filter-label">Max Price</label>
+                            <input type="number" class="form-control" id="maxPrice" placeholder="Max Price">
+                        </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="filter-group">
-                        <label class="filter-label">Max Price</label>
-                        <input type="number" class="form-control" id="maxPrice" placeholder="Max Price">
+
+                <!-- Brand Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">Brand</label>
+                    <select class="form-select" id="brandFilter">
+                        <option value="">All Brands</option>
+                    </select>
+                </div>
+
+                <!-- Model Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">Model</label>
+                    <select class="form-select" id="modelFilter" disabled>
+                        <option value="">Select Brand First</option>
+                    </select>
+                </div>
+
+                <!-- City Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">Location</label>
+                    <select class="form-select" id="cityFilter">
+                        <option value="">All Cities</option>
+                    </select>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">Category</label>
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+
+                <!-- Fuel Type Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">Fuel Type</label>
+                    <div class="fuel-type-checkboxes" id="fuelTypeContainer">
+                        <!-- Will be populated by JavaScript -->
                     </div>
                 </div>
-            </div>
 
-            <!-- Brand Filter -->
-            <div class="filter-group">
-                <label class="filter-label">Brand</label>
-                <select class="form-select" id="brandFilter">
-                    <option value="">All Brands</option>
+                <!-- Transmission Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">Transmission</label>
+                    <div class="transmission-checkboxes" id="transmissionContainer">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Year Range Filter -->
+                <div class="row">
+                    <div class="col-6">
+                        <div class="filter-group">
+                            <label class="filter-label">Min Year</label>
+                            <input type="number" class="form-control" id="minYear" placeholder="Min Year" min="1990" max="2025">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="filter-group">
+                            <label class="filter-label">Max Year</label>
+                            <input type="number" class="form-control" id="maxYear" placeholder="Max Year" min="1990" max="2025">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KM Range Filter -->
+                <div class="row">
+                    <div class="col-6">
+                        <div class="filter-group">
+                            <label class="filter-label">Min KM</label>
+                            <input type="number" class="form-control" id="minKM" placeholder="Min KM">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="filter-group">
+                            <label class="filter-label">Max KM</label>
+                            <input type="number" class="form-control" id="maxKM" placeholder="Max KM">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Filters -->
+                <div class="filter-group">
+                    <label class="filter-label">Quick Filters</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="verifiedOnly">
+                        <label class="form-check-label" for="verifiedOnly">Verified Only</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="firstOwnerOnly">
+                        <label class="form-check-label" for="firstOwnerOnly">First Owner Only</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="noAccident">
+                        <label class="form-check-label" for="noAccident">No Accident History</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="automaticOnly">
+                        <label class="form-check-label" for="automaticOnly">Automatic Only</label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-3 d-lg-none">
+                    <button class="btn btn-outline-secondary" id="clearFilters">Clear All</button>
+                    <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+                </div>
+
+                <div class="d-none d-lg-block mt-3">
+                    <button class="btn btn-outline-secondary w-100 mb-2" id="clearFilters">Clear All Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cars Section -->
+        <div class="cars-section">
+            <!-- Sort and Results Count -->
+            <div class="sort-container">
+                <div class="results-count" id="resultsCount">Loading...</div>
+                <select class="form-select" id="sortBy" style="width: auto; font-size: 0.9rem;">
+                    <option value="latest">Latest First</option>
+                    <option value="price_low">Price: Low to High</option>
+                    <option value="price_high">Price: High to Low</option>
+                    <option value="year_new">Year: Newest First</option>
+                    <option value="year_old">Year: Oldest First</option>
+                    <option value="km_low">KM: Low to High</option>
+                    <option value="popular">Most Popular</option>
                 </select>
             </div>
 
-            <!-- Model Filter -->
-            <div class="filter-group">
-                <label class="filter-label">Model</label>
-                <select class="form-select" id="modelFilter" disabled>
-                    <option value="">Select Brand First</option>
-                </select>
+            <!-- Loading Spinner -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>Finding cars for you...</p>
             </div>
 
-            <!-- City Filter -->
-            <div class="filter-group">
-                <label class="filter-label">Location</label>
-                <select class="form-select" id="cityFilter">
-                    <option value="">All Cities</option>
-                </select>
-            </div>
-
-            <!-- Category Filter -->
-            <div class="filter-group">
-                <label class="filter-label">Category</label>
-                <select class="form-select" id="categoryFilter">
-                    <option value="">All Categories</option>
-                </select>
-            </div>
-
-            <!-- Fuel Type Filter -->
-            <div class="filter-group">
-                <label class="filter-label">Fuel Type</label>
-                <div class="fuel-type-checkboxes" id="fuelTypeContainer">
+            <!-- Car Listings -->
+            <div class="cars-container" id="carListingsContainer" style="display: none;">
+                <div id="carListings">
                     <!-- Will be populated by JavaScript -->
                 </div>
             </div>
 
-            <!-- Transmission Filter -->
-            <div class="filter-group">
-                <label class="filter-label">Transmission</label>
-                <div class="transmission-checkboxes" id="transmissionContainer">
+            <!-- No Results -->
+            <div class="no-results" id="noResultsMessage" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h4>No cars found</h4>
+                <p>Try adjusting your search criteria or filters</p>
+                <button class="btn btn-primary" onclick="clearAllFilters()">Clear All Filters</button>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-container" id="paginationSection" style="display: none;">
+                <div id="paginationContainer">
                     <!-- Will be populated by JavaScript -->
                 </div>
             </div>
-
-            <!-- Year Range Filter -->
-            <div class="row">
-                <div class="col-6">
-                    <div class="filter-group">
-                        <label class="filter-label">Min Year</label>
-                        <input type="number" class="form-control" id="minYear" placeholder="Min Year" min="1990" max="2025">
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="filter-group">
-                        <label class="filter-label">Max Year</label>
-                        <input type="number" class="form-control" id="maxYear" placeholder="Max Year" min="1990" max="2025">
-                    </div>
-                </div>
-            </div>
-
-            <!-- KM Range Filter -->
-            <div class="row">
-                <div class="col-6">
-                    <div class="filter-group">
-                        <label class="filter-label">Min KM</label>
-                        <input type="number" class="form-control" id="minKM" placeholder="Min KM">
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="filter-group">
-                        <label class="filter-label">Max KM</label>
-                        <input type="number" class="form-control" id="maxKM" placeholder="Max KM">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Filters -->
-            <div class="filter-group">
-                <label class="filter-label">Quick Filters</label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="verifiedOnly">
-                    <label class="form-check-label" for="verifiedOnly">Verified Only</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="firstOwnerOnly">
-                    <label class="form-check-label" for="firstOwnerOnly">First Owner Only</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="noAccident">
-                    <label class="form-check-label" for="noAccident">No Accident History</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="automaticOnly">
-                    <label class="form-check-label" for="automaticOnly">Automatic Only</label>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between mt-3">
-                <button class="btn btn-outline-secondary" id="clearFilters">Clear All</button>
-                <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sort and Results Count -->
-    <div class="sort-container">
-        <div class="results-count" id="resultsCount">Loading...</div>
-        <select class="form-select" id="sortBy" style="width: auto; font-size: 0.9rem;">
-            <option value="latest">Latest First</option>
-            <option value="price_low">Price: Low to High</option>
-            <option value="price_high">Price: High to Low</option>
-            <option value="year_new">Year: Newest First</option>
-            <option value="year_old">Year: Oldest First</option>
-            <option value="km_low">KM: Low to High</option>
-            <option value="popular">Most Popular</option>
-        </select>
-    </div>
-
-    <!-- Loading Spinner -->
-    <div class="loading-spinner" id="loadingSpinner">
-        <div class="spinner"></div>
-        <p>Finding cars for you...</p>
-    </div>
-
-    <!-- Car Listings -->
-    <div class="cars-container" id="carListingsContainer" style="display: none;">
-        <div id="carListings">
-            <!-- Will be populated by JavaScript -->
-        </div>
-    </div>
-
-    <!-- No Results -->
-    <div class="no-results" id="noResultsMessage" style="display: none;">
-        <i class="fas fa-search"></i>
-        <h4>No cars found</h4>
-        <p>Try adjusting your search criteria or filters</p>
-        <button class="btn btn-primary" onclick="clearAllFilters()">Clear All Filters</button>
-    </div>
-
-    <!-- Pagination -->
-    <div class="pagination-container" id="paginationSection" style="display: none;">
-        <div id="paginationContainer">
-            <!-- Will be populated by JavaScript -->
         </div>
     </div>
 
