@@ -1,362 +1,844 @@
 ﻿@{
     ViewData["Title"] = "Find Your Perfect Car";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null; // Remove shared layout for full screen
 }
 
-<!-- Search Header Section -->
-<section class="bg-primary text-white py-4">
-    <div class="container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Mobile-first full screen styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        /* Custom Mobile Header */
+        .mobile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+            .mobile-header h1 {
+                font-size: 1.4rem;
+                font-weight: 600;
+                margin: 0;
+            }
+
+        .login-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+            .login-btn:hover {
+                background: rgba(255,255,255,0.3);
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        /* Search Section */
+        .search-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px 15px 30px;
+            color: white;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input-group {
+            position: relative;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+            .search-input-group input {
+                border: none;
+                padding: 15px 80px 15px 20px;
+                font-size: 1rem;
+                border-radius: 25px;
+                background: white;
+                width: 100%;
+            }
+
+            .search-input-group button {
+                position: absolute;
+                right: 5px;
+                top: 50%;
+                transform: translateY(-50%);
+                border: none;
+                background: #ff6b6b;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 20px;
+                font-weight: 600;
+            }
+
+        /* Search Suggestions */
+        #searchSuggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-top: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            #searchSuggestions .dropdown-item {
+                padding: 10px 15px;
+                color: #495057;
+                text-decoration: none;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+                #searchSuggestions .dropdown-item:hover {
+                    background-color: #f8f9fa;
+                }
+
+        /* Quick Stats - Mobile Optimized */
+        .quick-stats {
+            background: white;
+            margin: -15px 15px 20px;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px 5px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        /* Filters - Collapsible for Mobile */
+        .filters-container {
+            background: white;
+            margin: 0 15px 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .filters-toggle {
+            background: #f8f9fa;
+            border: none;
+            width: 100%;
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filters-content {
+            padding: 0 20px 20px;
+            display: none;
+        }
+
+            .filters-content.show {
+                display: block;
+            }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            padding: 12px 15px;
+            font-size: 0.9rem;
+        }
+
+        .fuel-type-checkboxes, .transmission-checkboxes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .form-check {
+            margin-bottom: 8px;
+        }
+
+        .form-check-input {
+            margin-right: 8px;
+        }
+
+        .form-check-label {
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        /* Car Cards - Mobile Optimized */
+        .cars-container {
+            padding: 0 15px;
+        }
+
+        .car-card {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .car-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            }
+
+        .car-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            position: relative;
+        }
+
+        .car-badges {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 5;
+        }
+
+            .car-badges .badge {
+                margin-right: 5px;
+                margin-bottom: 5px;
+                font-size: 0.7rem;
+                padding: 4px 8px;
+                border-radius: 10px;
+            }
+
+        .images-count {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .car-content {
+            padding: 20px;
+        }
+
+        .car-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .car-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+
+        .price-section {
+            margin-bottom: 15px;
+        }
+
+            .price-section .text-muted {
+                font-size: 0.9rem;
+            }
+
+        .car-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+            .detail-item i {
+                width: 16px;
+                margin-right: 8px;
+                color: #667eea;
+            }
+
+        .car-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-view {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-contact {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .btn-contact:hover, .btn-view:hover {
+                transform: translateY(-1px);
+            }
+
+        .emi-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        /* Loading States */
+        .loading-spinner {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @@keyframes spin {
+            0%
+
+        {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 50px 20px;
+            color: #6c757d;
+        }
+
+            .no-results i {
+                font-size: 3rem;
+                margin-bottom: 20px;
+                color: #dee2e6;
+            }
+
+        /* Pagination - Mobile */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .pagination-btn {
+            background: white;
+            border: 1px solid #e0e0e0;
+            color: #495057;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .pagination-btn.active {
+                background: #667eea;
+                color: white;
+                border-color: #667eea;
+            }
+
+        /* Sort Options */
+        .sort-container {
+            background: white;
+            margin: 0 15px 20px;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-count {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 576px) {
+            .mobile-header
+
+        {
+            padding: 8px 15px;
+        }
+
+        .mobile-header h1 {
+            font-size: 1.2rem;
+        }
+
+        .search-section {
+            padding: 15px 15px 25px;
+        }
+
+        .car-image {
+            height: 180px;
+        }
+
+        .car-content {
+            padding: 15px;
+        }
+
+        .fuel-type-checkboxes, .transmission-checkboxes {
+            grid-template-columns: 1fr;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header with Login -->
+    <header class="mobile-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1><i class="fas fa-car me-2"></i>CarSearch</h1>
+            <button class="btn login-btn" onclick="redirectToLogin()">
+                <i class="fas fa-sign-in-alt me-1"></i>Login
+            </button>
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="search-container">
+            <div class="search-input-group">
+                <input type="text" class="form-control" id="searchKeyword"
+                       placeholder="Search by brand, model, or location...">
+                <button type="button" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <!-- Search Suggestions Dropdown -->
+            <div class="dropdown-menu w-100" id="searchSuggestions" style="display: none;"></div>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
         <div class="row">
-            <div class="col-12">
-                <h1 class="h3 mb-3">Find Your Perfect Car</h1>
-                <!-- Main Search Bar -->
-                <div class="search-container">
-                    <div class="input-group input-group-lg">
-                        <input type="text" class="form-control" id="searchKeyword"
-                               placeholder="Search by brand, model, or location...">
-                        <button class="btn btn-warning" type="button" id="searchBtn">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                    </div>
-                    <!-- Search Suggestions Dropdown -->
-                    <div class="dropdown-menu w-100" id="searchSuggestions" style="display: none;"></div>
+            <div class="col-3">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalActiveCars">0</span>
+                    <div class="stat-label">Active</div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalVerifiedCars">0</span>
+                    <div class="stat-label">Verified</div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalFeaturedCars">0</span>
+                    <div class="stat-label">Featured</div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalResults">0</span>
+                    <div class="stat-label">Results</div>
                 </div>
             </div>
         </div>
     </div>
-</section>
 
-<!-- Quick Stats -->
-<section class="bg-light py-3">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-md-3 col-6">
-                <div class="stat-card">
-                    <h4 class="mb-0" id="totalActiveCars">0</h4>
-                    <small class="text-muted">Active Listings</small>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-card">
-                    <h4 class="mb-0" id="totalVerifiedCars">0</h4>
-                    <small class="text-muted">Verified Cars</small>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-card">
-                    <h4 class="mb-0" id="totalFeaturedCars">0</h4>
-                    <small class="text-muted">Featured Cars</small>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-card">
-                    <h4 class="mb-0" id="totalResults">0</h4>
-                    <small class="text-muted">Search Results</small>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Main Content -->
-<div class="container my-4">
-    <div class="row">
-        <!-- Filters Sidebar -->
-        <div class="col-lg-3">
-            <div class="filters-sidebar sticky-top">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Filters</h5>
-                        <button class="btn btn-sm btn-outline-secondary" id="clearFilters">Clear All</button>
+    <!-- Filters - Collapsible -->
+    <div class="filters-container">
+        <button class="filters-toggle" onclick="toggleFilters()">
+            <span><i class="fas fa-filter me-2"></i>Filters</span>
+            <i class="fas fa-chevron-down" id="filterIcon"></i>
+        </button>
+        <div class="filters-content" id="filtersContent">
+            <!-- Price Range Filter -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="filter-group">
+                        <label class="filter-label">Min Price</label>
+                        <input type="number" class="form-control" id="minPrice" placeholder="Min Price">
                     </div>
-                    <div class="card-body p-0">
-                        <!-- Price Range Filter -->
-                        <div class="filter-section p-3 border-bottom">
-                            <h6 class="filter-title mb-3">Price Range</h6>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <input type="number" class="form-control form-control-sm" id="minPrice" placeholder="Min Price">
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" class="form-control form-control-sm" id="maxPrice" placeholder="Max Price">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Brand Filter -->
-                        <div class="filter-section p-3 border-bottom">
-                            <h6 class="filter-title mb-3">Brand</h6>
-                            <select class="form-select form-select-sm" id="brandFilter">
-                                <option value="">All Brands</option>
-                            </select>
-                        </div>
-
-                        <!-- Model Filter -->
-                        <div class="filter-section p-3 border-bottom">
-                            <h6 class="filter-title mb-3">Model</h6>
-                            <select class="form-select form-select-sm" id="modelFilter" disabled>
-                                <option value="">Select Brand First</option>
-                            </select>
-                        </div>
-
-                        <!-- City Filter -->
-                        <div class="filter-section p-3 border-bottom">
-                            <h6 class="filter-title mb-3">Location</h6>
-                            <select class="form-select form-select-sm" id="cityFilter">
-                                <option value="">All Cities</option>
-                            </select>
-                        </div>
-
-                        <!-- Category Filter -->
-                        <div class="filter-section p-3 border-bottom">
-                            <h6 class="filter-title mb-3">Category</h6>
-                            <select class="form-select form-select-sm" id="categoryFilter">
-                                <option value="">All Categories</option>
-                            </select>
-                        </div>
-
-                        <!-- Fuel Type Filter -->
-                        <div class="filter-section p-3 border-bottom">
-                            <h6 class="filter-title mb-3">Fuel Type</h6>
-                            <div class="fuel-type-checkboxes" id="fuelTypeContainer">
-                                <!-- Will be populated by JavaScript -->
-                            </div>
-                        </div>
-
-                        <!-- Transmission Filter -->
-                        <div class="filter-section p-3 border-bottom">
-                            <h6 class="filter-title mb-3">Transmission</h6>
-                            <div class="transmission-checkboxes" id="transmissionContainer">
-                                <!-- Will be populated by JavaScript -->
-                            </div>
-                        </div>
-
-                        <!-- Year Range Filter -->
-                        <div class="filter-section p-3 border-bottom">
-                            <h6 class="filter-title mb-3">Year Range</h6>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <input type="number" class="form-control form-control-sm" id="minYear" placeholder="Min Year" min="1990" max="2025">
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" class="form-control form-control-sm" id="maxYear" placeholder="Max Year" min="1990" max="2025">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- KM Range Filter -->
-                        <div class="filter-section p-3 border-bottom">
-                            <h6 class="filter-title mb-3">Kilometers</h6>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <input type="number" class="form-control form-control-sm" id="minKM" placeholder="Min KM">
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" class="form-control form-control-sm" id="maxKM" placeholder="Max KM">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Quick Filters -->
-                        <div class="filter-section p-3">
-                            <h6 class="filter-title mb-3">Quick Filters</h6>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="verifiedOnly">
-                                <label class="form-check-label" for="verifiedOnly">Verified Only</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="firstOwnerOnly">
-                                <label class="form-check-label" for="firstOwnerOnly">First Owner Only</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="noAccident">
-                                <label class="form-check-label" for="noAccident">No Accident History</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="automaticOnly">
-                                <label class="form-check-label" for="automaticOnly">Automatic Only</label>
-                            </div>
-                        </div>
+                </div>
+                <div class="col-6">
+                    <div class="filter-group">
+                        <label class="filter-label">Max Price</label>
+                        <input type="number" class="form-control" id="maxPrice" placeholder="Max Price">
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Results Section -->
-        <div class="col-lg-9">
-            <!-- Sort and View Options -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="results-info">
-                    <span class="text-muted" id="resultsCount">Loading...</span>
-                </div>
-                <div class="sort-options d-flex align-items-center gap-2">
-                    <label class="form-label mb-0 me-2">Sort by:</label>
-                    <select class="form-select form-select-sm" id="sortBy" style="width: auto;">
-                        <option value="latest">Latest First</option>
-                        <option value="price_low">Price: Low to High</option>
-                        <option value="price_high">Price: High to Low</option>
-                        <option value="year_new">Year: Newest First</option>
-                        <option value="year_old">Year: Oldest First</option>
-                        <option value="km_low">KM: Low to High</option>
-                        <option value="popular">Most Popular</option>
-                    </select>
-                </div>
+            <!-- Brand Filter -->
+            <div class="filter-group">
+                <label class="filter-label">Brand</label>
+                <select class="form-select" id="brandFilter">
+                    <option value="">All Brands</option>
+                </select>
             </div>
 
-            <!-- Loading Spinner -->
-            <div class="text-center py-5" id="loadingSpinner" style="display: block;">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-2 text-muted">Loading cars...</p>
+            <!-- Model Filter -->
+            <div class="filter-group">
+                <label class="filter-label">Model</label>
+                <select class="form-select" id="modelFilter" disabled>
+                    <option value="">Select Brand First</option>
+                </select>
             </div>
 
-            <!-- Car Listings Grid -->
-            <div id="carListingsContainer" style="display: none;">
-                <div class="row" id="carListings">
+            <!-- City Filter -->
+            <div class="filter-group">
+                <label class="filter-label">Location</label>
+                <select class="form-select" id="cityFilter">
+                    <option value="">All Cities</option>
+                </select>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="filter-group">
+                <label class="filter-label">Category</label>
+                <select class="form-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+
+            <!-- Fuel Type Filter -->
+            <div class="filter-group">
+                <label class="filter-label">Fuel Type</label>
+                <div class="fuel-type-checkboxes" id="fuelTypeContainer">
                     <!-- Will be populated by JavaScript -->
                 </div>
             </div>
 
-            <!-- No Results Message -->
-            <div id="noResultsMessage" class="text-center py-5" style="display: none;">
-                <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                <h4>No cars found</h4>
-                <p class="text-muted">Try adjusting your search criteria or filters</p>
-                <button class="btn btn-primary" onclick="clearAllFilters()">Clear All Filters</button>
-            </div>
-
-            <!-- Pagination -->
-            <nav aria-label="Car listings pagination" class="mt-4" id="paginationSection" style="display: none;">
-                <ul class="pagination justify-content-center" id="paginationContainer">
+            <!-- Transmission Filter -->
+            <div class="filter-group">
+                <label class="filter-label">Transmission</label>
+                <div class="transmission-checkboxes" id="transmissionContainer">
                     <!-- Will be populated by JavaScript -->
-                </ul>
-            </nav>
-        </div>
-    </div>
-</div>
-
-<!-- Inquiry Modal -->
-<div class="modal fade" id="inquiryModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Contact Seller</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
             </div>
-            <div class="modal-body">
-                <form id="inquiryForm">
-                    <input type="hidden" id="inquiryListingId">
 
-                    <div class="mb-3">
-                        <label for="customerName" class="form-label">Full Name *</label>
-                        <input type="text" class="form-control" id="customerName" required>
+            <!-- Year Range Filter -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="filter-group">
+                        <label class="filter-label">Min Year</label>
+                        <input type="number" class="form-control" id="minYear" placeholder="Min Year" min="1990" max="2025">
                     </div>
-
-                    <div class="mb-3">
-                        <label for="customerPhone" class="form-label">Phone Number *</label>
-                        <input type="tel" class="form-control" id="customerPhone" required>
+                </div>
+                <div class="col-6">
+                    <div class="filter-group">
+                        <label class="filter-label">Max Year</label>
+                        <input type="number" class="form-control" id="maxYear" placeholder="Max Year" min="1990" max="2025">
                     </div>
-
-                    <div class="mb-3">
-                        <label for="customerEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="customerEmail">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="inquiryType" class="form-label">Inquiry Type</label>
-                        <select class="form-select" id="inquiryType">
-                            <option value="General Inquiry">General Inquiry</option>
-                            <option value="Price Negotiation">Price Negotiation</option>
-                            <option value="Test Drive">Test Drive Request</option>
-                            <option value="Inspection">Inspection Request</option>
-                            <option value="Finance">Finance Options</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" id="message" rows="3" placeholder="Your message..."></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="budgetRange" class="form-label">Budget Range</label>
-                        <select class="form-select" id="budgetRange">
-                            <option value="">Select Budget Range</option>
-                            <option value="Under 2 Lakh">Under ₹2 Lakh</option>
-                            <option value="2-5 Lakh">₹2-5 Lakh</option>
-                            <option value="5-10 Lakh">₹5-10 Lakh</option>
-                            <option value="10-20 Lakh">₹10-20 Lakh</option>
-                            <option value="Above 20 Lakh">Above ₹20 Lakh</option>
-                        </select>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="financeRequired">
-                        <label class="form-check-label" for="financeRequired">
-                            I need finance assistance
-                        </label>
-                    </div>
-                </form>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="submitInquiry()">Send Inquiry</button>
+
+            <!-- KM Range Filter -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="filter-group">
+                        <label class="filter-label">Min KM</label>
+                        <input type="number" class="form-control" id="minKM" placeholder="Min KM">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="filter-group">
+                        <label class="filter-label">Max KM</label>
+                        <input type="number" class="form-control" id="maxKM" placeholder="Max KM">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="filter-group">
+                <label class="filter-label">Quick Filters</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="verifiedOnly">
+                    <label class="form-check-label" for="verifiedOnly">Verified Only</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="firstOwnerOnly">
+                    <label class="form-check-label" for="firstOwnerOnly">First Owner Only</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="noAccident">
+                    <label class="form-check-label" for="noAccident">No Accident History</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="automaticOnly">
+                    <label class="form-check-label" for="automaticOnly">Automatic Only</label>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-3">
+                <button class="btn btn-outline-secondary" id="clearFilters">Clear All</button>
+                <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
             </div>
         </div>
     </div>
-</div>
 
-<!-- EMI Calculator Modal -->
-<div class="modal fade" id="emiModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">EMI Calculator</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="emiForm">
-                    <div class="mb-3">
-                        <label for="loanAmount" class="form-label">Loan Amount (₹)</label>
-                        <input type="number" class="form-control" id="loanAmount">
-                    </div>
+    <!-- Sort and Results Count -->
+    <div class="sort-container">
+        <div class="results-count" id="resultsCount">Loading...</div>
+        <select class="form-select" id="sortBy" style="width: auto; font-size: 0.9rem;">
+            <option value="latest">Latest First</option>
+            <option value="price_low">Price: Low to High</option>
+            <option value="price_high">Price: High to Low</option>
+            <option value="year_new">Year: Newest First</option>
+            <option value="year_old">Year: Oldest First</option>
+            <option value="km_low">KM: Low to High</option>
+            <option value="popular">Most Popular</option>
+        </select>
+    </div>
 
-                    <div class="mb-3">
-                        <label for="interestRate" class="form-label">Interest Rate (% per annum)</label>
-                        <input type="number" class="form-control" id="interestRate" value="8.5" step="0.1">
-                    </div>
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+        <p>Finding cars for you...</p>
+    </div>
 
-                    <div class="mb-3">
-                        <label for="loanTenure" class="form-label">Loan Tenure (months)</label>
-                        <select class="form-select" id="loanTenure">
-                            <option value="12">1 Year</option>
-                            <option value="24">2 Years</option>
-                            <option value="36">3 Years</option>
-                            <option value="48">4 Years</option>
-                            <option value="60" selected>5 Years</option>
-                            <option value="72">6 Years</option>
-                            <option value="84">7 Years</option>
-                        </select>
-                    </div>
+    <!-- Car Listings -->
+    <div class="cars-container" id="carListingsContainer" style="display: none;">
+        <div id="carListings">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
 
-                    <div class="mb-3">
-                        <button type="button" class="btn btn-primary" onclick="calculateEMIAmount()">Calculate EMI</button>
-                    </div>
+    <!-- No Results -->
+    <div class="no-results" id="noResultsMessage" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h4>No cars found</h4>
+        <p>Try adjusting your search criteria or filters</p>
+        <button class="btn btn-primary" onclick="clearAllFilters()">Clear All Filters</button>
+    </div>
 
-                    <div id="emiResult" class="alert alert-success" style="display: none;">
-                        <h5>EMI Calculation Result</h5>
-                        <p class="mb-1"><strong>Monthly EMI: ₹<span id="monthlyEMI">0</span></strong></p>
-                        <p class="mb-1">Total Amount: ₹<span id="totalAmount">0</span></p>
-                        <p class="mb-0">Total Interest: ₹<span id="totalInterest">0</span></p>
-                    </div>
-                </form>
+    <!-- Pagination -->
+    <div class="pagination-container" id="paginationSection" style="display: none;">
+        <div id="paginationContainer">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div class="modal fade" id="inquiryModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Contact Seller</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="inquiryForm">
+                        <input type="hidden" id="inquiryListingId">
+
+                        <div class="mb-3">
+                            <label for="customerName" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="customerName" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="customerPhone" class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-control" id="customerPhone" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="customerEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="customerEmail">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="inquiryType" class="form-label">Inquiry Type</label>
+                            <select class="form-select" id="inquiryType">
+                                <option value="General Inquiry">General Inquiry</option>
+                                <option value="Price Negotiation">Price Negotiation</option>
+                                <option value="Test Drive">Test Drive Request</option>
+                                <option value="Inspection">Inspection Request</option>
+                                <option value="Finance">Finance Options</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="3" placeholder="Your message..."></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="budgetRange" class="form-label">Budget Range</label>
+                            <select class="form-select" id="budgetRange">
+                                <option value="">Select Budget Range</option>
+                                <option value="Under 2 Lakh">Under ₹2 Lakh</option>
+                                <option value="2-5 Lakh">₹2-5 Lakh</option>
+                                <option value="5-10 Lakh">₹5-10 Lakh</option>
+                                <option value="10-20 Lakh">₹10-20 Lakh</option>
+                                <option value="Above 20 Lakh">Above ₹20 Lakh</option>
+                            </select>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="financeRequired">
+                            <label class="form-check-label" for="financeRequired">
+                                I need finance assistance
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="submitInquiry()">Send Inquiry</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-@section Scripts {
+    <!-- EMI Calculator Modal -->
+    <div class="modal fade" id="emiModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">EMI Calculator</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="emiForm">
+                        <div class="mb-3">
+                            <label for="loanAmount" class="form-label">Loan Amount (₹)</label>
+                            <input type="number" class="form-control" id="loanAmount">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="interestRate" class="form-label">Interest Rate (% per annum)</label>
+                            <input type="number" class="form-control" id="interestRate" value="8.5" step="0.1">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="loanTenure" class="form-label">Loan Tenure (months)</label>
+                            <select class="form-select" id="loanTenure">
+                                <option value="12">1 Year</option>
+                                <option value="24">2 Years</option>
+                                <option value="36">3 Years</option>
+                                <option value="48">4 Years</option>
+                                <option value="60" selected>5 Years</option>
+                                <option value="72">6 Years</option>
+                                <option value="84">7 Years</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-primary" onclick="calculateEMIAmount()">Calculate EMI</button>
+                        </div>
+
+                        <div id="emiResult" class="alert alert-success" style="display: none;">
+                            <h5>EMI Calculation Result</h5>
+                            <p class="mb-1"><strong>Monthly EMI: ₹<span id="monthlyEMI">0</span></strong></p>
+                            <p class="mb-1">Total Amount: ₹<span id="totalAmount">0</span></p>
+                            <p class="mb-0">Total Interest: ₹<span id="totalInterest">0</span></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script>
         // Global variables
         let currentPage = 1;
@@ -395,6 +877,36 @@
         $(document).ready(function() {
             initializePage();
         });
+
+        function redirectToLogin() {
+            // Replace with your actual login route
+            window.location.href = '/Account/Login';
+        }
+
+        function toggleFilters() {
+            const content = document.getElementById('filtersContent');
+            const icon = document.getElementById('filterIcon');
+
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                content.classList.add('show');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+        }
+
+        function applyFilters() {
+            updateFiltersAndSearch();
+            // Hide filters after applying
+            const content = document.getElementById('filtersContent');
+            const icon = document.getElementById('filterIcon');
+            content.classList.remove('show');
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        }
 
         function initializePage() {
             // Load URL parameters first
@@ -761,11 +1273,10 @@
         }
 
         function createCarCard(car) {
-            debugger
             const badges = [];
             if (car.isVerified) badges.push('<span class="badge bg-success">Verified</span>');
             if (car.isFeatured) badges.push('<span class="badge bg-warning">Featured</span>');
-            if (car.isUrgentSale) badges.push('<span class="badge bg-danger">Urgent Sale</span>');
+            if (car.isUrgentSale) badges.push('<span class="badge bg-danger">Urgent</span>');
 
             const imageCount = car.totalImages > 1 ? `<div class="images-count"><i class="fas fa-camera"></i> ${car.totalImages}</div>` : '';
 
@@ -776,76 +1287,65 @@
             const negotiable = car.isPriceNegotiable ? '<small class="text-success">(Negotiable)</small>' : '';
 
             const ownerInfo = car.totalPreviousOwners
-                ? `<div class="owner-info mt-2"><small class="text-muted">${car.totalPreviousOwners === 1 ? '1st Owner' : car.totalPreviousOwners + 'th Owner'}</small></div>`
+                ? `<div class="detail-item mt-2"><i class="fas fa-user"></i><span>${car.totalPreviousOwners === 1 ? '1st Owner' : car.totalPreviousOwners + 'th Owner'}</span></div>`
                 : '';
 
-            const conditionRating = car.exteriorRating ? `
-                <div class="condition-ratings mt-2">
-                    <small class="text-muted d-block">Condition:</small>
-                    <div class="d-flex gap-2">
-                        <div class="rating-item">
-                            <small>Ext: </small>
-                            ${Array.from({length: 5}, (_, i) => `<i class="fas fa-star ${i < car.exteriorRating ? 'text-warning' : 'text-muted'}"></i>`).join('')}
-                        </div>
-                    </div>
-                </div>` : '';
-
             return `
-                <div class="col-md-6 col-xl-4 mb-4 car-card-item">
-                    <div class="card car-card h-100">
-                        <div class="position-relative">
-                            <img src="${car.primaryImage || '/images/placeholder-car.jpg'}"
-                                 class="card-img-top car-image" alt="${car.title}" loading="lazy">
+                <div class="car-card">
+                    <div class="position-relative">
+                        <img src="${car.primaryImage || '/images/placeholder-car.jpg'}"
+                             class="car-image" alt="${car.title}" loading="lazy">
+                        <div class="car-badges">${badges.join('')}</div>
+                        ${imageCount}
+                    </div>
 
-                            <div class="car-badges">${badges.join('')}</div>
-                            ${imageCount}
+                    <div class="car-content">
+                        <h3 class="car-title">${car.title}</h3>
+
+                        <div class="price-section">
+                            <div class="car-price">₹${car.sellingPrice.toLocaleString()}</div>
+                            ${originalPrice}
+                            ${negotiable}
                         </div>
 
-                        <div class="card-body">
-                            <h5 class="card-title text-truncate">${car.title}</h5>
-
-                            <div class="price-section mb-2">
-                                <h4 class="price text-primary mb-0">₹${car.sellingPrice.toLocaleString()}</h4>
-                                ${originalPrice}
-                                ${negotiable}
+                        <div class="car-details">
+                            <div class="detail-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>${car.year}</span>
                             </div>
-
-                            <div class="car-details">
-                                <div class="row text-muted small">
-                                    <div class="col-6"><i class="fas fa-calendar"></i> ${car.year}</div>
-                                    <div class="col-6"><i class="fas fa-tachometer-alt"></i> ${car.kilometersOnOdometer.toLocaleString()} km</div>
-                                </div>
-                                <div class="row text-muted small mt-1">
-                                    <div class="col-6"><i class="fas fa-gas-pump"></i> ${car.fuelType}</div>
-                                    <div class="col-6"><i class="fas fa-cogs"></i> ${car.transmission}</div>
-                                </div>
-                                <div class="row text-muted small mt-1">
-                                    <div class="col-12"><i class="fas fa-map-marker-alt"></i> ${car.cityName}, ${car.stateName}</div>
-                                </div>
+                            <div class="detail-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>${car.kilometersOnOdometer.toLocaleString()} km</span>
                             </div>
-
-                            ${ownerInfo}
-                            ${conditionRating}
-                        </div>
-
-                        <div class="card-footer bg-transparent">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <button class="btn btn-outline-primary btn-sm" onclick="viewCarDetail(${car.listingId})">
-                                    View Details
-                                </button>
-                                <button class="btn btn-primary btn-sm" onclick="showInquiryModal(${car.listingId}, '${car.title.replace(/'/g, "\\'")}')">
-                                    Contact Seller
-                                </button>
+                            <div class="detail-item">
+                                <i class="fas fa-gas-pump"></i>
+                                <span>${car.fuelType}</span>
                             </div>
-
-                            <div class="mt-2">
-                                <small>
-                                    <a href="#" class="text-decoration-none" onclick="calculateEMI(${car.sellingPrice}, ${car.listingId})">
-                                        <i class="fas fa-calculator"></i> Calculate EMI
-                                    </a>
-                                </small>
+                            <div class="detail-item">
+                                <i class="fas fa-cogs"></i>
+                                <span>${car.transmission}</span>
                             </div>
                         </div>
+
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${car.cityName}, ${car.stateName}</span>
+                        </div>
+
+                        ${ownerInfo}
+
+                        <div class="car-actions mt-3">
+                            <a href="#" class="btn-view" onclick="viewCarDetail(${car.listingId})">
+                                <i class="fas fa-eye me-1"></i>View Details
+                            </a>
+                            <button class="btn-contact" onclick="showInquiryModal(${car.listingId}, '${car.title.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-phone me-1"></i>Contact
+                            </button>
+                        </div>
+
+                        <a href="#" class="emi-link" onclick="calculateEMI(${car.sellingPrice}, ${car.listingId})">
+                            <i class="fas fa-calculator me-1"></i>Calculate EMI
+                        </a>
                     </div>
                 </div>`;
         }
@@ -859,7 +1359,7 @@
             let html = '';
 
             if (data.hasPreviousPage) {
-                html += `<li class="page-item"><a class="page-link" href="#" onclick="loadPage(${data.currentPage - 1})">Previous</a></li>`;
+                html += `<a class="pagination-btn" href="#" onclick="loadPage(${data.currentPage - 1})">Previous</a>`;
             }
 
             const startPage = Math.max(1, data.currentPage - 2);
@@ -867,11 +1367,11 @@
 
             for (let i = startPage; i <= endPage; i++) {
                 const active = i === data.currentPage ? 'active' : '';
-                html += `<li class="page-item ${active}"><a class="page-link" href="#" onclick="loadPage(${i})">${i}</a></li>`;
+                html += `<a class="pagination-btn ${active}" href="#" onclick="loadPage(${i})">${i}</a>`;
             }
 
             if (data.hasNextPage) {
-                html += `<li class="page-item"><a class="page-link" href="#" onclick="loadPage(${data.currentPage + 1})">Next</a></li>`;
+                html += `<a class="pagination-btn" href="#" onclick="loadPage(${data.currentPage + 1})">Next</a>`;
             }
 
             $('#paginationContainer').html(html);
@@ -1034,133 +1534,5 @@
             };
         }
     </script>
-
-    <style>
-        .car-card {
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-            .car-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            }
-
-        .car-image {
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .car-badges {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 1;
-        }
-
-            .car-badges .badge {
-                margin-right: 5px;
-                margin-bottom: 5px;
-            }
-
-        .images-count {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-        }
-
-        .price {
-            font-weight: 600;
-        }
-
-        .stat-card {
-            padding: 10px;
-        }
-
-        .filter-section {
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .filter-title {
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .filters-sidebar {
-            top: 20px;
-        }
-
-        .search-container {
-            position: relative;
-        }
-
-        #searchSuggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .rating-item .fa-star {
-            font-size: 10px;
-        }
-
-        .car-details .fas {
-            width: 12px;
-            text-align: center;
-            margin-right: 5px;
-        }
-
-        @@media (max-width: 768px) {
-            .filters-sidebar
-
-        {
-            position: static !important;
-            margin-bottom: 20px;
-        }
-
-        .stat-card h4 {
-            font-size: 1.2rem;
-        }
-
-        .car-image {
-            height: 180px;
-        }
-
-        }
-
-        .car-card-small .card-img-top {
-            height: 150px;
-            object-fit: cover;
-        }
-
-        /* Loading state styles */
-        .loading-placeholder {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-
-        @@keyframes loading {
-            0%
-
-        {
-            background-position: 200% 0;
-        }
-
-        100% {
-            background-position: -200% 0;
-        }
-
-        }
-    </style>
-}
+</body>
+</html>
