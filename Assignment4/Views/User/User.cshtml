@@ -1,0 +1,233 @@
+﻿@{
+    ViewData["Title"] = "Users Management";
+}
+
+<style>
+    .customBtn {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+        .customBtn:hover {
+            background-color: #218838;
+        }
+
+    .modal-header, .modal-footer {
+        background-color: #f1f1f1;
+    }
+
+    .modal-title {
+        font-weight: bold;
+    }
+
+    #tblUsers {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #tblUsers th, #tblUsers td {
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #tblUsers th {
+            background-color: #f8f9fa;
+        }
+
+    .btn-sm {
+        padding: 5px 10px;
+        font-size: 12px;
+        margin: 2px;
+        border-radius: 4px;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+</style>
+
+<div class="container-fluid mt-3">
+    <button class="customBtn mb-2 mt-2" onclick="LoadUserForm()">Add User</button>
+
+    <table id="tblUsers" class="table table-striped mb-3">
+        <thead>
+            <tr>
+                <th>FullName</th>
+                <th>UserName</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+
+    <!-- User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalLabel">Add / Update User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control ClearUserModalData" id="txtName" />
+                    </div>
+                    <div hidden class="mb-3">
+                        <label class="form-label">Userid</label>
+                        <input type="number" class="form-control ClearUserModalData" id="UserID" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control ClearUserModalData" id="txtEmail" />
+                    </div> <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control ClearUserModalData" id="Username" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" class="form-control ClearUserModalData" id="txtPhoneNumber" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select class="form-control ClearUserModalData" id="ddlRole">
+                            <option value="Customer">Customer</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control ClearUserModalData" id="txtPassword" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" onclick="SaveUser()" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function LoadUserForm()
+    {
+        $('.ClearUserModalData').val('');
+        $('#UserID').val('');
+        $('#userModal').modal('show');
+    }
+
+    window.onload = function () {
+        GetUsersData();
+
+        $('#tblUsers').on('click', '.btn-edit', function () {
+            var user = JSON.parse($(this).attr('data-user'));
+            EditUser(user);
+        });
+
+        $('#tblUsers').on('click', '.btn-delete', function () {
+            var userID = $(this).attr('data-id');
+            debugger
+            DeleteUser(userID);
+        });
+    }
+
+      function GetUsersData() {
+        var table = $('#tblUsers').DataTable();
+        table.clear().draw();
+
+        $.ajax({
+            url: '/User/GetAllUsers',
+            type: 'GET',
+            success: function (response) {
+                response.forEach(function (user) {
+                    table.row.add([
+                        user.fullName,            // FullName
+                        user.username,            // UserName (ensure you have the correct field here)
+                        user.email,               // Email
+                        user.phoneNumber,         // Phone Number
+                        user.userRole,            // Role
+                        '<div class="contentCenter">' +
+                            '<i class="fa fa-edit me-4 ml-2 btn-edit" style="color:green" data-user=\'' + JSON.stringify(user) + '\'></i>' +
+                            '<i class="fa fa-trash ml-2 btn-delete" style="color:red" data-id=\'' + user.userId + '\'></i>' +
+                        '</div>'                   // Action buttons
+                    ]).draw();
+                });
+            },
+            error: function (xhr, status, error) {
+                alert('Error: ' + error);
+            }
+        });
+    }
+
+
+    function EditUser(user) {
+        $('#UserID').val(user.userId);
+        $('#txtName').val(user.fullName);
+        $('#txtEmail').val(user.email);
+        $('#txtPhoneNumber').val(user.phoneNumber);
+        $('#ddlRole').val(user.userRole);
+
+        $('#txtPassword').val(user.passwordHash);
+        $('#userModal').modal('show');
+    }
+
+    function DeleteUser(userId) {
+        if (confirm('Are you sure you want to delete this user?')) {
+            $.ajax({
+                url: '/User/Delete',
+                data: {id: userId },
+                type: 'DELETE',
+                success: function (response) {
+                    alert(response.message);
+                    GetUsersData();
+                },
+                error: function (xhr, status, error) {
+                    alert('Error: ' + error);
+                }
+            });
+        }
+    }
+
+    function SaveUser() {
+        var userData = {
+            userID: $('#UserID').val(),
+            fullName: $('#txtName').val(),
+            email: $('#txtEmail').val(),
+            phoneNumber: $('#txtPhoneNumber').val(),
+            userRole: $('#ddlRole').val(),
+            userName: $('#Username').val(),
+            address: $('#txtAddress').val(),
+            passwordHash: $('#txtPassword').val()
+        };
+
+        $.ajax({
+            url: '/User/AddOrUpdateUser',
+            type: 'POST',
+            data: { user: userData },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    $('#userModal').modal('hide');
+                    GetUsersData();
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('Error: ' + error);
+            }
+        });
+    }
+</script>

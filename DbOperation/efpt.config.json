@@ -95,6 +95,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Users]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[VehicleCategories]",
          "ObjectType": 0
       }

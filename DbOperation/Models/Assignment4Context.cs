@@ -53,6 +53,8 @@ public partial class Assignment4Context : DbContext
 
     public virtual DbSet<TransmissionTypes> TransmissionTypes { get; set; }
 
+    public virtual DbSet<Users> Users { get; set; }
+
     public virtual DbSet<VehicleCategories> VehicleCategories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -622,6 +624,29 @@ public partial class Assignment4Context : DbContext
             entity.Property(e => e.transmissionName)
                 .IsRequired()
                 .HasMaxLength(40);
+        });
+
+        modelBuilder.Entity<Users>(entity =>
+        {
+            entity.HasKey(e => e.userId).HasName("PK__Users__CB9A1CFFFB7D247B");
+
+            entity.Property(e => e.createdDate).HasColumnType("datetime");
+            entity.Property(e => e.email)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.fullName).HasMaxLength(100);
+            entity.Property(e => e.passwordHash)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.phoneNumber)
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            entity.Property(e => e.userRole)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.username)
+                .IsRequired()
+                .HasMaxLength(100);
         });
 
         modelBuilder.Entity<VehicleCategories>(entity =>

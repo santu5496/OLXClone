@@ -30,8 +30,7 @@ namespace DbOperation.Implementation
         public async Task<CustomerCarSearchResultDto> SearchCarsAsync(CustomerCarSearchDto request)
         {
             using var db = new Assignment4Context(_dbConn);
-            // Step 3: Load images from CarImages table
-            var carImages = await db.CarImages.FirstOrDefaultAsync();
+
             try
             {
                 IQueryable<CarListingDto> query = from listing in db.CarListings
@@ -97,10 +96,36 @@ namespace DbOperation.Implementation
                 var skip = (request.page - 1) * request.pageSize;
                 var results = await query.Skip(skip).Take(request.pageSize).ToListAsync();
 
+                // Load images for all listings in current page
+                var listingIds = results.Select(c => c.listingId).ToList();
+
+                var imagesDict = await db.CarImages
+                    .Where(img => listingIds.Contains(img.listingId))
+                    .ToDictionaryAsync(img => img.listingId);
+
                 var carDtos = new List<CustomerCarDto>();
+
                 foreach (var car in results)
                 {
                     var carDto = await MapToCustomerCarDto(car);
+
+                    // Assign slot1ImageData converted to base64 string as PrimaryImage
+                    if (imagesDict.TryGetValue(car.listingId, out var carImage))
+                    {
+                        if (carImage.slot1ImageData != null && carImage.slot1ImageData.Length > 0)
+                        {
+                            carDto.primaryImage = "data:image/jpeg;base64," + Convert.ToBase64String(carImage.slot1ImageData);
+                        }
+                        else
+                        {
+                            carDto.primaryImage = null; // or set a placeholder image path/url
+                        }
+                    }
+                    else
+                    {
+                        carDto.primaryImage = null;
+                    }
+
                     carDtos.Add(carDto);
                 }
 

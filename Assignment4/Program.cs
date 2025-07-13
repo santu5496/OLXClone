@@ -30,6 +30,10 @@ builder.Services.AddSingleton<ISearchViewService, SearchViewService>(provider =>
 {
     return new SearchViewService(builder.Configuration.GetConnectionString("Assignment4"));
 });
+builder.Services.AddSingleton<IUserService, UsersService>(provider =>
+{
+    return new UsersService(builder.Configuration.GetConnectionString("Assignment4"));
+});
 
 //builder.Services.AddSingleton<IInventoryMaterialLog, InventoryMaterialLogService>(provider =>
 //{

@@ -1745,7 +1745,9 @@
 
       this._element.classList.add(CLASS_NAME_COLLAPSING);
 
-      this._element.style[dimension] = 0;
+        this._e
+
+        [dimension] = 0;
 
       this._addAriaAndCollapsedClass(this._triggerArray, true);
 
