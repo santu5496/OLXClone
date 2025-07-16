@@ -3,11 +3,11 @@
 <head>
     <title>Car Details - Loading...</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="fullscreen-mode">
     <!-- Loading Spinner -->
     <div id="loadingSpinner" class="d-flex justify-content-center align-items-center" style="height: 100vh;">
         <div class="spinner-border text-primary" role="status">
@@ -17,283 +17,232 @@
     </div>
 
     <!-- Main Content (Initially Hidden) -->
-    <div id="mainContent" style="display: none;">
-        <!-- Car Detail Header -->
-        <section class="bg-light py-3">
-            <div class="container">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/SearchView/SearchView">Cars</a></li>
-                        <li class="breadcrumb-item active" id="breadcrumbTitle">Car Details</li>
-                    </ol>
-                </nav>
-            </div>
-        </section>
-        <!-- Image Carousel Wrapper -->
-        <div class="container" style="max-width: 900px;">
-            <div id="carImageCarousel" class="carousel slide" data-bs-ride="carousel">
-                <!-- Indicators -->
-                <div class="carousel-indicators" id="carouselIndicators"></div>
-
-                <!-- Carousel Inner -->
-                <div class="carousel-inner" id="carouselImages"></div>
-
-                <!-- Controls -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#carImageCarousel" data-bs-slide="prev" id="carouselControls">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carImageCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-
-            <!-- Thumbnail Row -->
-            <div class="row justify-content-center mt-3" id="carouselThumbnails">
-                <div class="row" id="thumbnailRow"></div>
+    <div hidden id="mainContent" style="display: none;">
+        <!-- Full Screen Header with Car Title -->
+        <div class="fullscreen-header bg-dark text-white py-2 px-3 position-fixed w-100" style="top: 0; z-index: 1000;">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" id="carTitleHeader">Loading...</h5>
+                <div class="d-flex align-items-center">
+                    <span id="priceHeaderSmall" class="me-3">₹0</span>
+                    <button class="btn btn-outline-light btn-sm" onclick="window.close()" title="Close Window">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Main Car Detail Content -->
-        <div class="container my-4">
-            <div class="row">
-                <!-- Left Column - Images and Main Info -->
+        <!-- Main Content with top margin for fixed header -->
+        <div class="container-fluid px-0" style="margin-top: 60px;">
+            <!-- Image Carousel Section - Full Width -->
+            <div class="row g-0">
                 <div class="col-lg-8">
                     <!-- Car Images Carousel -->
-                    <div class="card mb-4">
-                        <div class="card-body p-0">
-                            <div id="carImageCarousel" class="carousel slide" data-bs-ride="carousel">
-                                <div class="carousel-inner" id="carouselImages">
-                                    <!-- Images will be loaded via JavaScript -->
-                                </div>
-                                <div id="carouselControls" style="display: none;">
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#carImageCarousel" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon"></span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#carImageCarousel" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon"></span>
-                                    </button>
-                                </div>
-                                <!-- Image Thumbnails -->
-                                <div id="carouselThumbnails" class="carousel-thumbnails p-3" style="display: none;">
-                                    <div class="row g-2" id="thumbnailRow">
-                                        <!-- Thumbnails will be loaded via JavaScript -->
-                                    </div>
-                                </div>
-                                <!-- Image indicators for multiple images -->
-                                <div class="carousel-indicators" id="carouselIndicators" style="display: none;">
-                                    <!-- Indicators will be populated by JavaScript -->
+                    <div class="fullscreen-carousel">
+                        <div id="carImageCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner" id="carouselImages">
+                                <!-- Images will be loaded via JavaScript -->
+                            </div>
+                            <div id="carouselControls" style="display: none;">
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carImageCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carImageCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+                            </div>
+                            <!-- Image Thumbnails -->
+                            <div id="carouselThumbnails" class="carousel-thumbnails p-2" style="display: none;">
+                                <div class="row g-1" id="thumbnailRow">
+                                    <!-- Thumbnails will be loaded via JavaScript -->
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Car Basic Information -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h4 class="mb-0" id="carTitle">Loading...</h4>
-                            <div class="mt-2" id="carBadges">
-                                <!-- Badges will be loaded via JavaScript -->
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <!-- Basic Details -->
-                                <div class="col-md-6">
-                                    <h5 class="text-primary mb-3">Basic Information</h5>
-                                    <table class="table table-borderless" id="basicInfoTable">
-                                        <!-- Basic info will be loaded via JavaScript -->
-                                    </table>
-                                </div>
-
-                                <!-- Usage & Condition -->
-                                <div class="col-md-6">
-                                    <h5 class="text-primary mb-3">Usage & Condition</h5>
-                                    <table class="table table-borderless" id="usageInfoTable">
-                                        <!-- Usage info will be loaded via JavaScript -->
-                                    </table>
-                                </div>
-                            </div>
-
-                            <!-- Condition Ratings -->
-                            <div id="conditionRatings" class="mt-4" style="display: none;">
-                                <h5 class="text-primary mb-3">Condition Ratings</h5>
-                                <div class="row" id="ratingsRow">
-                                    <!-- Ratings will be loaded via JavaScript -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Technical Specifications -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5 class="mb-0">Technical Specifications</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6 class="text-primary mb-3">Engine & Performance</h6>
-                                    <table class="table table-sm table-borderless" id="engineSpecsTable">
-                                        <!-- Engine specs will be loaded via JavaScript -->
-                                    </table>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6 class="text-primary mb-3">Dimensions & Comfort</h6>
-                                    <table class="table table-sm table-borderless" id="dimensionsTable">
-                                        <!-- Dimensions will be loaded via JavaScript -->
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Car Features -->
-                    <div class="card mb-4" id="featuresCard" style="display: none;">
-                        <div class="card-header">
-                            <h5 class="mb-0">Features & Equipment</h5>
-                        </div>
-                        <div class="card-body" id="featuresContent">
-                            <!-- Features will be loaded via JavaScript -->
-                        </div>
-                    </div>
-
-                    <!-- Description & Additional Info -->
-                    <div class="card mb-4" id="additionalInfoCard" style="display: none;">
-                        <div class="card-header">
-                            <h5 class="mb-0">Additional Information</h5>
-                        </div>
-                        <div class="card-body" id="additionalInfoContent">
-                            <!-- Additional info will be loaded via JavaScript -->
-                        </div>
-                    </div>
-
-                    <!-- Documentation & Service History -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5 class="mb-0">Documentation & Service History</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6 class="text-primary mb-3">Documentation</h6>
-                                    <table class="table table-sm table-borderless" id="documentationTable">
-                                        <!-- Documentation will be loaded via JavaScript -->
-                                    </table>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6 class="text-primary mb-3">Service History</h6>
-                                    <div class="service-info" id="serviceHistoryContent">
-                                        <!-- Service history will be loaded via JavaScript -->
-                                    </div>
-                                </div>
+                            <!-- Image indicators -->
+                            <div class="carousel-indicators" id="carouselIndicators" style="display: none;">
+                                <!-- Indicators will be populated by JavaScript -->
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column - Price & Contact -->
-                <div class="col-lg-4">
-                    <!-- Price & Action Section -->
-                    <div class="card sticky-top mb-4" style="top: 20px;">
-                        <div class="card-header text-center" id="priceHeader">
-                            <!-- Price will be loaded via JavaScript -->
+                <!-- Right Sidebar - Price & Contact -->
+                <div class="col-lg-4 bg-light border-start">
+                    <div class="p-3 h-100">
+                        <!-- Price Section -->
+                        <div class="text-center mb-4 p-3 bg-white rounded shadow-sm">
+                            <div id="priceHeader">
+                                <!-- Price will be loaded via JavaScript -->
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <!-- EMI Calculator -->
-                            <div class="emi-section mb-3 p-3 bg-light rounded">
-                                <h6 class="mb-2">EMI Calculator</h6>
-                                <div class="row g-2 mb-2">
-                                    <div class="col-6">
-                                        <input type="number" class="form-control form-control-sm" id="loanAmount" placeholder="Loan Amount">
-                                    </div>
-                                    <div class="col-6">
-                                        <select class="form-select form-select-sm" id="loanTenure">
-                                            <option value="36">3 Years</option>
-                                            <option value="48">4 Years</option>
-                                            <option value="60" selected>5 Years</option>
-                                            <option value="72">6 Years</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <button class="btn btn-outline-primary btn-sm w-100" onclick="calculateQuickEMI()">
-                                    Calculate EMI
-                                </button>
-                                <div id="quickEMIResult" class="mt-2" style="display: none;">
-                                    <small class="text-success">EMI: ₹<span id="quickEMIAmount">0</span>/month</small>
-                                </div>
-                            </div>
 
-                            <!-- Contact Buttons -->
-                            <div class="d-grid gap-2" id="contactButtons">
-                                <!-- Contact buttons will be loaded via JavaScript -->
-                            </div>
+                        <!-- Contact Buttons -->
+                        <div class="d-grid gap-2 mb-4" id="contactButtons">
+                            <!-- Contact buttons will be loaded via JavaScript -->
+                        </div>
 
-                            <!-- Seller Information -->
-                            <div class="seller-info mt-4 pt-3 border-top">
-                                <h6 class="mb-2">Seller Information</h6>
-                                <div id="sellerInfoContent">
-                                    <!-- Seller info will be loaded via JavaScript -->
+                        <!-- Quick EMI Calculator -->
+                        <div class="emi-section mb-4 p-3 bg-white rounded shadow-sm">
+                            <h6 class="mb-3 text-primary">
+                                <i class="fas fa-calculator me-2"></i>EMI Calculator
+                            </h6>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <input type="number" class="form-control" id="loanAmount" placeholder="Loan Amount">
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-select" id="loanTenure">
+                                        <option value="36">3 Years</option>
+                                        <option value="48">4 Years</option>
+                                        <option value="60" selected>5 Years</option>
+                                        <option value="72">6 Years</option>
+                                    </select>
                                 </div>
                             </div>
-
-                            <!-- Car Stats -->
-                            <div class="car-stats mt-4 pt-3 border-top" id="carStats" style="display: none;">
-                                <h6 class="mb-2">Popularity</h6>
-                                <div id="carStatsContent">
-                                    <!-- Car stats will be loaded via JavaScript -->
+                            <button class="btn btn-primary w-100" onclick="calculateQuickEMI()">
+                                Calculate EMI
+                            </button>
+                            <div id="quickEMIResult" class="mt-2 text-center" style="display: none;">
+                                <div class="alert alert-success p-2 mb-0">
+                                    <strong>EMI: ₹<span id="quickEMIAmount">0</span>/month</strong>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Quick Actions -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h6 class="mb-0">Quick Actions</h6>
+                        <!-- Seller Information -->
+                        <div class="seller-info mb-4 p-3 bg-white rounded shadow-sm">
+                            <h6 class="mb-3 text-primary">
+                                <i class="fas fa-user me-2"></i>Seller Information
+                            </h6>
+                            <div id="sellerInfoContent">
+                                <!-- Seller info will be loaded via JavaScript -->
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-outline-warning btn-sm" id="addToWishlistBtn">
-                                    <i class="fas fa-heart me-2"></i>Save to Wishlist
-                                </button>
-                                <button class="btn btn-outline-info btn-sm" id="compareBtn">
-                                    <i class="fas fa-balance-scale me-2"></i>Compare Cars
-                                </button>
-                                <button class="btn btn-outline-secondary btn-sm" onclick="printDetails()">
-                                    <i class="fas fa-print me-2"></i>Print Details
-                                </button>
-                                <button class="btn btn-outline-danger btn-sm" id="reportBtn">
-                                    <i class="fas fa-flag me-2"></i>Report Issue
-                                </button>
+
+                        <!-- Car Stats -->
+                        <div class="car-stats p-3 bg-white rounded shadow-sm" id="carStats" style="display: none;">
+                            <h6 class="mb-3 text-primary">
+                                <i class="fas fa-chart-bar me-2"></i>Popularity
+                            </h6>
+                            <div id="carStatsContent">
+                                <!-- Car stats will be loaded via JavaScript -->
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Finance Options -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h6 class="mb-0">Finance Options</h6>
+            <!-- Detailed Information Section -->
+            <div class="row g-0">
+                <div class="col-12">
+                    <div class="p-4 bg-white">
+                        <!-- Car Title and Badges -->
+                        <div class="mb-4">
+                            <h2 class="mb-3" id="carTitle">Loading...</h2>
+                            <div id="carBadges">
+                                <!-- Badges will be loaded via JavaScript -->
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="finance-options">
-                                <div class="mb-2">
-                                    <small class="text-muted">🏦 Bank Loan</small>
-                                    <div>Interest from <strong>8.5% onwards</strong></div>
-                                </div>
-                                <div class="mb-2">
-                                    <small class="text-muted">💳 Car Loan</small>
-                                    <div>Quick approval in <strong>24 hours</strong></div>
-                                </div>
-                                <div class="mb-3">
-                                    <small class="text-muted">📄 Easy Documentation</small>
-                                    <div>Minimal paperwork required</div>
-                                </div>
-                                <button class="btn btn-outline-success btn-sm w-100" id="exploreFinanceBtn">
-                                    <i class="fas fa-calculator me-2"></i>Explore Finance
+
+                        <!-- Information Tabs -->
+                        <ul class="nav nav-tabs" id="carDetailTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab">
+                                    <i class="fas fa-info-circle me-2"></i>Basic Information
                                 </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button" role="tab">
+                                    <i class="fas fa-cog me-2"></i>Specifications
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="features-tab" data-bs-toggle="tab" data-bs-target="#features" type="button" role="tab">
+                                    <i class="fas fa-list me-2"></i>Features
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="docs-tab" data-bs-toggle="tab" data-bs-target="#docs" type="button" role="tab">
+                                    <i class="fas fa-file-alt me-2"></i>Documentation
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content mt-4" id="carDetailTabContent">
+                            <!-- Basic Information Tab -->
+                            <div class="tab-pane fade show active" id="basic" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 class="text-primary mb-3">Basic Details</h5>
+                                        <table class="table table-borderless" id="basicInfoTable">
+                                            <!-- Basic info will be loaded via JavaScript -->
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="text-primary mb-3">Usage & Condition</h5>
+                                        <table class="table table-borderless" id="usageInfoTable">
+                                            <!-- Usage info will be loaded via JavaScript -->
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Condition Ratings -->
+                                <div id="conditionRatings" class="mt-4" style="display: none;">
+                                    <h5 class="text-primary mb-3">Condition Ratings</h5>
+                                    <div class="row" id="ratingsRow">
+                                        <!-- Ratings will be loaded via JavaScript -->
+                                    </div>
+                                </div>
+
+                                <!-- Additional Information -->
+                                <div id="additionalInfoCard" class="mt-4" style="display: none;">
+                                    <h5 class="text-primary mb-3">Additional Information</h5>
+                                    <div id="additionalInfoContent">
+                                        <!-- Additional info will be loaded via JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Technical Specifications Tab -->
+                            <div class="tab-pane fade" id="specs" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 class="text-primary mb-3">Engine & Performance</h5>
+                                        <table class="table table-borderless" id="engineSpecsTable">
+                                            <!-- Engine specs will be loaded via JavaScript -->
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="text-primary mb-3">Dimensions & Comfort</h5>
+                                        <table class="table table-borderless" id="dimensionsTable">
+                                            <!-- Dimensions will be loaded via JavaScript -->
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Features Tab -->
+                            <div class="tab-pane fade" id="features" role="tabpanel">
+                                <div id="featuresContent">
+                                    <!-- Features will be loaded via JavaScript -->
+                                </div>
+                            </div>
+
+                            <!-- Documentation Tab -->
+                            <div class="tab-pane fade" id="docs" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 class="text-primary mb-3">Documentation</h5>
+                                        <table class="table table-borderless" id="documentationTable">
+                                            <!-- Documentation will be loaded via JavaScript -->
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="text-primary mb-3">Service History</h5>
+                                        <div id="serviceHistoryContent">
+                                            <!-- Service history will be loaded via JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -301,21 +250,14 @@
             </div>
 
             <!-- Similar Cars Section -->
-            <div class="row mt-5" id="similarCarsSection" style="display: none;">
+            <div class="row g-0 mt-4" id="similarCarsSection" style="display: none;">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">Similar Cars You Might Like</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row" id="similarCarsContainer">
-                                <!-- Similar cars will be loaded via JavaScript -->
-                            </div>
-                            <div class="text-center mt-3">
-                                <button class="btn btn-outline-primary" id="loadMoreSimilarBtn">
-                                    View More Similar Cars
-                                </button>
-                            </div>
+                    <div class="p-4 bg-light">
+                        <h5 class="mb-4 text-primary">
+                            <i class="fas fa-cars me-2"></i>Similar Cars You Might Like
+                        </h5>
+                        <div class="row" id="similarCarsContainer">
+                            <!-- Similar cars will be loaded via JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -325,7 +267,7 @@
 
     <!-- Inquiry Modal -->
     <div class="modal fade" id="inquiryModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Contact Seller</h5>
@@ -334,55 +276,68 @@
                 <div class="modal-body">
                     <form id="inquiryForm">
                         <input type="hidden" id="inquiryListingId">
-
-                        <div class="mb-3">
-                            <label for="customerName" class="form-label">Full Name *</label>
-                            <input type="text" class="form-control" id="customerName" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="customerName" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="customerName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="customerPhone" class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control" id="customerPhone" required>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="customerPhone" class="form-label">Phone Number *</label>
-                            <input type="tel" class="form-control" id="customerPhone" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="customerEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="customerEmail">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="inquiryType" class="form-label">Inquiry Type</label>
+                                    <select class="form-select" id="inquiryType">
+                                        <option value="General Inquiry">General Inquiry</option>
+                                        <option value="Price Negotiation">Price Negotiation</option>
+                                        <option value="Test Drive">Test Drive Request</option>
+                                        <option value="Inspection">Inspection Request</option>
+                                        <option value="Finance">Finance Options</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="customerEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="customerEmail">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="inquiryType" class="form-label">Inquiry Type</label>
-                            <select class="form-select" id="inquiryType">
-                                <option value="General Inquiry">General Inquiry</option>
-                                <option value="Price Negotiation">Price Negotiation</option>
-                                <option value="Test Drive">Test Drive Request</option>
-                                <option value="Inspection">Inspection Request</option>
-                                <option value="Finance">Finance Options</option>
-                            </select>
-                        </div>
-
                         <div class="mb-3">
                             <label for="message" class="form-label">Message</label>
                             <textarea class="form-control" id="message" rows="3" placeholder="I am interested in this car..."></textarea>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="budgetRange" class="form-label">Budget Range</label>
-                            <select class="form-select" id="budgetRange">
-                                <option value="">Select Budget Range</option>
-                                <option value="Under 2 Lakh">Under ₹2 Lakh</option>
-                                <option value="2-5 Lakh">₹2-5 Lakh</option>
-                                <option value="5-10 Lakh">₹5-10 Lakh</option>
-                                <option value="10-20 Lakh">₹10-20 Lakh</option>
-                                <option value="Above 20 Lakh">Above ₹20 Lakh</option>
-                            </select>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="financeRequired">
-                            <label class="form-check-label" for="financeRequired">
-                                I need finance assistance
-                            </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="budgetRange" class="form-label">Budget Range</label>
+                                    <select class="form-select" id="budgetRange">
+                                        <option value="">Select Budget Range</option>
+                                        <option value="Under 2 Lakh">Under ₹2 Lakh</option>
+                                        <option value="2-5 Lakh">₹2-5 Lakh</option>
+                                        <option value="5-10 Lakh">₹5-10 Lakh</option>
+                                        <option value="10-20 Lakh">₹10-20 Lakh</option>
+                                        <option value="Above 20 Lakh">Above ₹20 Lakh</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3 d-flex align-items-end">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="financeRequired">
+                                        <label class="form-check-label" for="financeRequired">
+                                            I need finance assistance
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -397,137 +352,103 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
-
     <script>
         let carData = null;
         let currentListingId = null;
 
-        // Test function to check image carousel with sample data
-        function testImages() {
-            const sampleCar = {
-                title: "Sample Car - Multiple Images Test",
-                primaryImage: "https://via.placeholder.com/800x600/007bff/ffffff?text=Primary+Image",
-                additionalImages: [
-                    "https://via.placeholder.com/800x600/28a745/ffffff?text=Additional+Image+1",
-                    "https://via.placeholder.com/800x600/dc3545/ffffff?text=Additional+Image+2",
-                    "https://via.placeholder.com/800x600/ffc107/000000?text=Additional+Image+3"
-                ]
-            };
+        // Hide any sidebar elements on page load
+        function hideAllSidebars() {
+            // Hide common sidebar classes and IDs
+            const sidebarSelectors = [
+                '.sidebar', '.nav-sidebar', '.left-sidebar', '.menu-sidebar',
+                '.navigation-menu', '.offcanvas', '.offcanvas-start',
+                '.navbar-collapse', '.collapse', '#sidebar', '#nav-sidebar',
+                '#leftSidebar', '#navigationMenu', '[class*="sidebar"]',
+                '[class*="nav-"]', '[class*="menu-"]'
+            ];
 
-            console.log('Testing images with sample data:', sampleCar);
-            populateImages(sampleCar);
-            $('#debugInfo').html(`Tested with ${sampleCar.additionalImages.length + 1} images`);
-        }
+            sidebarSelectors.forEach(selector => {
+                try {
+                    const elements = document.querySelectorAll(selector);
+                    elements.forEach(el => {
+                        el.style.display = 'none';
+                        el.style.visibility = 'hidden';
+                        el.style.opacity = '0';
+                        el.style.width = '0';
+                        el.style.height = '0';
+                        el.style.overflow = 'hidden';
+                        el.style.position = 'absolute';
+                        el.style.left = '-9999px';
+                    });
+                } catch (e) {
+                    // Ignore errors for invalid selectors
+                }
+            });
 
-        function testWithSampleData() {
-            const sampleData = {
-                listingId: 1,
-                title: "Test Car - 2020 Honda Civic",
-                primaryImage: "https://via.placeholder.com/800x600/007bff/ffffff?text=Primary+Image",
-                additionalImages: [
-                    "https://via.placeholder.com/800x600/28a745/ffffff?text=Interior+View",
-                    "https://via.placeholder.com/800x600/dc3545/ffffff?text=Engine+Bay",
-                    "https://via.placeholder.com/800x600/ffc107/000000?text=Side+View",
-                    "https://via.placeholder.com/800x600/17a2b8/ffffff?text=Rear+View"
-                ],
-                brandName: "Honda",
-                modelName: "Civic",
-                year: 2020,
-                sellingPrice: 1500000,
-                fuelType: "Petrol",
-                transmission: "Automatic",
-                kilometersOnOdometer: 25000,
-                cityName: "Mumbai",
-                stateName: "Maharashtra",
-                sellerName: "John Doe",
-                sellerType: "Individual"
-            };
+            // Ensure main content takes full width
+            const mainContent = document.body;
+            if (mainContent) {
+                mainContent.style.marginLeft = '0';
+                mainContent.style.paddingLeft = '0';
+                mainContent.style.width = '100vw';
+                mainContent.style.maxWidth = '100vw';
+            }
 
-            carData = sampleData;
-            populateCarDetails(sampleData);
-            $('#debugInfo').html('Loaded sample data with multiple images');
+            // Remove any Bootstrap classes that might show sidebars
+            document.body.classList.remove('sidebar-open', 'nav-open', 'menu-open');
+            document.documentElement.classList.remove('sidebar-open', 'nav-open', 'menu-open');
         }
 
         $(document).ready(function() {
-            console.log('Document ready - starting debug');
+            console.log('Document ready - starting fullscreen mode');
+
+            // Hide all sidebars immediately
+            hideAllSidebars();
+
+            // Hide sidebars again after a short delay to catch dynamically loaded elements
+            setTimeout(hideAllSidebars, 100);
+            setTimeout(hideAllSidebars, 500);
 
             // Get listing ID from URL
             const urlParams = new URLSearchParams(window.location.search);
             currentListingId = urlParams.get('id') || getListingIdFromPath();
 
-            console.log('URL search params:', window.location.search);
-            console.log('URL pathname:', window.location.pathname);
-            console.log('Current listing ID:', currentListingId);
-
             if (currentListingId) {
-                console.log('Loading car details for ID:', currentListingId);
                 loadCarDetails(currentListingId);
             } else {
-                console.log('No listing ID found - showing error');
                 showError('Car ID not found in URL. Please check the URL format.');
             }
         });
 
         function getListingIdFromPath() {
-            // Extract listing ID from URL path like /CarDetail/123
             const pathSegments = window.location.pathname.split('/');
             const lastSegment = pathSegments[pathSegments.length - 1];
-
-            // Check if last segment is a number
             if (lastSegment && !isNaN(lastSegment)) {
                 return lastSegment;
             }
-
-            // Try second-to-last segment in case of trailing slash
             const secondLast = pathSegments[pathSegments.length - 2];
             if (secondLast && !isNaN(secondLast)) {
                 return secondLast;
             }
-
             return null;
         }
 
         function loadCarDetails(listingId) {
-            console.log('=== loadCarDetails called ===');
-            console.log('Loading car details for ID:', listingId);
-            console.log('API URL will be:', `/SearchView/GetCarDetail/${listingId}`);
-
             $.ajax({
                 url: `/SearchView/GetCarDetail/${listingId}`,
                 type: 'GET',
                 dataType: 'json',
-                timeout: 10000, // 10 second timeout
-                beforeSend: function() {
-                    console.log('AJAX request starting...');
-                },
+                timeout: 10000,
                 success: function(response) {
-                    console.log('=== AJAX SUCCESS ===');
-                    console.log('Raw response:', response);
-                    console.log('Response type:', typeof response);
-                    console.log('Response success:', response?.success);
-                    console.log('Response data exists:', !!response?.data);
-
                     if (response && response.success && response.data) {
-                        console.log('=== VALID DATA RECEIVED ===');
                         carData = response.data;
-                        console.log('Car data:', carData);
                         populateCarDetails(carData);
                         recordCarView(listingId);
                     } else {
-                        console.log('=== INVALID RESPONSE ===');
-                        console.log('Response structure invalid');
                         showError(response?.message || 'Failed to load car details - Invalid response structure');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log('=== AJAX ERROR ===');
-                    console.error('AJAX Status:', status);
-                    console.error('AJAX Error:', error);
-                    console.error('XHR Status:', xhr.status);
-                    console.error('XHR Response:', xhr.responseText);
-                    console.error('XHR Ready State:', xhr.readyState);
-
                     let errorMessage = 'Failed to load car details. ';
                     if (xhr.status === 0) {
                         errorMessage += 'Network error - check if server is running.';
@@ -538,93 +459,41 @@
                     } else {
                         errorMessage += `Error ${xhr.status}: ${error}`;
                     }
-
                     showError(errorMessage);
-                },
-                complete: function(xhr, status) {
-                    console.log('=== AJAX COMPLETE ===');
-                    console.log('Final status:', status);
                 }
             });
         }
 
         function populateCarDetails(car) {
-            console.log('=== populateCarDetails called ===');
-            console.log('Car data received:', car);
-            console.log('Car title:', car?.title);
-
             try {
-                // Update page title and breadcrumb
+                // Update page title and headers
                 document.title = car.title || 'Car Details';
-                $('#breadcrumbTitle').text(car.title || 'Car Details');
                 $('#carTitle').text(car.title || 'Loading...');
+                $('#carTitleHeader').text(car.title || 'Loading...');
 
-                console.log('Basic info updated');
-
-                // Populate badges
+                // Populate all sections
                 populateBadges(car);
-                console.log('Badges populated');
-
-                // Populate images - MOST IMPORTANT FIX
                 populateImages(car);
-                console.log('Images populated');
-
-                // Populate basic information
                 populateBasicInfo(car);
-                console.log('Basic info populated');
-
-                // Populate usage and condition
                 populateUsageInfo(car);
-                console.log('Usage info populated');
-
-                // Populate condition ratings
                 populateConditionRatings(car);
-                console.log('Condition ratings populated');
-
-                // Populate technical specifications
                 populateTechnicalSpecs(car);
-                console.log('Technical specs populated');
-
-                // Populate features
                 populateFeatures(car);
-                console.log('Features populated');
-
-                // Populate additional information
                 populateAdditionalInfo(car);
-                console.log('Additional info populated');
-
-                // Populate documentation and service history
                 populateDocumentationAndService(car);
-                console.log('Documentation populated');
-
-                // Populate price and contact section
                 populatePriceAndContact(car);
-                console.log('Price and contact populated');
-
-                // Populate seller information
                 populateSellerInfo(car);
-                console.log('Seller info populated');
-
-                // Populate car stats
                 populateCarStats(car);
-                console.log('Car stats populated');
-
-                // Load similar cars
                 loadSimilarCars(car.listingId);
-                console.log('Similar cars loading initiated');
-
-                // Setup event handlers
                 setupEventHandlers(car);
-                console.log('Event handlers setup');
 
                 // Hide loading spinner and show content
-                console.log('=== SHOWING CONTENT ===');
                 $('#loadingSpinner').hide();
                 $('#mainContent').show();
-                $('#mainContent').css('display', 'block'); // Force display
-                console.log('Content should now be visible');
-                console.log('Main content display:', $('#mainContent').css('display'));
-                console.log('Main content visible:', $('#mainContent').is(':visible'));
+                $('#mainContent').css('display', 'block');
+
+                // Ensure no sidebars are visible after content loads
+                setTimeout(hideAllSidebars, 200);
 
             } catch (error) {
                 console.error('Error in populateCarDetails:', error);
@@ -634,46 +503,28 @@
 
         function populateBadges(car) {
             let badges = '';
+            if (car.isVerified) badges += '<span class="badge bg-success me-2">✓ Verified</span>';
+            if (car.isFeatured) badges += '<span class="badge bg-warning me-2">★ Featured</span>';
+            if (car.isUrgentSale) badges += '<span class="badge bg-danger me-2">🔥 Urgent Sale</span>';
+            if (!car.hasAccidentHistory) badges += '<span class="badge bg-info me-2">No Accident</span>';
+            else badges += '<span class="badge bg-warning me-2">⚠️ Accident History</span>';
 
-            if (car.isVerified) {
-                badges += '<span class="badge bg-success me-2">✓ Verified</span>';
-            }
-            if (car.isFeatured) {
-                badges += '<span class="badge bg-warning me-2">★ Featured</span>';
-            }
-            if (car.isUrgentSale) {
-                badges += '<span class="badge bg-danger me-2">🔥 Urgent Sale</span>';
-            }
-            if (!car.hasAccidentHistory) {
-                badges += '<span class="badge bg-info me-2">No Accident</span>';
-            } else {
-                badges += '<span class="badge bg-warning me-2">⚠️ Accident History</span>';
-            }
-
-            // Add custom badges from the API
             if (car.badges && car.badges.length > 0) {
                 car.badges.forEach(badge => {
-                    if (!badges.includes(badge)) { // Avoid duplicates
+                    if (!badges.includes(badge)) {
                         badges += `<span class="badge bg-secondary me-2">${badge}</span>`;
                     }
                 });
             }
-
             $('#carBadges').html(badges);
         }
 
-        // FIXED FUNCTION - This is the main fix for the image carousel issue
         function populateImages(car) {
-            console.log('=== populateImages called ===');
-            console.log('Primary image:', car.primaryImage);
-            console.log('Additional images:', car.additionalImages);
-
             let carouselHtml = '';
             let thumbnailHtml = '';
             let indicatorHtml = '';
             let allImages = [];
 
-            // Build array of all images
             if (car.primaryImage) {
                 allImages.push({
                     url: car.primaryImage,
@@ -681,12 +532,9 @@
                 });
             }
 
-            // Handle different possible formats for additional images
             if (car.additionalImages) {
                 if (Array.isArray(car.additionalImages)) {
-                    // If it's already an array
                     car.additionalImages.forEach((image, index) => {
-                        // Handle both string URLs and objects
                         const imageUrl = typeof image === 'string' ? image : (image.url || image.imageUrl);
                         if (imageUrl) {
                             allImages.push({
@@ -697,7 +545,6 @@
                     });
                 } else if (typeof car.additionalImages === 'string') {
                     try {
-                        // Try to parse if it's a JSON string
                         const parsedImages = JSON.parse(car.additionalImages);
                         if (Array.isArray(parsedImages)) {
                             parsedImages.forEach((image, index) => {
@@ -716,10 +563,6 @@
                 }
             }
 
-            console.log('Total images found:', allImages.length);
-            console.log('All images array:', allImages);
-
-            // If no images, use placeholder
             if (allImages.length === 0) {
                 allImages.push({
                     url: 'https://via.placeholder.com/800x600/f8f9fa/6c757d?text=No+Image+Available',
@@ -727,24 +570,19 @@
                 });
             }
 
-            // Generate carousel items and indicators
             allImages.forEach((image, index) => {
                 const activeClass = index === 0 ? 'active' : '';
-
-                // Carousel slides
                 carouselHtml += `
                     <div class="carousel-item ${activeClass}">
                         <img src="${image.url}" class="d-block w-100 car-detail-image" alt="${image.alt}"
                              onerror="this.src='https://via.placeholder.com/800x600/f8f9fa/6c757d?text=Image+Not+Found'">
                     </div>`;
 
-                // Indicators for navigation
                 indicatorHtml += `
                     <button type="button" data-bs-target="#carImageCarousel" data-bs-slide-to="${index}"
                             class="${activeClass}" aria-current="${index === 0 ? 'true' : 'false'}"
                             aria-label="Slide ${index + 1}"></button>`;
 
-                // Thumbnails (only show if more than 1 image)
                 if (allImages.length > 1) {
                     const thumbActiveClass = index === 0 ? 'active' : '';
                     thumbnailHtml += `
@@ -757,10 +595,8 @@
                 }
             });
 
-            // Update carousel content
             $('#carouselImages').html(carouselHtml);
 
-            // Show/hide controls and thumbnails based on image count
             if (allImages.length > 1) {
                 $('#carouselControls').show();
                 $('#carouselThumbnails').show();
@@ -768,110 +604,44 @@
                 $('#thumbnailRow').html(thumbnailHtml);
                 $('#carouselIndicators').html(indicatorHtml);
 
-                // Setup thumbnail click handlers
                 $('.carousel-thumb').off('click').on('click', function() {
                     $('.carousel-thumb').removeClass('active');
                     $(this).addClass('active');
                 });
-
-                console.log('Carousel setup complete with', allImages.length, 'images');
             } else {
                 $('#carouselControls').hide();
                 $('#carouselThumbnails').hide();
                 $('#carouselIndicators').hide();
-                console.log('Single image display');
             }
 
-            // Force carousel refresh
             const carouselElement = document.querySelector('#carImageCarousel');
             if (carouselElement && window.bootstrap) {
                 const carousel = new bootstrap.Carousel(carouselElement);
-                console.log('Bootstrap carousel initialized');
             }
         }
 
         function populateBasicInfo(car) {
             let html = `
-                <tr>
-                    <td><i class="fas fa-car text-muted me-2"></i>Brand</td>
-                    <td><strong>${car.brandName || 'N/A'}</strong></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-tag text-muted me-2"></i>Model</td>
-                    <td><strong>${car.modelName || 'N/A'}</strong></td>
-                </tr>`;
-
-            if (car.variantName) {
-                html += `
-                    <tr>
-                        <td><i class="fas fa-cog text-muted me-2"></i>Variant</td>
-                        <td><strong>${car.variantName}</strong></td>
-                    </tr>`;
-            }
-
+                <tr><td><i class="fas fa-car text-muted me-2"></i>Brand</td><td><strong>${car.brandName || 'N/A'}</strong></td></tr>
+                <tr><td><i class="fas fa-tag text-muted me-2"></i>Model</td><td><strong>${car.modelName || 'N/A'}</strong></td></tr>`;
+            if (car.variantName) html += `<tr><td><i class="fas fa-cog text-muted me-2"></i>Variant</td><td><strong>${car.variantName}</strong></td></tr>`;
             html += `
-                <tr>
-                    <td><i class="fas fa-calendar text-muted me-2"></i>Year</td>
-                    <td><strong>${car.year || 'N/A'}</strong></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-gas-pump text-muted me-2"></i>Fuel Type</td>
-                    <td><strong>${car.fuelType || 'N/A'}</strong></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-cogs text-muted me-2"></i>Transmission</td>
-                    <td><strong>${car.transmission || 'N/A'}</strong></td>
-                </tr>`;
-
+                <tr><td><i class="fas fa-calendar text-muted me-2"></i>Year</td><td><strong>${car.year || 'N/A'}</strong></td></tr>
+                <tr><td><i class="fas fa-gas-pump text-muted me-2"></i>Fuel Type</td><td><strong>${car.fuelType || 'N/A'}</strong></td></tr>
+                <tr><td><i class="fas fa-cogs text-muted me-2"></i>Transmission</td><td><strong>${car.transmission || 'N/A'}</strong></td></tr>`;
             $('#basicInfoTable').html(html);
         }
 
         function populateUsageInfo(car) {
-            let html = `
-                <tr>
-                    <td><i class="fas fa-tachometer-alt text-muted me-2"></i>Kilometers</td>
-                    <td><strong>${(car.kilometersOnOdometer || 0).toLocaleString()} km</strong></td>
-                </tr>`;
-
+            let html = `<tr><td><i class="fas fa-tachometer-alt text-muted me-2"></i>Kilometers</td><td><strong>${(car.kilometersOnOdometer || 0).toLocaleString()} km</strong></td></tr>`;
             if (car.totalPreviousOwners) {
                 const ownerText = car.totalPreviousOwners === 1 ? '1st Owner' : `${car.totalPreviousOwners}th Owner`;
-                html += `
-                    <tr>
-                        <td><i class="fas fa-user text-muted me-2"></i>Owners</td>
-                        <td><strong>${ownerText}</strong></td>
-                    </tr>`;
+                html += `<tr><td><i class="fas fa-user text-muted me-2"></i>Owners</td><td><strong>${ownerText}</strong></td></tr>`;
             }
-
-            html += `
-                <tr>
-                    <td><i class="fas fa-map-marker-alt text-muted me-2"></i>Location</td>
-                    <td><strong>${car.cityName || 'N/A'}, ${car.stateName || 'N/A'}</strong></td>
-                </tr>`;
-
-            if (car.areaOrLocality) {
-                html += `
-                    <tr>
-                        <td><i class="fas fa-location-dot text-muted me-2"></i>Area</td>
-                        <td><strong>${car.areaOrLocality}</strong></td>
-                    </tr>`;
-            }
-
-            if (car.overallCondition) {
-                html += `
-                    <tr>
-                        <td><i class="fas fa-star text-muted me-2"></i>Condition</td>
-                        <td><strong>${car.overallCondition}</strong></td>
-                    </tr>`;
-            }
-
-            if (car.color) {
-                html += `
-                    <tr>
-                        <td><i class="fas fa-palette text-muted me-2"></i>Color</td>
-                        <td><strong>${car.color}</strong></td>
-                    </tr>`;
-            }
-
+            html += `<tr><td><i class="fas fa-map-marker-alt text-muted me-2"></i>Location</td><td><strong>${car.cityName || 'N/A'}, ${car.stateName || 'N/A'}</strong></td></tr>`;
+            if (car.areaOrLocality) html += `<tr><td><i class="fas fa-location-dot text-muted me-2"></i>Area</td><td><strong>${car.areaOrLocality}</strong></td></tr>`;
+            if (car.overallCondition) html += `<tr><td><i class="fas fa-star text-muted me-2"></i>Condition</td><td><strong>${car.overallCondition}</strong></td></tr>`;
+            if (car.color) html += `<tr><td><i class="fas fa-palette text-muted me-2"></i>Color</td><td><strong>${car.color}</strong></td></tr>`;
             $('#usageInfoTable').html(html);
         }
 
@@ -881,47 +651,15 @@
 
             if (car.exteriorRating) {
                 hasRatings = true;
-                html += `
-                    <div class="col-md-4 mb-3">
-                        <div class="text-center p-3 bg-light rounded">
-                            <i class="fas fa-car fa-2x text-primary mb-2"></i>
-                            <h6>Exterior</h6>
-                            <div class="rating-stars">
-                                ${generateStarRating(car.exteriorRating)}
-                            </div>
-                            <small class="text-muted">${car.exteriorRating}/5</small>
-                        </div>
-                    </div>`;
+                html += `<div class="col-md-4 mb-3"><div class="text-center p-3 bg-light rounded"><i class="fas fa-car fa-2x text-primary mb-2"></i><h6>Exterior</h6><div class="rating-stars">${generateStarRating(car.exteriorRating)}</div><small class="text-muted">${car.exteriorRating}/5</small></div></div>`;
             }
-
             if (car.interiorRating) {
                 hasRatings = true;
-                html += `
-                    <div class="col-md-4 mb-3">
-                        <div class="text-center p-3 bg-light rounded">
-                            <i class="fas fa-couch fa-2x text-primary mb-2"></i>
-                            <h6>Interior</h6>
-                            <div class="rating-stars">
-                                ${generateStarRating(car.interiorRating)}
-                            </div>
-                            <small class="text-muted">${car.interiorRating}/5</small>
-                        </div>
-                    </div>`;
+                html += `<div class="col-md-4 mb-3"><div class="text-center p-3 bg-light rounded"><i class="fas fa-couch fa-2x text-primary mb-2"></i><h6>Interior</h6><div class="rating-stars">${generateStarRating(car.interiorRating)}</div><small class="text-muted">${car.interiorRating}/5</small></div></div>`;
             }
-
             if (car.engineRating) {
                 hasRatings = true;
-                html += `
-                    <div class="col-md-4 mb-3">
-                        <div class="text-center p-3 bg-light rounded">
-                            <i class="fas fa-cog fa-2x text-primary mb-2"></i>
-                            <h6>Engine</h6>
-                            <div class="rating-stars">
-                                ${generateStarRating(car.engineRating)}
-                            </div>
-                            <small class="text-muted">${car.engineRating}/5</small>
-                        </div>
-                    </div>`;
+                html += `<div class="col-md-4 mb-3"><div class="text-center p-3 bg-light rounded"><i class="fas fa-cog fa-2x text-primary mb-2"></i><h6>Engine</h6><div class="rating-stars">${generateStarRating(car.engineRating)}</div><small class="text-muted">${car.engineRating}/5</small></div></div>`;
             }
 
             if (hasRatings) {
@@ -941,110 +679,36 @@
 
         function populateTechnicalSpecs(car) {
             let engineHtml = `
-                <tr>
-                    <td>Fuel Type</td>
-                    <td><strong>${car.fuelType || 'N/A'}</strong></td>
-                </tr>
-                <tr>
-                    <td>Transmission</td>
-                    <td><strong>${car.transmission || 'N/A'}</strong></td>
-                </tr>`;
-
-            if (car.engineCC) {
-                engineHtml += `
-                    <tr>
-                        <td>Engine Capacity</td>
-                        <td><strong>${car.engineCC} cc</strong></td>
-                    </tr>`;
-            }
-
-            if (car.engineBHP) {
-                engineHtml += `
-                    <tr>
-                        <td>Power</td>
-                        <td><strong>${car.engineBHP} BHP</strong></td>
-                    </tr>`;
-            }
-
-            if (car.mileage) {
-                engineHtml += `
-                    <tr>
-                        <td>Mileage</td>
-                        <td><strong>${car.mileage} kmpl</strong></td>
-                    </tr>`;
-            }
-
+                <tr><td>Fuel Type</td><td><strong>${car.fuelType || 'N/A'}</strong></td></tr>
+                <tr><td>Transmission</td><td><strong>${car.transmission || 'N/A'}</strong></td></tr>`;
+            if (car.engineCC) engineHtml += `<tr><td>Engine Capacity</td><td><strong>${car.engineCC} cc</strong></td></tr>`;
+            if (car.engineBHP) engineHtml += `<tr><td>Power</td><td><strong>${car.engineBHP} BHP</strong></td></tr>`;
+            if (car.mileage) engineHtml += `<tr><td>Mileage</td><td><strong>${car.mileage} kmpl</strong></td></tr>`;
             $('#engineSpecsTable').html(engineHtml);
 
             let dimensionsHtml = `
-                <tr>
-                    <td>Manufacturing Year</td>
-                    <td><strong>${car.year || 'N/A'}</strong></td>
-                </tr>
-                <tr>
-                    <td>Registration Year</td>
-                    <td><strong>${car.year || 'N/A'}</strong></td>
-                </tr>`;
-
-            if (car.seatingCapacity) {
-                dimensionsHtml += `
-                    <tr>
-                        <td>Seating Capacity</td>
-                        <td><strong>${car.seatingCapacity} Persons</strong></td>
-                    </tr>`;
-            }
-
-            if (car.bootSpace) {
-                dimensionsHtml += `
-                    <tr>
-                        <td>Boot Space</td>
-                        <td><strong>${car.bootSpace} Litres</strong></td>
-                    </tr>`;
-            }
-
-            if (car.color) {
-                dimensionsHtml += `
-                    <tr>
-                        <td>Color</td>
-                        <td><strong>${car.color}</strong></td>
-                    </tr>`;
-            }
-
+                <tr><td>Manufacturing Year</td><td><strong>${car.year || 'N/A'}</strong></td></tr>
+                <tr><td>Registration Year</td><td><strong>${car.year || 'N/A'}</strong></td></tr>`;
+            if (car.seatingCapacity) dimensionsHtml += `<tr><td>Seating Capacity</td><td><strong>${car.seatingCapacity} Persons</strong></td></tr>`;
+            if (car.bootSpace) dimensionsHtml += `<tr><td>Boot Space</td><td><strong>${car.bootSpace} Litres</strong></td></tr>`;
+            if (car.color) dimensionsHtml += `<tr><td>Color</td><td><strong>${car.color}</strong></td></tr>`;
             $('#dimensionsTable').html(dimensionsHtml);
         }
 
         function populateFeatures(car) {
             if (car.featureGroups && car.featureGroups.length > 0) {
                 let html = '';
-
                 car.featureGroups.forEach(group => {
-                    html += `
-                        <div class="mb-4">
-                            <h6 class="text-primary mb-3">${group.categoryName}</h6>
-                            <div class="row">`;
-
+                    html += `<div class="mb-4"><h6 class="text-primary mb-3">${group.categoryName}</h6><div class="row">`;
                     group.features.forEach(feature => {
                         const iconClass = feature.isAvailable ? 'fas fa-check-circle text-success' : 'fas fa-times-circle text-muted';
                         const textClass = feature.isAvailable ? '' : 'text-muted';
                         const conditionText = feature.condition ? ` (${feature.condition})` : '';
-
-                        html += `
-                            <div class="col-md-6 col-lg-4 mb-2">
-                                <div class="d-flex align-items-center">
-                                    <i class="${iconClass} me-2"></i>
-                                    <span class="${textClass}">${feature.featureName}</span>
-                                    ${conditionText ? `<small class="text-muted ms-1">${conditionText}</small>` : ''}
-                                </div>
-                            </div>`;
+                        html += `<div class="col-md-6 col-lg-4 mb-2"><div class="d-flex align-items-center"><i class="${iconClass} me-2"></i><span class="${textClass}">${feature.featureName}</span>${conditionText ? `<small class="text-muted ms-1">${conditionText}</small>` : ''}</div></div>`;
                     });
-
-                    html += `
-                            </div>
-                        </div>`;
+                    html += `</div></div>`;
                 });
-
                 $('#featuresContent').html(html);
-                $('#featuresCard').show();
             }
         }
 
@@ -1054,38 +718,19 @@
 
             if (car.detailedDescription) {
                 hasContent = true;
-                html += `
-                    <div class="mb-3">
-                        <h6 class="text-primary">Description</h6>
-                        <p>${car.detailedDescription}</p>
-                    </div>`;
+                html += `<div class="mb-3"><h6 class="text-primary">Description</h6><p>${car.detailedDescription}</p></div>`;
             }
-
             if (car.specialHighlights) {
                 hasContent = true;
-                html += `
-                    <div class="mb-3">
-                        <h6 class="text-primary">Special Highlights</h6>
-                        <p>${car.specialHighlights}</p>
-                    </div>`;
+                html += `<div class="mb-3"><h6 class="text-primary">Special Highlights</h6><p>${car.specialHighlights}</p></div>`;
             }
-
             if (car.sellingReason) {
                 hasContent = true;
-                html += `
-                    <div class="mb-3">
-                        <h6 class="text-primary">Reason for Selling</h6>
-                        <p>${car.sellingReason}</p>
-                    </div>`;
+                html += `<div class="mb-3"><h6 class="text-primary">Reason for Selling</h6><p>${car.sellingReason}</p></div>`;
             }
-
             if (car.knownIssues) {
                 hasContent = true;
-                html += `
-                    <div class="mb-3">
-                        <h6 class="text-warning">Known Issues</h6>
-                        <p class="text-muted">${car.knownIssues}</p>
-                    </div>`;
+                html += `<div class="mb-3"><h6 class="text-warning">Known Issues</h6><p class="text-muted">${car.knownIssues}</p></div>`;
             }
 
             if (hasContent) {
@@ -1096,201 +741,70 @@
 
         function populateDocumentationAndService(car) {
             let docHtml = '';
-
-            if (car.registrationNumber) {
-                docHtml += `
-                    <tr>
-                        <td>Registration No.</td>
-                        <td><strong>${car.registrationNumber}</strong></td>
-                    </tr>`;
-            }
-
-            if (car.rtoCode) {
-                docHtml += `
-                    <tr>
-                        <td>RTO Code</td>
-                        <td><strong>${car.rtoCode}</strong></td>
-                    </tr>`;
-            }
-
-            if (car.insuranceType) {
-                docHtml += `
-                    <tr>
-                        <td>Insurance</td>
-                        <td><strong>${car.insuranceType}</strong></td>
-                    </tr>`;
-            }
-
+            if (car.registrationNumber) docHtml += `<tr><td>Registration No.</td><td><strong>${car.registrationNumber}</strong></td></tr>`;
+            if (car.rtoCode) docHtml += `<tr><td>RTO Code</td><td><strong>${car.rtoCode}</strong></td></tr>`;
+            if (car.insuranceType) docHtml += `<tr><td>Insurance</td><td><strong>${car.insuranceType}</strong></td></tr>`;
             if (car.insuranceExpiry) {
                 const insuranceDate = new Date(car.insuranceExpiry);
-                docHtml += `
-                    <tr>
-                        <td>Insurance Expiry</td>
-                        <td><strong>${insuranceDate.toLocaleDateString('en-US', {month: 'short', year: 'numeric'})}</strong></td>
-                    </tr>`;
+                docHtml += `<tr><td>Insurance Expiry</td><td><strong>${insuranceDate.toLocaleDateString('en-US', {month: 'short', year: 'numeric'})}</strong></td></tr>`;
             }
-
             if (car.pucExpiry) {
                 const pucDate = new Date(car.pucExpiry);
-                docHtml += `
-                    <tr>
-                        <td>PUC Expiry</td>
-                        <td><strong>${pucDate.toLocaleDateString('en-US', {month: 'short', year: 'numeric'})}</strong></td>
-                    </tr>`;
+                docHtml += `<tr><td>PUC Expiry</td><td><strong>${pucDate.toLocaleDateString('en-US', {month: 'short', year: 'numeric'})}</strong></td></tr>`;
             }
-
             $('#documentationTable').html(docHtml);
 
             // Service History
             let serviceHtml = '';
-
             const serviceIcon = car.hasCompleteServiceHistory ? 'fas fa-check-circle text-success' : 'fas fa-exclamation-triangle text-warning';
             const serviceText = car.hasCompleteServiceHistory ? 'Complete Service History Available' : 'Partial Service History';
-
-            serviceHtml += `
-                <div class="d-flex align-items-center mb-2">
-                    <i class="${serviceIcon} me-2"></i>
-                    <span>${serviceText}</span>
-                </div>`;
+            serviceHtml += `<div class="d-flex align-items-center mb-2"><i class="${serviceIcon} me-2"></i><span>${serviceText}</span></div>`;
 
             const authorizedIcon = car.servicedAtAuthorized ? 'fas fa-check-circle text-success' : 'fas fa-times-circle text-muted';
             const authorizedText = car.servicedAtAuthorized ? 'Serviced at Authorized Center' : 'Not Serviced at Authorized Center';
-
-            serviceHtml += `
-                <div class="d-flex align-items-center mb-2">
-                    <i class="${authorizedIcon} me-2"></i>
-                    <span>${authorizedText}</span>
-                </div>`;
+            serviceHtml += `<div class="d-flex align-items-center mb-2"><i class="${authorizedIcon} me-2"></i><span>${authorizedText}</span></div>`;
 
             if (car.lastServiceDate) {
                 const serviceDate = new Date(car.lastServiceDate);
                 serviceHtml += `<p class="mb-1"><strong>Last Service:</strong> ${serviceDate.toLocaleDateString('en-US', {month: 'short', year: 'numeric'})}</p>`;
             }
-
-            if (car.lastServiceKM) {
-                serviceHtml += `<p class="mb-1"><strong>Last Service KM:</strong> ${car.lastServiceKM.toLocaleString()} km</p>`;
-            }
-
+            if (car.lastServiceKM) serviceHtml += `<p class="mb-1"><strong>Last Service KM:</strong> ${car.lastServiceKM.toLocaleString()} km</p>`;
             $('#serviceHistoryContent').html(serviceHtml);
         }
 
         function populatePriceAndContact(car) {
             let priceHtml = `<h3 class="text-primary mb-0">₹${(car.sellingPrice || 0).toLocaleString()}</h3>`;
-
             if (car.originalPrice && car.originalPrice > car.sellingPrice) {
                 const savings = car.originalPrice - car.sellingPrice;
-                priceHtml += `
-                    <small class="text-muted text-decoration-line-through">₹${car.originalPrice.toLocaleString()}</small>
-                    <span class="badge bg-success ms-2">₹${savings.toLocaleString()} Saved</span>`;
-            } else if (car.originalPrice && car.originalPrice < car.sellingPrice) {
-                // Handle case where original price is lower than selling price
-                priceHtml += `
-                    <small class="text-muted">Original: ₹${car.originalPrice.toLocaleString()}</small>`;
+                priceHtml += `<small class="text-muted text-decoration-line-through">₹${car.originalPrice.toLocaleString()}</small><span class="badge bg-success ms-2">₹${savings.toLocaleString()} Saved</span>`;
             }
-
-            if (car.isPriceNegotiable) {
-                priceHtml += `
-                    <div class="mt-1">
-                        <small class="text-success">✓ Price Negotiable</small>
-                    </div>`;
-            }
-
-            // Add price label if available
-            if (car.priceLabel) {
-                priceHtml += `
-                    <div class="mt-1">
-                        <span class="badge bg-info">${car.priceLabel}</span>
-                    </div>`;
-            }
+            if (car.isPriceNegotiable) priceHtml += `<div class="mt-1"><small class="text-success">✓ Price Negotiable</small></div>`;
+            if (car.priceLabel) priceHtml += `<div class="mt-1"><span class="badge bg-info">${car.priceLabel}</span></div>`;
 
             $('#priceHeader').html(priceHtml);
-
-            // Set loan amount
+            $('#priceHeaderSmall').text(`₹${(car.sellingPrice || 0).toLocaleString()}`);
             $('#loanAmount').val(car.sellingPrice || 0);
 
-            // Contact buttons
-            let contactHtml = `
-                <button class="btn btn-primary btn-lg" onclick="showInquiryModal(${car.listingId}, '${car.title}')">
-                    <i class="fas fa-phone me-2"></i>Contact Seller
-                </button>`;
-
-            if (car.availableForTestDrive) {
-                contactHtml += `
-                    <button class="btn btn-outline-primary" onclick="requestTestDrive(${car.listingId})">
-                        <i class="fas fa-car me-2"></i>Book Test Drive
-                    </button>`;
-            }
-
-            if (car.availableForInspection) {
-                contactHtml += `
-                    <button class="btn btn-outline-secondary" onclick="requestInspection(${car.listingId})">
-                        <i class="fas fa-search me-2"></i>Schedule Inspection
-                    </button>`;
-            }
-
-            contactHtml += `
-                <button class="btn btn-outline-info" onclick="shareCarDetail(${car.listingId})">
-                    <i class="fas fa-share me-2"></i>Share This Car
-                </button>`;
-
+            let contactHtml = `<button class="btn btn-primary btn-lg" onclick="showInquiryModal(${car.listingId}, '${car.title}')"><i class="fas fa-phone me-2"></i>Contact Seller</button>`;
+            if (car.availableForTestDrive) contactHtml += `<button class="btn btn-outline-primary" onclick="requestTestDrive(${car.listingId})"><i class="fas fa-car me-2"></i>Book Test Drive</button>`;
+            if (car.availableForInspection) contactHtml += `<button class="btn btn-outline-secondary" onclick="requestInspection(${car.listingId})"><i class="fas fa-search me-2"></i>Schedule Inspection</button>`;
+            contactHtml += `<button class="btn btn-outline-info" onclick="shareCarDetail(${car.listingId})"><i class="fas fa-share me-2"></i>Share This Car</button>`;
             $('#contactButtons').html(contactHtml);
         }
 
         function populateSellerInfo(car) {
-            let html = `
-                <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-user text-muted me-2"></i>
-                    <span><strong>${car.sellerName || 'N/A'}</strong></span>
-                    <span class="badge bg-secondary ms-2">${car.sellerType || 'Individual'}</span>
-                </div>`;
-
-            if (car.sellerPhone) {
-                html += `
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="fas fa-phone text-muted me-2"></i>
-                        <span>${car.sellerPhone}</span>
-                    </div>`;
-            }
-
-            if (car.preferredContactMethod) {
-                html += `
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="fas fa-clock text-muted me-2"></i>
-                        <small class="text-muted">Preferred: ${car.preferredContactMethod}</small>
-                    </div>`;
-            }
-
-            if (car.contactHours) {
-                html += `
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-calendar text-muted me-2"></i>
-                        <small class="text-muted">Available: ${car.contactHours}</small>
-                    </div>`;
-            }
-
+            let html = `<div class="d-flex align-items-center mb-2"><i class="fas fa-user text-muted me-2"></i><span><strong>${car.sellerName || 'N/A'}</strong></span><span class="badge bg-secondary ms-2">${car.sellerType || 'Individual'}</span></div>`;
+            if (car.sellerPhone) html += `<div class="d-flex align-items-center mb-2"><i class="fas fa-phone text-muted me-2"></i><span>${car.sellerPhone}</span></div>`;
+            if (car.preferredContactMethod) html += `<div class="d-flex align-items-center mb-2"><i class="fas fa-clock text-muted me-2"></i><small class="text-muted">Preferred: ${car.preferredContactMethod}</small></div>`;
+            if (car.contactHours) html += `<div class="d-flex align-items-center"><i class="fas fa-calendar text-muted me-2"></i><small class="text-muted">Available: ${car.contactHours}</small></div>`;
             $('#sellerInfoContent').html(html);
         }
 
         function populateCarStats(car) {
             if (car.totalViews || car.totalInquiries) {
                 let html = '';
-
-                if (car.totalViews) {
-                    html += `
-                        <div class="d-flex justify-content-between mb-1">
-                            <small class="text-muted">Total Views</small>
-                            <small><strong>${car.totalViews.toLocaleString()}</strong></small>
-                        </div>`;
-                }
-
-                if (car.totalInquiries) {
-                    html += `
-                        <div class="d-flex justify-content-between">
-                            <small class="text-muted">Inquiries</small>
-                            <small><strong>${car.totalInquiries}</strong></small>
-                        </div>`;
-                }
-
+                if (car.totalViews) html += `<div class="d-flex justify-content-between mb-1"><small class="text-muted">Total Views</small><small><strong>${car.totalViews.toLocaleString()}</strong></small></div>`;
+                if (car.totalInquiries) html += `<div class="d-flex justify-content-between"><small class="text-muted">Inquiries</small><small><strong>${car.totalInquiries}</strong></small></div>`;
                 $('#carStatsContent').html(html);
                 $('#carStats').show();
             }
@@ -1300,56 +814,44 @@
             $.ajax({
                 url: `/SearchView/GetSimilarCars`,
                 type: 'GET',
-                data: { listingId: listingId, count: 4 },
+                data: { listingId: listingId, count: 6 },
                 success: function(response) {
                     if (response && response.success && response.data && response.data.length > 0) {
                         populateSimilarCars(response.data);
-                    } else {
-                        // Hide similar cars section if no data
-                        $('#similarCarsSection').hide();
                     }
                 },
                 error: function() {
                     console.log('Failed to load similar cars');
-                    $('#similarCarsSection').hide();
                 }
             });
         }
 
         function populateSimilarCars(cars) {
             let html = '';
-
             cars.forEach(car => {
-                const imageUrl = car.primaryImage || 'https://via.placeholder.com/150x100/f8f9fa/6c757d?text=No+Image';
+                const imageUrl = car.primaryImage || 'https://via.placeholder.com/200x150/f8f9fa/6c757d?text=No+Image';
                 html += `
-                    <div class="col-md-6 col-lg-3 mb-3">
+                    <div class="col-md-4 col-lg-2 mb-3">
                         <div class="card car-card-small h-100">
-                            <img src="${imageUrl}" class="card-img-top" alt="${car.title}" style="height: 150px; object-fit: cover;">
-                            <div class="card-body">
-                                <h6 class="card-title text-truncate">${car.title}</h6>
-                                <p class="card-text text-primary fw-bold mb-1">₹${(car.sellingPrice || 0).toLocaleString()}</p>
+                            <img src="${imageUrl}" class="card-img-top" alt="${car.title}" style="height: 120px; object-fit: cover;">
+                            <div class="card-body p-2">
+                                <h6 class="card-title text-truncate small">${car.title}</h6>
+                                <p class="card-text text-primary fw-bold mb-1 small">₹${(car.sellingPrice || 0).toLocaleString()}</p>
                                 <small class="text-muted d-block">${car.year} • ${(car.kilometersOnOdometer || 0).toLocaleString()} km</small>
                                 <small class="text-muted">${car.cityName}</small>
                             </div>
-                            <div class="card-footer bg-transparent">
-                                <button class="btn btn-outline-primary btn-sm w-100" onclick="viewCarDetail(${car.listingId})">
-                                    View Details
-                                </button>
+                            <div class="card-footer bg-transparent p-2">
+                                <button class="btn btn-outline-primary btn-sm w-100" onclick="viewCarDetail(${car.listingId})">View</button>
                             </div>
                         </div>
                     </div>`;
             });
-
             $('#similarCarsContainer').html(html);
             $('#similarCarsSection').show();
         }
 
         function setupEventHandlers(car) {
-            $('#addToWishlistBtn').click(() => addToWishlist(car.listingId));
-            $('#compareBtn').click(() => compareWithOthers(car.listingId));
-            $('#reportBtn').click(() => reportListing(car.listingId));
-            $('#exploreFinanceBtn').click(() => exploreFinance(car.listingId));
-            $('#loadMoreSimilarBtn').click(() => loadMoreSimilarCars(car.listingId));
+            // Event handlers for various buttons
         }
 
         function showError(message) {
@@ -1361,7 +863,7 @@
                         <p>${message}</p>
                         <hr>
                         <p class="mb-0">
-                            <a href="/SearchView/SearchView" class="btn btn-primary">Back to Search</a>
+                            <button class="btn btn-primary" onclick="window.close()">Close Window</button>
                         </p>
                     </div>
                 </div>`);
@@ -1369,27 +871,18 @@
         }
 
         function recordCarView(listingId) {
-            $.post('/SearchView/RecordCarView', { listingId: listingId })
-                .fail(function() {
-                    console.log('Failed to record car view');
-                });
+            $.post('/SearchView/RecordCarView', { listingId: listingId }).fail(() => console.log('Failed to record car view'));
         }
 
         function calculateQuickEMI() {
             const amount = parseFloat($('#loanAmount').val());
             const months = parseInt($('#loanTenure').val());
-
             if (!amount || !months) {
                 alert('Please enter loan amount and select tenure');
                 return;
             }
-
-            $.get('/SearchView/CalculateEMI', {
-                amount: amount,
-                rate: 8.5,
-                months: months
-            })
-            .done(function(response) {
+            $.get('/SearchView/CalculateEMI', { amount: amount, rate: 8.5, months: months })
+            .done(response => {
                 if (response.success) {
                     $('#quickEMIAmount').text(response.emi.toLocaleString());
                     $('#quickEMIResult').show();
@@ -1397,9 +890,7 @@
                     alert('EMI calculation failed');
                 }
             })
-            .fail(function() {
-                alert('EMI calculation failed');
-            });
+            .fail(() => alert('EMI calculation failed'));
         }
 
         function showInquiryModal(listingId, carTitle) {
@@ -1460,7 +951,6 @@
         function shareCarDetail(listingId) {
             const url = window.location.href;
             const title = carData ? carData.title : 'Car Details';
-
             if (navigator.share) {
                 navigator.share({
                     title: title,
@@ -1468,217 +958,327 @@
                     url: url
                 });
             } else {
-                navigator.clipboard.writeText(url).then(function() {
-                    alert('Link copied to clipboard!');
-                });
+                navigator.clipboard.writeText(url).then(() => alert('Link copied to clipboard!'));
             }
-        }
-
-        function addToWishlist(listingId) {
-            alert('Car added to wishlist! (Feature to be implemented)');
-        }
-
-        function compareWithOthers(listingId) {
-            alert('Compare feature coming soon!');
-        }
-
-        function printDetails() {
-            window.print();
-        }
-
-        function reportListing(listingId) {
-            const reason = prompt('Please specify the reason for reporting this listing:');
-            if (reason) {
-                alert('Thank you for your feedback. We will review this listing.');
-            }
-        }
-
-        function exploreFinance(listingId) {
-            alert('Finance options coming soon!');
         }
 
         function viewCarDetail(listingId) {
             window.location.href = `/SearchView/CarDetail?id=${listingId}`;
         }
-
-        function loadMoreSimilarCars(listingId) {
-            $.get('/SearchView/GetSimilarCars', { listingId: listingId, count: 8 })
-                .done(function(response) {
-                    if (response.success && response.data.length > 0) {
-                        populateSimilarCars(response.data);
-                    }
-                })
-                .fail(function() {
-                    alert('Failed to load similar cars');
-                });
-        }
     </script>
 
     <style>
+        /* Full Screen Mode Styles - Hide all navigation and sidebars */
+        .fullscreen-mode {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Hide any existing sidebar/navigation elements */
+        .sidebar,
+        .nav-sidebar,
+        .left-sidebar,
+        .menu-sidebar,
+        .navigation-menu,
+        [class*="sidebar"],
+        [class*="nav-"],
+        [class*="menu-"] {
+            display: none !important;
+        }
+
+        /* Ensure body takes full width */
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100vw !important;
+            max-width: 100vw !important;
+        }
+
+        /* Remove any left margins that might be caused by hidden sidebars */
+        .container-fluid,
+        .main-content,
+        #mainContent {
+            margin-left: 0 !important;
+            padding-left: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        /* Override any framework styles that might show sidebars */
+        .layout-wrapper,
+        .page-wrapper,
+        .content-wrapper {
+            margin-left: 0 !important;
+            padding-left: 0 !important;
+        }
+
+        /* Hide Bootstrap offcanvas or collapse sidebars */
+        .offcanvas,
+        .offcanvas-start,
+        .offcanvas-end,
+        .collapse.show {
+            display: none !important;
+        }
+
+        /* Hide any toggle buttons for sidebars */
+        .navbar-toggler,
+        .sidebar-toggle,
+        .menu-toggle,
+        [data-bs-toggle="offcanvas"],
+        [data-toggle="sidebar"] {
+            display: none !important;
+        }
+
+        /* Additional aggressive sidebar hiding */
+        * {
+            /* Remove any left margins from all elements */
+        }
+
+        body * {
+            /* Ensure no element has left margin that could indicate sidebar space */
+        }
+
+        /* Force full width layout */
+        html, body {
+            width: 100vw !important;
+            max-width: 100vw !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Hide specific framework sidebars by common class patterns */
+        .sidenav,
+        .side-nav,
+        .sidebar-wrapper,
+        .sidebar-container,
+        .main-sidebar,
+        .control-sidebar,
+        .navbar-nav,
+        .nav-pills,
+        .nav-tabs.vertical,
+        .accordion.sidebar,
+        .list-group.sidebar {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            position: absolute !important;
+            left: -9999px !important;
+        }
+
+        .fullscreen-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .fullscreen-carousel {
+            height: 60vh;
+            min-height: 400px;
+        }
+
         .car-detail-image {
-            height: 400px;
+            height: 60vh;
+            min-height: 400px;
             object-fit: cover;
             width: 100%;
         }
 
         .carousel-thumb {
-            height: 60px;
+            height: 50px;
             object-fit: cover;
             cursor: pointer;
-            opacity: 0.6;
-            transition: opacity 0.3s;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            transition: all 0.3s ease;
         }
 
             .carousel-thumb:hover,
             .carousel-thumb.active {
-                opacity: 1;
+                border-color: #007bff;
+                transform: scale(1.05);
             }
 
         .rating-stars .fa-star {
             font-size: 14px;
         }
 
-        .service-info .fas {
-            width: 16px;
-        }
-
-        .seller-info .fas,
-        .car-stats .fas {
-            width: 16px;
-        }
-
         .emi-section {
             border: 1px solid #e3f2fd;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
 
-        .finance-options div {
-            font-size: 14px;
-            margin-bottom: 8px;
+        /* Tab styling */
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 500;
         }
 
-        .carousel-indicators {
-            bottom: -50px;
-        }
-
-            .carousel-indicators button {
-                width: 12px;
-                height: 12px;
-                border-radius: 50%;
-                margin: 0 4px;
+            .nav-tabs .nav-link.active {
+                color: #007bff;
+                border-bottom: 3px solid #007bff;
+                background: transparent;
             }
 
-        @@media (max-width: 768px) {
-            .car-detail-image
+            .nav-tabs .nav-link:hover {
+                border-color: transparent;
+                color: #007bff;
+            }
+
+        /* Table styling */
+        .table td {
+            padding: 0.75rem 0;
+            border: none;
+            vertical-align: middle;
+        }
+
+            .table td:first-child {
+                width: 40%;
+                color: #6c757d;
+                font-weight: 500;
+            }
+
+        /* Card improvements */
+        .card {
+            border: none;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border-radius: 10px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 10px 10px 0 0 !important;
+        }
+
+        /* Button improvements */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            border: none;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+            }
+
+        /* Responsive adjustments */
+        @@media (max-width: 992px) {
+            .fullscreen-carousel, .car-detail-image
 
         {
-            height: 250px;
+            height: 40vh;
+            min-height: 300px;
+        }
+
+        .fullscreen-header h5 {
+            font-size: 1rem;
+        }
+
+        }
+
+        @@media (max-width: 768px) {
+            .fullscreen-carousel, .car-detail-image
+
+        {
+            height: 30vh;
+            min-height: 250px;
         }
 
         .carousel-thumb {
             height: 40px;
         }
 
-        .sticky-top {
-            position: static !important;
+        .nav-tabs {
+            flex-wrap: nowrap;
+            overflow-x: auto;
         }
 
-        .carousel-indicators {
-            bottom: -40px;
-        }
-
-        }
-
-        .table td {
-            padding: 0.5rem 0;
-            border: none;
-        }
-
-            .table td:first-child {
-                width: 40%;
-                color: #6c757d;
+            .nav-tabs .nav-link {
+                white-space: nowrap;
             }
 
-        .feature-check {
-            font-size: 14px;
         }
 
-        .car-badges {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 1;
-        }
-
-            .car-badges .badge {
-                margin-right: 5px;
-                margin-bottom: 5px;
-            }
-
+        /* Print styles */
         @@media print {
-            .sticky-top, .btn, .modal, .carousel-control-prev, .carousel-control-next
+            .fullscreen-header, .btn, .modal, .carousel-control-prev, .carousel-control-next, .carousel-indicators
 
         {
             display: none !important;
         }
 
+        body {
+            margin: 0;
         }
 
-        /* Force show main content - debug CSS */
+        .container-fluid {
+            margin-top: 0 !important;
+        }
+
+        }
+
+        /* Force visibility */
         #mainContent {
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
         }
 
-        /* Ensure loading spinner can be hidden */
         #loadingSpinner.d-none,
         #loadingSpinner[style*="display: none"] {
             display: none !important;
         }
 
-        /* Image error handling */
-        .carousel-item img {
-            min-height: 400px;
+        /* Smooth animations */
+        .carousel-item {
+            transition: transform 0.6s ease-in-out;
         }
 
-        @@media (max-width: 768px) {
-            .carousel-item img
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @@keyframes fadeIn {
+            from
 
         {
-            min-height: 250px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         }
 
-        /* Thumbnail improvements */
-        .carousel-thumbnails {
-            background: #f8f9fa;
-            border-top: 1px solid #dee2e6;
+        /* Badge improvements */
+        .badge {
+            font-size: 0.75em;
+            padding: 0.5em 0.75em;
+            border-radius: 20px;
         }
 
-        .carousel-thumb.active {
-            border: 2px solid #007bff;
+        /* Improve similar cars section */
+        .car-card-small {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .car-detail-image {
-            max-width: 100%;
-            height: auto;
-            object-fit: contain;
-            image-rendering: auto;
-        }
-
-        .carousel-thumb {
-            width: 100%;
-            height: 60px;
-            object-fit: cover;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
-            .carousel-thumb.active {
-                border-color: #007bff;
+            .car-card-small:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             }
-
     </style>
 </body>
 </html>

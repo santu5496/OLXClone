@@ -86,6 +86,7 @@ namespace DbOperation.Implementation
                                                       sellerPrimaryPhone = listing.sellerPrimaryPhone,
                                                       totalViews = listing.totalViews,
                                                       totalInquiries = listing.totalInquiries,
+                                                      registrationNumber= listing.registrationNumber,
                                                       listingCreatedDate = (DateTime)listing.listingCreatedDate
                                                   };
 
@@ -150,6 +151,7 @@ namespace DbOperation.Implementation
                     maxPrice = filterOptions.maxPrice,
                     minYear = filterOptions.minYear,
                     maxYear = filterOptions.maxYear,
+                   
                     totalListings = await GetTotalActiveListingsAsync(),
                     verifiedListings = await GetTotalVerifiedListingsAsync(),
                     featuredListings = await GetTotalFeaturedListingsAsync()
@@ -274,7 +276,8 @@ namespace DbOperation.Implementation
                 sellerPhone = car.sellerPrimaryPhone,
                 totalViews = car.totalViews,
                 totalInquiries = car.totalInquiries,
-                listingDate = car.listingCreatedDate
+                listingDate = car.listingCreatedDate,
+                registrationNumber = car.registrationNumber // Explicitly add this
             };
 
             // Get images
@@ -1159,13 +1162,13 @@ namespace DbOperation.Implementation
         public async Task<int> GetTotalVerifiedListingsAsync()
         {
             using var db = new Assignment4Context(_dbConn);
-            return await db.CarListings.Where(x => x.listingStatus == "Active" && x.isVerifiedListing == true).CountAsync();
+            return await db.CarListings.Where(x => x.listingStatus == "Active" ).CountAsync();
         }
 
         public async Task<int> GetTotalFeaturedListingsAsync()
         {
             using var db = new Assignment4Context(_dbConn);
-            return await db.CarListings.Where(x => x.listingStatus == "Active" && x.isFeaturedListing == true).CountAsync();
+            return await db.CarListings.Where(x => x.listingStatus == "Active" ).CountAsync();
         }
 
         public async Task<Dictionary<string, int>> GetCarCountByCategoryAsync()
@@ -1504,6 +1507,7 @@ namespace DbOperation.Implementation
                                        {
                                            id = g.Key.transmissionId,
                                            name = g.Key.transmissionName,
+                                         
                                            count = g.Count()
                                        }).ToListAsync();
 

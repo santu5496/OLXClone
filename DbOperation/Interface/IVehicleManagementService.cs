@@ -7,6 +7,7 @@ namespace DbOperation.Interface
     public interface IVehicleManagementSerivice
     {
         // --- Car Listings ---
+        bool MarkAsSold(int listingId, string buttonName);
         bool AddCarListing(CarListings listing);
         List<CarListings> GetCarListings(string? search = null);
         CarListings? GetCarListingById(int listingId);

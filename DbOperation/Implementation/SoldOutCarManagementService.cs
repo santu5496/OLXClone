@@ -24,10 +24,9 @@ namespace DbOperation.Implementation
             {
                 using var context = new Assignment4Context(_context);
                 var listing = context.CarListings.FirstOrDefault(l => l.listingId == listingId);
-                
+                listing.listingStatus = "NonActive";
                 if (listing == null) return false;
-
-                context.CarListings.Remove(listing);
+                context.CarListings.Update(listing);
                 context.SaveChanges();
                 return true;
             }

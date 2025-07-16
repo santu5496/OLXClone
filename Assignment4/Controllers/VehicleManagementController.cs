@@ -74,8 +74,25 @@ namespace Assignment4.Controllers
                 return false;
             }
         }
+        [HttpPost]
+        public JsonResult MarkAsSold(int id,string buttonName)
+        {
+            try
+            {
+                bool result = _vehicleService.MarkAsSold(id, buttonName);
+                if (result)
+                    return Json(new { success = true });
+                else
+                    return Json(new { success = false, message = "Listing not found or already sold." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
 
-       
+
+
         // ====== LISTING FEATURES ======
 
         public IActionResult GetFeaturesByListingId(int listingId)

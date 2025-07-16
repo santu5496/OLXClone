@@ -48,7 +48,7 @@ namespace DbOperation.ViewModels
     {
         public int listingId { get; set; }
         public string title { get; set; }
-
+        public string registrationNumber { get; set; }
         // Basic Info
         public string brandName { get; set; }
         public string modelName { get; set; }
@@ -119,6 +119,7 @@ namespace DbOperation.ViewModels
         public int totalPages { get; set; }
         public bool hasNextPage { get; set; }
         public bool hasPreviousPage { get; set; }
+        public string registrationNumber { get; set; }
 
         // Filter Options
         public List<FilterOption> availableBrands { get; set; } = new List<FilterOption>();
@@ -145,6 +146,7 @@ namespace DbOperation.ViewModels
         public int id { get; set; }
         public string name { get; set; }
         public int count { get; set; }
+        public string registrationNumber { get; set; }
     }
 
     // Car Detail for Detail Page
@@ -235,7 +237,8 @@ namespace DbOperation.ViewModels
         {
             public int listingId { get; set; }
             public string listingTitle { get; set; }
-
+            public string registrationNumber { get; set; }
+            
             public int brandId { get; set; }
             public string brandName { get; set; }
 

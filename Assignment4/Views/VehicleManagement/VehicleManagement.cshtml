@@ -17,12 +17,14 @@
             <table id="tblCarListings" class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Listing ID</th>
+                        <th>RegistrationNumber</th>
                         <th>Feature</th>
                         <th>Available</th>
                         <th>DateCreated</th>
                         <th>Action</th>
+                        <th>Sold Out</th> <!-- NEW COLUMN -->
+                        <th>Mark As Not SoldOut</th> <!-- NEW COLUMN -->
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -946,6 +948,15 @@
 
     // Enhanced saveListing function with all required fields
     function saveListing() {
+             if (!validateCarListingForm()) {
+            return; // Validation failed
+        }
+            
+
+
+
+
+
         if (CheckEmptyFields('Listing')) {
             let data = {
                 listingId: parseInt($('#listingId').val()) || 0,
@@ -1192,44 +1203,259 @@
         $('#listingModal').modal('show');
     }
 
-    function Validation()
-    {
+       function validateCarListingForm() {
+        let errors = [];
 
+        // Mandatory text fields
+        if (!$('#listingTitle').val().trim()) errors.push("Listing Title is required.");
+
+        // Mandatory dropdowns
+        if (!$('#brandId').val()) errors.push("Brand is required.");
+        if (!$('#modelId').val()) errors.push("Model is required.");
+        if (!$('#fuelTypeId').val()) errors.push("Fuel Type is required.");
+        if (!$('#transmissionId').val()) errors.push("Transmission is required.");
+        if (!$('#stateId').val()) errors.push("State is required.");
+        if (!$('#cityId').val()) errors.push("City is required.");
+
+        // Manufacturing / Registration Year
+        const currentYear = new Date().getFullYear();
+        let manufacturingYear = parseInt($('#manufacturingYear').val());
+        if (!manufacturingYear || manufacturingYear < 1990 || manufacturingYear > currentYear)
+            errors.push(`Manufacturing Year must be between 1990 and ${currentYear}.`);
+
+        let registrationYear = parseInt($('#registrationYear').val());
+        if (!registrationYear || registrationYear < 1990 || registrationYear > currentYear)
+            errors.push(`Registration Year must be between 1990 and ${currentYear}.`);
+
+        // Kilometers on Odometer
+        let kilometersOnOdometer = parseInt($('#kilometersOnOdometer').val());
+        if (isNaN(kilometersOnOdometer) || kilometersOnOdometer < 0)
+            errors.push("Kilometers on Odometer is required and must be 0 or greater.");
+
+        // Selling Price
+        let sellingPrice = parseFloat($('#sellingPriceAsked').val());
+        if (isNaN(sellingPrice) || sellingPrice <= 0)
+            errors.push("Selling Price Asked must be greater than 0.");
+
+        // Seller Name
+        if (!$('#sellerName').val().trim()) errors.push("Seller Name is required.");
+
+        // Seller Phone
+        let sellerPhone = $('#sellerPrimaryPhone').val().trim();
+        if (!/^\d{10}$/.test(sellerPhone)) errors.push("Primary Phone must be 10 digits.");
+
+        // Pin Code (optional)
+        let pinCode = $('#pinCode').val().trim();
+        if (pinCode && !/^\d{6}$/.test(pinCode)) errors.push("Pin Code must be 6 digits.");
+
+        // Condition Ratings (if given)
+        ['engineConditionRating','exteriorConditionRating','interiorConditionRating','tyreConditionRating'].forEach(id => {
+            let val = parseInt($('#'+id).val());
+            if (!isNaN(val) && (val < 1 || val > 10)) {
+                errors.push(`${id.replace(/([A-Z])/g, ' $1')} must be between 1 and 10.`);
+            }
+        });
+
+        // Number of Gears (if given)
+        let gears = parseInt($('#numberOfGears').val());
+        if (!isNaN(gears) && (gears < 1 || gears > 10)) {
+            errors.push("Number of Gears must be between 1 and 10.");
+        }
+
+        if (errors.length > 0) {
+            // Display errors (toastr, alert, modal)
+            let errorMessage = errors.join("\n");
+            if (typeof msgPopup === 'function') {
+                msgPopup('error', errorMessage);
+            } else {
+                alert(errorMessage);
+            }
+            return false;
+        }
+
+        return true;
     }
+
 
     // =================== CAR LISTINGS ===================
-    function initCarListings() 
- 
-    {
-          
+
+    function initCarListings() {
         var table = $('#tblCarListings').DataTable();
-        table.clear().draw();
+        table.clear(); // Clear old data but DO NOT draw yet
 
-        $.get('/VehicleManagement/GetCarListings', function (data) {
+        $.get('/VehicleManagement/GetCarListings')
+            .done(function (response) {
+                console.log('Response received:', response); // Debug log
 
-            data.forEach(function (item) {
-                table.row.add([
-                    item.listingId,
-                    item.listingTitle,
-                    item.brandId,
-                    item.sellingPriceAsked,
-                    FormatDateInReadableFormat(item.listingCreatedDate),
-                    `<i class='fa fa-edit btn-edit' style='color:green' data-full='${JSON.stringify(item)}'></i>
-                     <i class='fa fa-trash btn-delete' style='color:red' data-id='${item.listingId}'></i>`
-                ]).draw();
+                // Handle different response formats
+                let data = [];
+
+                if (Array.isArray(response)) {
+                    data = response;
+                } else if (response && Array.isArray(response.data)) {
+                    data = response.data;
+                } else if (response && response.success && Array.isArray(response.result)) {
+                    data = response.result;
+                } else if (response && typeof response === 'object') {
+                    // If response is an object, try to find the array property
+                    const possibleArrayKeys = ['items', 'listings', 'carListings', 'records'];
+                    for (let key of possibleArrayKeys) {
+                        if (Array.isArray(response[key])) {
+                            data = response[key];
+                            break;
+                        }
+                    }
+                }
+
+                // Validate that we have an array
+                if (!Array.isArray(data)) {
+                    console.error('Expected array but received:', typeof response, response);
+                    toastr.error('Invalid data format received from server');
+                    return;
+                }
+
+                // Check if array is empty
+                if (data.length === 0) {
+                    console.log('No car listings found');
+                    //toastr.info('No car listings found');
+                    table.draw(); // Draw empty table
+                    return;
+                }
+
+                // Process each item
+                data.forEach(function (item, index) {
+                    try {
+                        // Validate required fields
+                        if (!item.listingId) {
+                            console.warn(`Item at index ${index} missing listingId:`, item);
+                            return; // Skip this item
+                        }
+
+                        // Add row with proper null checks
+                        table.row.add([
+                            item.listingId || '',
+                            item.registrationNumber || 'N/A',
+                            item.brandId || 'N/A',
+                            item.sellingPriceAsked ? formatCurrency(item.sellingPriceAsked) : 'N/A',
+                            item.listingCreatedDate ? FormatDateInReadableFormat(item.listingCreatedDate) : 'N/A',
+                            `<i class='fa fa-edit btn-edit' style='color:green; cursor:pointer; margin-right:10px;' data-full='${encodeURIComponent(JSON.stringify(item))}' title='Edit'></i>
+                             <i class='fa fa-trash btn-delete' style='color:red; cursor:pointer;' data-id='${item.listingId}' title='Delete'></i>`,
+                            `<button class='btn btn-warning btn-sm btn-mark-sold' data-id='${item.listingId}'>Mark as Sold</button>`,
+                            `<button class='btn btn-info btn-sm btn-mark-notsold' data-id='${item.listingId}'>Mark as Not Sold</button>`
+                        ]);
+                    } catch (error) {
+                        console.error(`Error processing item at index ${index}:`, error, item);
+                    }
+                });
+
+                table.draw(); // Draw once after all rows are added
+                console.log(`Successfully loaded ${data.length} car listings`);
+
+            })
+            .fail(function (xhr, status, error) {
+                console.error('Failed to load car listings:', error, xhr.responseText);
+                toastr.error('Failed to load car listings. Please try again.');
             });
+
+        // Set up button click handlers (remove previous handlers to avoid duplicates)
+        $('#tblCarListings').off('click', '.btn-edit, .btn-delete, .btn-mark-sold, .btn-mark-notsold');
+
+        $('#tblCarListings').on('click', '.btn-edit', function (e) {
+            e.preventDefault();
+            try {
+                var encodedData = $(this).attr('data-full');
+                var data = JSON.parse(decodeURIComponent(encodedData));
+                editListing(data);
+            } catch (error) {
+                console.error('Error parsing edit data:', error);
+                toastr.error('Error loading listing data for editing');
+            }
         });
 
-        $('#tblCarListings').on('click', '.btn-edit', function () {
-            var data = JSON.parse($(this).attr('data-full'));
-            editListing(data);
-        });
-
-        $('#tblCarListings').on('click', '.btn-delete', function () {
+        $('#tblCarListings').on('click', '.btn-delete', function (e) {
+            e.preventDefault();
             var id = $(this).data('id');
-            DeleteWarning(deleteListing, id);
+            if (id) {
+                DeleteWarning(deleteListing, id);
+            } else {
+                toastr.error('Invalid listing ID for deletion');
+            }
+        });
+
+        $('#tblCarListings').on('click', '.btn-mark-sold', function (e) {
+            e.preventDefault();
+            var listingId = $(this).data('id');
+            if (listingId) {
+                markListingAsSold(listingId);
+            } else {
+                toastr.error('Invalid listing ID');
+            }
+        });
+
+        $('#tblCarListings').on('click', '.btn-mark-notsold', function (e) {
+            e.preventDefault();
+            var listingId = $(this).data('id');
+            if (listingId) {
+                markListingAsNOTSold(listingId);
+            } else {
+                toastr.error('Invalid listing ID');
+            }
         });
     }
+
+    // Helper function to format currency (add this if not already present)
+    function formatCurrency(amount) {
+        if (amount == null || amount === '') return 'N/A';
+        return '₹' + parseFloat(amount).toLocaleString('en-IN');
+    }
+
+
+
+
+         function markListingAsNOTSold(listingId)
+         {
+        $.post('/VehicleManagement/MarkAsSold',
+            {
+                id: listingId,
+                buttonName: 'btn-mark-Notsoldout' // ✅ Hardcoded value
+            },
+            function (res) {
+                if (res.success) {
+                    msgPopup('true', 'Car marked as NotSold.');
+                    initCarListings(); // Refresh the table
+                } else {
+                        msgPopup('false', res.message || 'Could not mark as NotSold.');
+                }
+            }
+        ).fail(function () {
+            msgPopup('false', 'Server error while marking as sold.');
+        });
+    }
+
+
+
+        function markListingAsSold(listingId) {
+        $.post('/VehicleManagement/MarkAsSold',
+            {
+                id: listingId,
+                buttonName: 'btn-mark-soldout' // ✅ Hardcoded value
+            },
+            function (res) {
+                if (res.success) {
+                    msgPopup('true', 'Car marked as Sold.');
+                    initCarListings(); // Refresh the table
+                } else {
+                    msgPopup('false', res.message || 'Could not mark as sold.');
+                }
+            }
+        ).fail(function () {
+            msgPopup('false', 'Server error while marking as sold.');
+        });
+    }
+
+
+
+
 
     function clearFeatureModal() {
      
@@ -1238,6 +1464,7 @@
     }
 
     function saveListingold() {
+
         if (CheckEmptyFields('Listing')) {
             let data = {
                 listingId: $('#listingId').val(),
@@ -1253,19 +1480,23 @@
         }
     }
 
-    function editListing(data) {
-        $('#listingId').val(data.listingId);
-        $('#listingTitle').val(data.listingTitle);
-        $('#brandId').val(data.brandId);
-        $('#sellingPrice').val(data.sellingPriceAsked);
-        $('#listingModal').modal('show');
-    }
+ 
+        // Handle "Mark as Sold" button click
+   
 
     function deleteListing(id) {
-        $.post('/VehicleManagement/DeleteCarListing', { id: id }, function (res) {
-            msgPopup('success', 'Deleted');
-            initCarListings();
-        });
-    }
+    $.post('/VehicleManagement/DeleteCarListing', { id: id },
+    function (res) {
+        if (res.success) {
+            msgPopup('success', 'Car listing has been successfully deleted.');
+            initCarListings(); // Refresh the listings
+        } else {
+            msgPopup('error', res.message || 'Failed to delete the car listing.');
+        }
+    }).fail(function () {
+        msgPopup('error', 'An error occurred while deleting the car listing. Please try again.');
+    });
+}
+
 
 </script>

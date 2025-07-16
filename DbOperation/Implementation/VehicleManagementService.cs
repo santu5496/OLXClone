@@ -17,9 +17,9 @@ namespace DbOperation.Implementation
                 .UseSqlServer(dbConn)
                 .Options;
         }
-    
 
-       
+
+
 
         // ➕ Add Car Listing
         public bool AddCarListing(CarListings listing)
@@ -27,14 +27,22 @@ namespace DbOperation.Implementation
             try
             {
                 using var context = new Assignment4Context(_dbConn);
+
                 listing.listingCreatedDate = DateTime.Now;
                 listing.listingLastModifiedDate = DateTime.Now;
+
                 context.CarListings.Add(listing);
                 context.SaveChanges();
                 return true;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
             {
+                Console.WriteLine($"DB Update Error: {dbEx.InnerException?.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Error: {ex.Message}");
                 return false;
             }
         }
@@ -105,11 +113,39 @@ namespace DbOperation.Implementation
                 context.SaveChanges();
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
                 return false;
             }
         }
+        public bool MarkAsSold(int listingId,string buttonName)
+        {
+            try
+            {
+                using var context = new Assignment4Context(_dbConn);
+                var listing = context.CarListings.FirstOrDefault(l => l.listingId == listingId);
+                if (buttonName == "btn-mark-Notsoldout")
+                {
+                    listing.listingStatus = "Active";
+
+                }
+                else
+                {
+                    listing.listingStatus = "Soldout";
+                }
+                    
+                if (listing == null) return false;
+
+                context.CarListings.Update(listing);
+                context.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+        
         // 📸 Add Image to Listing
         public bool AddCarImage(CarImages image)
         {
