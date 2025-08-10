@@ -23,8 +23,6 @@ public partial class RTOCodes
 
     public bool? isActiveRTO { get; set; }
 
-    public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
-
     public virtual GeographicCities city { get; set; }
 
     public virtual GeographicStates state { get; set; }

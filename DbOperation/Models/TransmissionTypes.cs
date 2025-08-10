@@ -22,6 +22,4 @@ public partial class TransmissionTypes
     public string maintenanceCost { get; set; }
 
     public bool? isActiveTransmission { get; set; }
-
-    public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

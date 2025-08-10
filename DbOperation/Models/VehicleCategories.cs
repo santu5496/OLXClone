@@ -22,6 +22,4 @@ public partial class VehicleCategories
     public int? popularityRank { get; set; }
 
     public bool? isActiveCategory { get; set; }
-
-    public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

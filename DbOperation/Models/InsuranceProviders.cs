@@ -20,6 +20,4 @@ public partial class InsuranceProviders
     public string customerServiceRating { get; set; }
 
     public bool? isActiveProvider { get; set; }
-
-    public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

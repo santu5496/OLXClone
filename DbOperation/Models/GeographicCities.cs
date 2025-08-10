@@ -23,8 +23,6 @@ public partial class GeographicCities
 
     public bool? isActiveCity { get; set; }
 
-    public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
-
     public virtual ICollection<RTOCodes> RTOCodes { get; set; } = new List<RTOCodes>();
 
     public virtual GeographicStates state { get; set; }

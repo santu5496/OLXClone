@@ -25,7 +25,5 @@ public partial class CarBrands
 
     public string brandNotes { get; set; }
 
-    public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
-
     public virtual ICollection<CarModels> CarModels { get; set; } = new List<CarModels>();
 }

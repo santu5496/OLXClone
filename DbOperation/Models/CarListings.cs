@@ -23,19 +23,13 @@ public partial class CarListings
 
     public int? manufacturingMonth { get; set; }
 
-    public int registrationYear { get; set; }
+    public int? registrationYear { get; set; }
 
     public int? registrationMonth { get; set; }
 
-    public int? vehicleAge { get; set; }
-
     public int? engineCapacityInCC { get; set; }
 
-    public decimal? engineCapacityInLiters { get; set; }
-
     public int? enginePowerInBHP { get; set; }
-
-    public decimal? enginePowerInKW { get; set; }
 
     public int? engineTorqueInNm { get; set; }
 
@@ -65,13 +59,9 @@ public partial class CarListings
 
     public int kilometersOnOdometer { get; set; }
 
-    public int? averageMonthlyKilometers { get; set; }
-
     public decimal? mileageInCityKMPL { get; set; }
 
     public decimal? mileageOnHighwayKMPL { get; set; }
-
-    public decimal? combinedMileageKMPL { get; set; }
 
     public int? overallConditionId { get; set; }
 
@@ -149,9 +139,9 @@ public partial class CarListings
 
     public bool? servicedAtAuthorizedCenter { get; set; }
 
-    public int stateId { get; set; }
+    public int? stateId { get; set; }
 
-    public int cityId { get; set; }
+    public int? cityId { get; set; }
 
     public string areaOrLocality { get; set; }
 
@@ -238,30 +228,4 @@ public partial class CarListings
     public virtual ICollection<CarListingViews> CarListingViews { get; set; } = new List<CarListingViews>();
 
     public virtual ICollection<CustomerInquiries> CustomerInquiries { get; set; } = new List<CustomerInquiries>();
-
-    public virtual CarBrands brand { get; set; }
-
-    public virtual VehicleCategories category { get; set; }
-
-    public virtual GeographicCities city { get; set; }
-
-    public virtual CarColors color { get; set; }
-
-    public virtual EngineSpecifications engineSpec { get; set; }
-
-    public virtual FuelTypes fuelType { get; set; }
-
-    public virtual InsuranceProviders insuranceProvider { get; set; }
-
-    public virtual CarModels model { get; set; }
-
-    public virtual CarConditionLevels overallCondition { get; set; }
-
-    public virtual RTOCodes rto { get; set; }
-
-    public virtual GeographicStates state { get; set; }
-
-    public virtual TransmissionTypes transmission { get; set; }
-
-    public virtual CarVariants variant { get; set; }
 }

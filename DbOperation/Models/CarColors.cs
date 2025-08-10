@@ -28,6 +28,4 @@ public partial class CarColors
     public string resaleValueImpact { get; set; }
 
     public bool? isActiveColor { get; set; }
-
-    public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

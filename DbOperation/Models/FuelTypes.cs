@@ -24,6 +24,4 @@ public partial class FuelTypes
     public string availabilityLevel { get; set; }
 
     public bool? isActiveFuelType { get; set; }
-
-    public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

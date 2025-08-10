@@ -24,6 +24,4 @@ public partial class CarConditionLevels
     public int? conditionSortOrder { get; set; }
 
     public bool? isActiveCondition { get; set; }
-
-    public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }

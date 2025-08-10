@@ -264,21 +264,11 @@ public partial class Assignment4Context : DbContext
             entity.Property(e => e.availableForContactHours).HasMaxLength(50);
             entity.Property(e => e.availableForPhysicalInspection).HasDefaultValue(true);
             entity.Property(e => e.availableForTestDrive).HasDefaultValue(true);
-            entity.Property(e => e.averageMonthlyKilometers).HasComputedColumnSql("(case when (datepart(year,getdate())-[manufacturingYear])>(0) then [kilometersOnOdometer]/((datepart(year,getdate())-[manufacturingYear])*(12)) else (0) end)", false);
             entity.Property(e => e.chassisNumber).HasMaxLength(30);
-            entity.Property(e => e.combinedMileageKMPL)
-                .HasComputedColumnSql("(([mileageInCityKMPL]+[mileageOnHighwayKMPL])/(2))", false)
-                .HasColumnType("decimal(10, 6)");
             entity.Property(e => e.createdByUserId).HasMaxLength(100);
             entity.Property(e => e.createdFromIPAddress).HasMaxLength(50);
             entity.Property(e => e.currentMarketPrice).HasColumnType("money");
-            entity.Property(e => e.engineCapacityInLiters)
-                .HasComputedColumnSql("(CONVERT([decimal](4,1),[engineCapacityInCC])/(1000))", false)
-                .HasColumnType("decimal(9, 6)");
             entity.Property(e => e.engineNumber).HasMaxLength(30);
-            entity.Property(e => e.enginePowerInKW)
-                .HasComputedColumnSql("(CONVERT([decimal](6,1),[enginePowerInBHP])*(0.746))", false)
-                .HasColumnType("numeric(10, 4)");
             entity.Property(e => e.estimatedRepairCost).HasColumnType("money");
             entity.Property(e => e.exactAddress).HasMaxLength(400);
             entity.Property(e => e.favoriteCount).HasDefaultValue(0);
@@ -339,66 +329,7 @@ public partial class Assignment4Context : DbContext
             entity.Property(e => e.totalPreviousOwners).HasDefaultValue(1);
             entity.Property(e => e.totalTestDrives).HasDefaultValue(0);
             entity.Property(e => e.totalViews).HasDefaultValue(0);
-            entity.Property(e => e.vehicleAge).HasComputedColumnSql("(datepart(year,getdate())-[manufacturingYear])", false);
             entity.Property(e => e.viewingInstructions).HasMaxLength(300);
-
-            entity.HasOne(d => d.brand).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.brandId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CarListin__brand__208CD6FA");
-
-            entity.HasOne(d => d.category).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.categoryId)
-                .HasConstraintName("FK__CarListin__categ__236943A5");
-
-            entity.HasOne(d => d.city).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.cityId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CarListin__cityI__2A164134");
-
-            entity.HasOne(d => d.color).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.colorId)
-                .HasConstraintName("FK__CarListin__color__2739D489");
-
-            entity.HasOne(d => d.engineSpec).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.engineSpecId)
-                .HasConstraintName("FK__CarListin__engin__245D67DE");
-
-            entity.HasOne(d => d.fuelType).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.fuelTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CarListin__fuelT__25518C17");
-
-            entity.HasOne(d => d.insuranceProvider).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.insuranceProviderId)
-                .HasConstraintName("FK__CarListin__insur__2BFE89A6");
-
-            entity.HasOne(d => d.model).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.modelId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CarListin__model__2180FB33");
-
-            entity.HasOne(d => d.overallCondition).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.overallConditionId)
-                .HasConstraintName("FK__CarListin__overa__282DF8C2");
-
-            entity.HasOne(d => d.rto).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.rtoId)
-                .HasConstraintName("FK__CarListin__rtoId__2B0A656D");
-
-            entity.HasOne(d => d.state).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.stateId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CarListin__state__29221CFB");
-
-            entity.HasOne(d => d.transmission).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.transmissionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CarListin__trans__2645B050");
-
-            entity.HasOne(d => d.variant).WithMany(p => p.CarListings)
-                .HasForeignKey(d => d.variantId)
-                .HasConstraintName("FK__CarListin__varia__22751F6C");
         });
 
         modelBuilder.Entity<CarModels>(entity =>

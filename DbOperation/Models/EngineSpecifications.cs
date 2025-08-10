@@ -28,6 +28,4 @@ public partial class EngineSpecifications
     public string performanceRating { get; set; }
 
     public bool? isActiveEngineSpec { get; set; }
-
-    public virtual ICollection<CarListings> CarListings { get; set; } = new List<CarListings>();
 }
